@@ -1,5 +1,5 @@
 import { api } from "@/src/lib/api"
-import type { User } from "@/src/lib/types"
+import type { User } from "@/src/shared/types/shared.types"
 
 export interface UpdateUserInput {
   name?: string

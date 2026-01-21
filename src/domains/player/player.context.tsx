@@ -1,6 +1,6 @@
 "use client"
 
-import type { Track } from "@/src/lib/types"
+import type { Track } from "@/src/shared/types/shared.types"
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react"
 
 interface PlayerContextType {

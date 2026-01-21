@@ -1,5 +1,5 @@
 import { LoginForm } from "@/src/domains/auth/components/login-form"
-import { MusilaLogo } from "@/src/shared/components/icons"
+import { MusilaLogo } from "@/src/shared/components/Icons/icons"
 import Link from "next/link"
 
 export default function LoginPage() {

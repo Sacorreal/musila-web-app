@@ -3,7 +3,7 @@
 import { ArtistCard } from "@/src/components/app/artist-card"
 import { TrackCard } from "@/src/components/app/track-card"
 
-import type { Track, User } from "@/src/lib/types"
+import type { Track, User } from "@/src/shared/types/shared.types"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
 

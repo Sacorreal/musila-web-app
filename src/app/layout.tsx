@@ -1,5 +1,5 @@
 import { PlayerProvider } from "@/src/domains/player/player.context"
-import { Toaster } from "@/src/shared/ui/sonner"
+import { Toaster } from "@/src/shared/components/UI/sonner"
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"

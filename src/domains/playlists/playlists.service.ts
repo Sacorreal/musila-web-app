@@ -1,5 +1,5 @@
 import { api } from "@/src/lib/api"
-import type { Playlist } from "@/src/lib/types"
+import type { Playlist } from "@/src/shared/types/shared.types"
 
 export interface CreatePlaylistInput {
   name: string
@@ -9,7 +9,7 @@ export interface CreatePlaylistInput {
   trackIds?: string[]
 }
 
-export interface UpdatePlaylistInput extends Partial<CreatePlaylistInput> {}
+export interface UpdatePlaylistInput extends Partial<CreatePlaylistInput> { }
 
 export const playlistsService = {
   async getAll(): Promise<{ data: Playlist[] | null; error: string | null }> {

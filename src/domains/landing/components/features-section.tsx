@@ -1,4 +1,4 @@
-import { MusicNoteIcon, PlaylistIcon, RequestIcon, UploadIcon } from "@/src/shared/components/icons"
+import { MusicNoteIcon, PlaylistIcon, RequestIcon, UploadIcon } from "@/src/shared/components/Icons/icons"
 import { Shield, Users } from "lucide-react"
 
 const features = [

@@ -1,5 +1,5 @@
-import type { User } from "@/src/lib/types"
-import { UserIcon } from "@/src/shared/components/icons"
+import { UserIcon } from "@/src/shared/components/Icons/icons"
+import type { User } from "@/src/shared/types/shared.types"
 import Link from "next/link"
 
 interface ArtistCardProps {

@@ -1,10 +1,10 @@
 "use client"
 
 import { usePlayer } from "@/src/domains/player/player.context"
-import type { Track } from "@/src/lib/types"
-import { HeartIcon, MoreIcon, MusicNoteIcon, PauseIcon, PlayIcon, PlusIcon, RequestIcon } from "@/src/shared/components/icons"
-import { Button } from "@/src/shared/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/src/shared/ui/dropdown-menu"
+import { HeartIcon, MoreIcon, MusicNoteIcon, PauseIcon, PlayIcon, PlusIcon, RequestIcon } from "@/src/shared/components/Icons/icons"
+import { Button } from "@/src/shared/components/UI/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/src/shared/components/UI/dropdown-menu"
+import type { Track } from "@/src/shared/types/shared.types"
 import Link from "next/link"
 
 interface TrackCardProps {

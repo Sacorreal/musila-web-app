@@ -1,5 +1,5 @@
 import { api } from "@/src/lib/api"
-import type { RequestedTrack } from "@/src/lib/types"
+import type { RequestedTrack } from "@/src/shared/types/shared.types"
 
 export interface CreateRequestInput {
   trackId: string

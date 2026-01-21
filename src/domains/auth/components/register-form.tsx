@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { Button } from "@/src/shared/ui/button"
-import { Input } from "@/src/shared/ui/input"
-import { Label } from "@/src/shared/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/src/shared/ui/radio-group"
+import { Button } from "@/src/shared/components/UI/button"
+import { Input } from "@/src/shared/components/UI/input"
+import { Label } from "@/src/shared/components/UI/label"
+import { RadioGroup, RadioGroupItem } from "@/src/shared/components/UI/radio-group"
 import { Eye, EyeOff, Loader2, Mic, Music } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"

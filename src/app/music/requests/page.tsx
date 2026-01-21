@@ -5,9 +5,9 @@ import { useAuthStore } from "@/src/domains/auth/store/useAuthStore"
 
 import { requestsService } from "@/src/domains/requests/requests.service"
 import { UserRole } from "@/src/domains/users/types"
-import type { RequestedTrack } from "@/src/lib/types"
-import { RequestIcon } from "@/src/shared/components/icons"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/shared/ui/tabs"
+import { RequestIcon } from "@/src/shared/components/Icons/icons"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/shared/components/UI/tabs"
+import type { RequestedTrack } from "@/src/shared/types/shared.types"
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 

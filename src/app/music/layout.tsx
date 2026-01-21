@@ -1,5 +1,5 @@
-import { AppHeader } from "@/src/domains/app/components/app-header"
-import { AppSidebar } from '@domains/app/components/sidebar/AppSidebar'
+import { AppHeader } from "@/src/shared/components/Layout/app-header"
+import { AppSidebar } from '@/src/shared/components/Layout/sidebar/AppSidebar'
 
 import type React from "react"
 

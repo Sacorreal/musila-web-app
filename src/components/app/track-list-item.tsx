@@ -1,9 +1,9 @@
 "use client"
 
-import type { Track } from "@/src/lib/types"
-import { MoreIcon, MusicNoteIcon, PauseIcon, PlayIcon } from "@/src/shared/components/icons"
-import { Button } from "@/src/shared/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/src/shared/ui/dropdown-menu"
+import { MoreIcon, MusicNoteIcon, PauseIcon, PlayIcon } from "@/src/shared/components/Icons/icons"
+import { Button } from "@/src/shared/components/UI/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/src/shared/components/UI/dropdown-menu"
+import type { Track } from "@/src/shared/types/shared.types"
 import { Trash2 } from "lucide-react"
 import Link from "next/link"
 

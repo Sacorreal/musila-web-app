@@ -1,5 +1,5 @@
-import type { Playlist } from "@/src/lib/types"
-import { PlaylistIcon } from "@/src/shared/components/icons"
+import { PlaylistIcon } from "@/src/shared/components/Icons/icons"
+import type { Playlist } from "@/src/shared/types/shared.types"
 import Link from "next/link"
 
 interface PlaylistCardProps {

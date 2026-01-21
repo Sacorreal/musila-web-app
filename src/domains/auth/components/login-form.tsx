@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { Button } from "@/src/shared/ui/button"
-import { Input } from "@/src/shared/ui/input"
-import { Label } from "@/src/shared/ui/label"
+import { Button } from "@/src/shared/components/UI/button"
+import { Input } from "@/src/shared/components/UI/input"
+import { Label } from "@/src/shared/components/UI/label"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
