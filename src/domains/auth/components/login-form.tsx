@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 
 import { Button } from "@/src/shared/components/UI/button"
 import { Input } from "@/src/shared/components/UI/input"
@@ -9,49 +8,49 @@ import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useForm } from 'react-hook-form'
 import { toast } from "sonner"
+import { useLogin } from "../hooks/useLogin"
+import type { LoginDTO } from '../types/auth.types'
 
 export function LoginForm() {
   const router = useRouter()
+  const {login } = useLogin() 
+  const [showPassword, setShowPassword ] = useState(false)
+  const {register, handleSubmit, formState:{ isSubmitting}, reset} = useForm<LoginDTO>()
+ 
+  const onSubmit = async (data:LoginDTO ) =>{
+  
+    try {
+      await login (data)
+      toast.success('Bienvenido de vuelta')
+      reset()
+      router.push('/music')
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    const error = false
-
-    if (error) {
-      toast.error("Error al iniciar sesión", {
-        description: error,
+    } catch (error) {
+      toast.error('Error al iniciar sesión', {
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Credenciales inválidas',
       })
-    } else {
-      toast.success("Bienvenido de vuelta")
-      router.push("/app")
     }
+    
 
-    setIsLoading(false)
-  }
+  }  
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="email">Correo electrónico</Label>
         <Input
           id="email"
           type="email"
           placeholder="tu@email.com"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
-          disabled={isLoading}
+          disabled={isSubmitting}
           className="bg-card"
+          {...register("email")}
         />
       </div>
 
@@ -66,12 +65,12 @@ export function LoginForm() {
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            placeholder="••••••••"        
+          
             required
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="bg-card pr-10"
+            {...register("password")}
           />
           <button
             type="button"
@@ -83,8 +82,8 @@ export function LoginForm() {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? (
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Iniciando sesión...
