@@ -2,7 +2,6 @@
 
 import type React from "react"
 
-import { useAuth } from "@/src/domains/auth/components/auth.context"
 import { Button } from "@/src/shared/ui/button"
 import { Input } from "@/src/shared/ui/input"
 import { Label } from "@/src/shared/ui/label"
@@ -14,7 +13,7 @@ import { toast } from "sonner"
 
 export function LoginForm() {
   const router = useRouter()
-  const { login } = useAuth()
+
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -26,7 +25,7 @@ export function LoginForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    const { error } = await login(formData)
+    const error = false
 
     if (error) {
       toast.error("Error al iniciar sesión", {

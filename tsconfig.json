@@ -23,9 +23,16 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@domains/*": ["./src/domains/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@components/*": ["./src/components/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@ui/*": ["./src/shared/ui/*"],
+      "@utils": ["./src/shared/libs/utils"],
+      "@hooks/*": ["./src/shared/hooks/*"],
+      "@icons": ["./src/shared/components/icons"],
+      "@constants/*": ["./src/shared/constants/*"]
     }
   },
   "include": [

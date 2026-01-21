@@ -1,11 +1,12 @@
 "use client"
 
-import { useAuth } from "@/src/domains/auth/components/auth.context"
 import { UserIcon } from "@/src/shared/components/icons"
 import Link from "next/link"
 
 export function AppHeader() {
-  const { user } = useAuth()
+ const user = {
+  name : "fernando"
+ }
 
   return (
     <header className="sticky top-0 z-20 bg-[#2a3a4a] px-4 md:px-6 py-4">

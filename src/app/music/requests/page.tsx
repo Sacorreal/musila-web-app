@@ -1,8 +1,10 @@
 "use client"
 
 import { RequestCard } from "@/src/components/app/request-card"
-import { useAuth } from "@/src/domains/auth/components/auth.context"
+import { useAuthStore } from "@/src/domains/auth/store/useAuthStore"
+
 import { requestsService } from "@/src/domains/requests/requests.service"
+import { UserRole } from "@/src/domains/users/types"
 import type { RequestedTrack } from "@/src/lib/types"
 import { RequestIcon } from "@/src/shared/components/icons"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/shared/ui/tabs"
@@ -10,7 +12,7 @@ import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 
 export default function RequestsPage() {
-  const { user } = useAuth()
+  const { user } = useAuthStore()
   const [requests, setRequests] = useState<RequestedTrack[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -25,7 +27,7 @@ export default function RequestsPage() {
     loadRequests()
   }, [])
 
-  const isComposer = user?.role === "COMPOSER"
+  const isComposer = user?.role === UserRole.AUTOR
 
   const sentRequests = requests.filter((r) => r.requesterId === user?.id)
   const receivedRequests = requests.filter((r) => r.track?.authorId === user?.id)

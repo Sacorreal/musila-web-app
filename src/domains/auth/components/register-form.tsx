@@ -2,7 +2,6 @@
 
 import type React from "react"
 
-import { useAuth } from "@/src/domains/auth/components/auth.context"
 import { Button } from "@/src/shared/ui/button"
 import { Input } from "@/src/shared/ui/input"
 import { Label } from "@/src/shared/ui/label"
@@ -14,7 +13,7 @@ import { toast } from "sonner"
 
 export function RegisterForm() {
   const router = useRouter()
-  const { register } = useAuth()
+
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -30,7 +29,7 @@ export function RegisterForm() {
     e.preventDefault()
     setIsLoading(true)
 
-    const { error } = await register(formData)
+    const error = false
 
     if (error) {
       toast.error("Error al registrarse", {
