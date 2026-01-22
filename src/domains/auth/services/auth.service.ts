@@ -1,10 +1,8 @@
 import { LOGIN_API_URL } from '../constants/urls';
 import { LoginDTO, loginResponse } from '../types/auth.types';
 
-
 export const authService = {
   async login(loginDto: LoginDTO): Promise<string> {
-
 
     const response = await fetch(LOGIN_API_URL, {
       method: 'POST',
