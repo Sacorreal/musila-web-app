@@ -1,4 +1,4 @@
-'use client'
+
 
 import { authService } from '../services/auth.service'
 import { useAuthStore } from '../store/useAuthStore'
@@ -11,6 +11,7 @@ export function useLogin() {
 
     const login = async (dto: LoginDTO) => {
         const token = await authService.login(dto)
+
         const decoded = decodeToken(token)
 
         const now = Date.now() / 1000

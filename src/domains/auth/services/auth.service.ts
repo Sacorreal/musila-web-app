@@ -1,26 +1,24 @@
 import { LOGIN_API_URL } from '../constants/urls';
-import { LoginDTO } from '../types/auth.types';
-
+import { LoginDTO, loginResponse } from '../types/auth.types';
 
 
 export const authService = {
-  async login(loginDto: LoginDTO) {
+  async login(loginDto: LoginDTO): Promise<string> {
+
 
     const response = await fetch(LOGIN_API_URL, {
-      method: "POST",
+      method: 'POST',
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: loginDto.email,
-        password: loginDto.password,
-      }),
+      body: JSON.stringify(loginDto),
     });
 
     if (!response.ok) {
       throw new Error("Credenciales incorrectas");
     }
 
-    const { access_token } = await response.json();
-    return access_token
+    const data: loginResponse = await response.json()
+
+    return data.token
   },
 
   async register() { }

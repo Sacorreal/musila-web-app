@@ -27,3 +27,7 @@ export type AuthState = {
     setSession: (data: { user: UserJWTResponse; token: string }) => void
     clearSession: () => void
 }
+
+export interface loginResponse {
+    token: string
+}
