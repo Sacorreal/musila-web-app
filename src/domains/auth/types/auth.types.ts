@@ -21,10 +21,10 @@ export type UserJWTResponse = {
 
 export type AuthState = {
     user: UserJWTResponse | null
-    token: string | null
+
     isAuthenticated: boolean
 
-    setSession: (data: { user: UserJWTResponse; token: string }) => void
+    setSession: (data: { user: UserJWTResponse }) => void
     clearSession: () => void
 }
 
