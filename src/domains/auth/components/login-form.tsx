@@ -34,6 +34,7 @@ export function LoginForm() {
             ? error.message
             : 'Credenciales inválidas',
       })
+      reset()
     }
     
 
