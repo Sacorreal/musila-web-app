@@ -1,4 +1,4 @@
-import { UserRole } from "@domains/users/types"
+import { UserRole } from "@/src/domains/users/types/user.type"
 
 const USER_ROLE_VALUES = Object.values(UserRole) as string[]
 

@@ -1,130 +1,124 @@
 "use client"
 
-import type React from "react"
 
 import { Button } from "@/src/shared/components/UI/button"
 import { Input } from "@/src/shared/components/UI/input"
 import { Label } from "@/src/shared/components/UI/label"
-import { RadioGroup, RadioGroupItem } from "@/src/shared/components/UI/radio-group"
-import { Eye, EyeOff, Loader2, Mic, Music } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useForm } from 'react-hook-form'
 import { toast } from "sonner"
+import { CreateUserDTO } from "../../users/types/user.type"
+import { useRegisterUser } from "../hooks/useRegisterUser"
 
 export function RegisterForm() {
   const router = useRouter()
-
-  const [isLoading, setIsLoading] = useState(false)
+  const {register, handleSubmit, formState:{ isSubmitting}, reset } = useForm<CreateUserDTO>()
+  const { registerUser} = useRegisterUser()
+  
   const [showPassword, setShowPassword] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    lastName: "",
-    artisticName: "",
-    email: "",
-    password: "",
-    role: "COMPOSER" as "COMPOSER" | "INTERPRETER",
-  })
+  
+  const onSubmit = async (data: CreateUserDTO) =>{
+  
+    try {
+      await registerUser(data)
+      toast.success('Cuenta creada con éxito')
+      reset()
+      router.push('/music')
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    const error = false
-
-    if (error) {
-      toast.error("Error al registrarse", {
-        description: error,
+    } catch (error) {
+      toast.error('Error al iniciar sesión', {
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Erro al crear la cuenta',
       })
-    } else {
-      toast.success("Cuenta creada exitosamente")
-      router.push("/app")
+      reset()
     }
-
-    setIsLoading(false)
   }
 
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4">
         <Label>¿Qué tipo de artista eres?</Label>
-        <RadioGroup
-          value={formData.role}
-          onValueChange={(value) => setFormData({ ...formData, role: value as "COMPOSER" | "INTERPRETER" })}
-          className="grid grid-cols-2 gap-4"
-        >
-          <div>
-            <RadioGroupItem value="COMPOSER" id="composer" className="peer sr-only" />
-            <Label
-              htmlFor="composer"
-              className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 cursor-pointer transition-all"
-            >
-              <Music className="mb-2 h-6 w-6" />
-              <span className="font-medium">Compositor</span>
-              <span className="text-xs text-muted-foreground">Publico canciones</span>
-            </Label>
-          </div>
-          <div>
-            <RadioGroupItem value="INTERPRETER" id="interpreter" className="peer sr-only" />
-            <Label
-              htmlFor="interpreter"
-              className="flex flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 cursor-pointer transition-all"
-            >
-              <Mic className="mb-2 h-6 w-6" />
-              <span className="font-medium">Intérprete</span>
-              <span className="text-xs text-muted-foreground">Busco canciones</span>
-            </Label>
-          </div>
-        </RadioGroup>
+        {/*
+        TODO: 
+        agregar el componente select con los roles
+        */}
+      
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Nombre</Label>
+          <Label htmlFor="name">Primer nombre</Label>
           <Input
             id="name"
-            placeholder="Tu nombre"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Tu nombre"                 
             required
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="bg-card"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastName">Apellido</Label>
-          <Input
-            id="lastName"
-            placeholder="Tu apellido"
-            value={formData.lastName}
-            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-            disabled={isLoading}
-            className="bg-card"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="artisticName">Nombre artístico (opcional)</Label>
+        <Label htmlFor="artisticName">Segundo Nombre (opcional)</Label>
         <Input
-          id="artisticName"
-          placeholder="Tu nombre artístico"
-          value={formData.artisticName}
-          onChange={(e) => setFormData({ ...formData, artisticName: e.target.value })}
-          disabled={isLoading}
+          id="secondName"                  
+          disabled={isSubmitting}
           className="bg-card"
         />
       </div>
+        <div className="space-y-2">
+          <Label htmlFor="lastName">Primer Apellido</Label>
+          <Input
+            id="lastName"
+            placeholder="Tu apellido"            
+            disabled={isSubmitting}
+            className="bg-card"
+          />
+        </div>
+
+        <div className="space-y-2">
+        <Label htmlFor="secondLastName">Segundo Apellido (opcional)</Label>
+        <Input
+          id="secondLastName"      
+          type="text"            
+          disabled={isSubmitting}
+          className="bg-card"
+        />
+      </div>
+
+      
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <Label htmlFor="countryName">Código del país</Label>
+       {/*
+       TODO: agregar componente que retorne un string con bandera y codigo país
+       */}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="celphone">Número celular</Label>
+        <Input
+          id="celphone"      
+          type="text"            
+          disabled={isSubmitting}
+          className="bg-card"
+        />
+      </div>
+
+      </div> 
 
       <div className="space-y-2">
         <Label htmlFor="email">Correo electrónico</Label>
         <Input
           id="email"
           type="email"
-          placeholder="tu@email.com"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          required
-          disabled={isLoading}
+          placeholder="tu@email.com"  
+          disabled={isSubmitting}
           className="bg-card"
         />
       </div>
@@ -135,12 +129,9 @@ export function RegisterForm() {
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Mínimo 8 caracteres"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            required
-            minLength={8}
-            disabled={isLoading}
+            placeholder="Mínimo 8 caracteres"            
+            required          
+            disabled={isSubmitting}
             className="bg-card pr-10"
           />
           <button
@@ -153,8 +144,29 @@ export function RegisterForm() {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? (
+      <div className="space-y-2">
+        <Label htmlFor="password">Repetir Contraseña</Label>
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Mínimo 8 caracteres"            
+            required          
+            disabled={isSubmitting}
+            className="bg-card pr-10"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+
+      <Button type="submit" className="w-full" disabled={isSubmitting}>
+        {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             Creando cuenta...

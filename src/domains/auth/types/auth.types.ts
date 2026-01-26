@@ -1,4 +1,4 @@
-import { UserRole } from "@domains/users/types";
+import { UserRole } from "@/src/domains/users/types/user.type";
 
 export interface LoginDTO {
     email: string;
@@ -11,12 +11,14 @@ export interface TokenPayload {
     role: UserRole;
     iat: number;
     exp: number;
+    name: string
 }
 
 export type UserJWTResponse = {
     id: string
     email: string
     role: UserRole
+    name: string
 }
 
 export type AuthState = {
@@ -31,3 +33,4 @@ export type AuthState = {
 export interface loginResponse {
     token: string
 }
+

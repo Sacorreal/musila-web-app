@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { UserRoleRegister } from '@domains/users/types';
+import { UserRoleRegister } from '@/src/domains/users/types/user.type';
 
 /**
  * Schema de validación para el formulario de registro
@@ -15,6 +15,15 @@ export const registerSchema = z
         lastName: z
             .string()
             .min(1, "El apellido es obligatorio"),
+
+        secondName: z
+            .string()
+            .optional()
+        ,
+        secondLastName: z
+            .string()
+            .max(255, "El segundo apellido no puede superar los 255 caracteres")
+            .optional(),
 
         email: z
             .string()

@@ -3,7 +3,7 @@
 import { TrackCard } from "@/src/components/app/track-card"
 import { useAuth } from "@/src/domains/auth/components/auth.context"
 import { tracksService } from "@/src/domains/tracks/services/tracks.service"
-import { usersService, type UpdateUserInput } from "@/src/domains/users/users.service"
+import { usersService, type UpdateUserInput } from "@/src/domains/users/services/users.service"
 import { UserIcon } from "@/src/shared/components/Icons/icons"
 import { Button } from "@/src/shared/components/UI/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/shared/components/UI/card"

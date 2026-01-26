@@ -4,7 +4,7 @@ import { RequestCard } from "@/src/components/app/request-card"
 import { useAuthStore } from "@/src/domains/auth/store/useAuthStore"
 
 import { requestsService } from "@/src/domains/requests/requests.service"
-import { UserRole } from "@/src/domains/users/types"
+import { UserRole } from "@/src/domains/users/types/user.type"
 import { RequestIcon } from "@/src/shared/components/Icons/icons"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/shared/components/UI/tabs"
 import type { RequestedTrack } from "@/src/shared/types/shared.types"

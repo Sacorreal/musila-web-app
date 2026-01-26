@@ -1,3 +1,4 @@
+import { UserRole } from "@/src/domains/users/types/user.type"
 import {
     ChatIcon,
     DashboardIcon,
@@ -9,7 +10,6 @@ import {
     UploadIcon
 } from "@/src/shared/components/Icons/icons"
 import type { NavItems } from "@shared/types/shared.types"
-import { UserRole } from "@domains/users/types"
 
 export const ALL_ROLES = Object.values(UserRole)
 
