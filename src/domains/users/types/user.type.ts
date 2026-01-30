@@ -42,3 +42,5 @@ export type CreateUserDTO = BaseUser & OptionalUser
 export type UpdateUserDTO = Partial<CreateUserDTO>
 
 export type UserResponseDTO = Omit<User, ''>
+
+

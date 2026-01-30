@@ -46,7 +46,7 @@ export const registerSchema = z
             .string()
             .min(1, "El teléfono es obligatorio"),
 
-        role: z.nativeEnum(UserRoleRegister, {
+        rol: z.nativeEnum(UserRoleRegister, {
             errorMap: () => ({ message: "El rol es obligatorio" }),
         }),
     })
