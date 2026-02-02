@@ -10,7 +10,7 @@ import {
 } from "@shared/components/UI/select";
 import * as React from "react";
 
-import { getCountriesWithColombiaFirst } from "../utils/getCountriesWithColombiaFirst";
+import { getCountriesWithColombiaFirst } from "@domains/auth/utils/getCountriesWithColombiaFirst";
 
 export interface CountryCodeSelectProps {
   value?: string;
@@ -27,7 +27,7 @@ export function CountryCodeSelect({
 }: CountryCodeSelectProps) {
   const countriesList = React.useMemo(
     () => getCountriesWithColombiaFirst(),
-    [],
+    []
   );
 
   return (

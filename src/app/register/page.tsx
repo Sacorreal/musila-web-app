@@ -1,6 +1,6 @@
-import { RegisterForm } from "@/src/domains/auth/components/register-form"
-import { MusilaLogo } from "@/src/shared/components/Icons/icons"
-import Link from "next/link"
+import { MusilaLogo } from "@/src/shared/components/Icons/icons";
+import { UserRegisterForm } from "@domains/auth/components/register-form/RegisterForm";
+import Link from "next/link";
 
 export default function RegisterPage() {
   return (
@@ -17,7 +17,9 @@ export default function RegisterPage() {
           <blockquote className="text-lg text-muted-foreground italic">
             {`"Gracias a Músila pude grabar canciones de compositores increíbles que nunca hubiera conocido."`}
           </blockquote>
-          <p className="mt-4 font-semibold text-foreground">María González, Intérprete</p>
+          <p className="mt-4 font-semibold text-foreground">
+            María González, Intérprete
+          </p>
         </div>
       </div>
 
@@ -28,19 +30,26 @@ export default function RegisterPage() {
             <span className="text-2xl font-bold text-foreground">Músila</span>
           </Link>
 
-          <h1 className="text-3xl font-bold text-foreground mb-2">Crea tu cuenta</h1>
-          <p className="text-muted-foreground mb-8">Únete a la comunidad de compositores e intérpretes</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Crea tu cuenta
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            Únete a la comunidad de compositores e intérpretes
+          </p>
 
-          <RegisterForm />
+          <UserRegisterForm />
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
             ¿Ya tienes una cuenta?{" "}
-            <Link href="/login" className="text-primary hover:underline font-medium">
+            <Link
+              href="/login"
+              className="text-primary hover:underline font-medium"
+            >
               Inicia sesión
             </Link>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

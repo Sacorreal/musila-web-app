@@ -11,7 +11,7 @@ export interface User {
     email: string
     password: string;
     countryCode: string;
-    phone: string
+    phone: number;
     typeCitizenID: string;
     citizenID: string;
     avatar: string;
