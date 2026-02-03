@@ -43,14 +43,10 @@ export const registerSchema = z
             .min(1, "El código de país es obligatorio"),
 
         phone: z
-            .string({
-                required_error: "El teléfono es obligatorio"
-            })
-            .transform((val) => parseInt(val)),
+            .string()
+            .min(1, "El teléfono es obligatorio"),
 
-
-
-        rol: z.nativeEnum(UserRoleRegister, {
+        role: z.nativeEnum(UserRoleRegister, {
             errorMap: () => ({ message: "El rol es obligatorio" }),
         }),
     })

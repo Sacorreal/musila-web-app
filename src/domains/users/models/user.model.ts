@@ -7,11 +7,11 @@ export interface User {
     secondName: string
     lastName: string
     secondLastName: string
-    rol: UserRoleRegister
+    role: UserRoleRegister
     email: string
     password: string;
     countryCode: string;
-    phone: number;
+    phone: string;
     typeCitizenID: string;
     citizenID: string;
     avatar: string;

@@ -1,5 +1,6 @@
-import { UserRoleRegister } from "@domains/users/types/user.type";
+"use client";
 
+import { UserRoleRegister } from "@domains/users/types/user.type";
 import {
   Select,
   SelectContent,
@@ -9,20 +10,31 @@ import {
   SelectValue,
 } from "@shared/components/UI/select";
 
-export function SelectRoleUser() {
-  const roleOptions = Object.entries(UserRoleRegister).map(([key, value]) => (
-    <SelectItem value={key} key={key}>
-      {value}
-    </SelectItem>
-  ));
+interface SelectRoleUserProps {
+  value?: UserRoleRegister;
+  onValueChange?: (value: UserRoleRegister) => void;
+  disabled?: boolean;
+}
 
+export function SelectRoleUser({
+  value,
+  onValueChange,
+  disabled,
+}: SelectRoleUserProps) {
   return (
-    <Select>
-      <SelectTrigger className="w-full max-w-48">
-        <SelectValue placeholder="Selecciona un rol" />
+    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
+      <SelectTrigger>
+        <SelectValue placeholder="Selecciona tu rol" />
       </SelectTrigger>
+
       <SelectContent>
-        <SelectGroup>{roleOptions}</SelectGroup>
+        <SelectGroup>
+          {Object.values(UserRoleRegister).map((role) => (
+            <SelectItem key={role} value={role}>
+              {role}
+            </SelectItem>
+          ))}
+        </SelectGroup>
       </SelectContent>
     </Select>
   );

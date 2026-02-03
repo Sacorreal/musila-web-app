@@ -3,16 +3,9 @@
 import { Button } from "@/src/shared/components/UI/button";
 import { Input } from "@/src/shared/components/UI/input";
 import { Label } from "@/src/shared/components/UI/label";
-import { UserRoleRegister } from "@domains/users/types/user.type";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@shared/components/UI/select";
+
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,14 +17,9 @@ import {
   registerSchema,
   RegisterUsersFormValues,
 } from "../validations/registerUserSchema";
-import { CountryCodeSelect } from "./CountryCodeSelect";
+import { CountryCodeSelect } from "./register-form/CountryCodeSelect";
 
 export function RegisterForm() {
-  const roleOptions = Object.entries(UserRoleRegister).map(([key, value]) => (
-    <SelectItem value={key} key={key}>
-      {value}
-    </SelectItem>
-  ));
   const router = useRouter();
   const {
     register,
@@ -62,16 +50,7 @@ export function RegisterForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="max-w-full col-span-2">
-        <Select {...register("rol")}>
-          <SelectTrigger className="w-full max-w-48">
-            <SelectValue placeholder="Selecciona un rol" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>{roleOptions}</SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
+      <div className="max-w-full col-span-2"></div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">

@@ -13,9 +13,9 @@ export enum UserRole {
  * roles para el registro de usuario permitidos temporalmente, durante *MVP
  */
 export enum UserRoleRegister {
-  AUTOR = "Autor",
-  INTERPRETE = "Interprete",
-  CANTAUTOR = "Cantautor",
+  AUTOR = "autor",
+  INTERPRETE = "interprete",
+  CANTAUTOR = "cantautor",
 }
 
 
@@ -24,7 +24,7 @@ type BaseUser = Pick<
   | 'email'
   | 'name'
   | 'lastName'
-  | 'rol'
+  | 'role'
   | 'password'
   | 'repeatPassword'
   | 'countryCode'
