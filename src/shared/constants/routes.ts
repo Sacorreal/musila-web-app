@@ -22,14 +22,14 @@ export const navItems: NavItems = [
     },
 
     {
-        href: "/music/explore",
+        href: "/music/buscar",
         icon: SearchIcon,
         label: "Buscar",
         rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE, UserRole.INVITADO]
     },
 
     {
-        href: "/music/my-music",
+        href: "/music/mi-musica",
         icon: PlaylistIcon,
         label: "Mi Música",
         rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE, UserRole.INVITADO]
@@ -37,14 +37,14 @@ export const navItems: NavItems = [
     },
 
     {
-        href: "/app/upload",
+        href: "/app/publicar",
         icon: UploadIcon,
         label: "Publicar",
         rolAccess: [UserRole.AUTOR, UserRole.CANTAUTOR],
     },
 
     {
-        href: "/music/requests",
+        href: "/music/solicitudes",
         icon: RequestIcon,
         label: "Solicitudes",
         rolAccess: [UserRole.AUTOR, UserRole.EDITOR],
@@ -64,7 +64,7 @@ export const navItems: NavItems = [
         rolAccess: ALL_ROLES
     },
     {
-        href: "/music/guest-user",
+        href: "/music/invitar-usuario",
         icon: GuestUserIcon,
         label: "Invitar Usuario",
         rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE],
