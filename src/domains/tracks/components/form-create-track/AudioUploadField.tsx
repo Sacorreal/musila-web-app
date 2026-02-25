@@ -1,5 +1,6 @@
 "use client"
 
+import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -10,11 +11,7 @@ import {
   Pause,
 } from "lucide-react"
 
-import { Input } from "@shared/components/UI/input"
-import {
-  Field,
-  FieldLabel,
-} from "@shared/components/UI/field"
+import { Field, FieldLabel } from "@shared/components/UI/field"
 
 interface Props {
   value: File | null | undefined
@@ -28,6 +25,7 @@ export function AudioUploadField({
   error,
 }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -92,12 +90,39 @@ export function AudioUploadField({
 
   const hasFile = !!value
 
+  const handleContainerClick = () => {
+    if (!hasFile) {
+      fileInputRef.current?.click()
+    }
+  }
+
+  const handleContainerKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!hasFile) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault()
+        fileInputRef.current?.click()
+      }
+    }
+  }
+
   return (
     <Field data-invalid={!!error}>
       <FieldLabel>Audio</FieldLabel>
 
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="audio/*"
+        className="hidden"
+        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+      />
+
       <div
-        className={`relative rounded-xl border-2 border-dashed p-6 transition
+        role="button"
+        tabIndex={0}
+        onClick={handleContainerClick}
+        onKeyDown={handleContainerKeyDown}
+        className={`relative rounded-xl border-2 border-dashed p-6 transition cursor-pointer
         ${
           hasFile
             ? "border-green-500 bg-green-500/5"
@@ -106,15 +131,6 @@ export function AudioUploadField({
             : "hover:border-primary"
         }`}
       >
-        <Input
-          type="file"
-          accept="audio/*"
-          className="absolute inset-0 opacity-0 cursor-pointer"
-          onChange={(e) =>
-            onChange(e.target.files?.[0] ?? null)
-          }
-        />
-
         {!hasFile && (
           <div className="text-center space-y-2">
             <Music2 className="mx-auto w-8 h-8 text-muted-foreground" />
@@ -152,7 +168,10 @@ export function AudioUploadField({
 
                 <button
                   type="button"
-                  onClick={() => onChange(null)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onChange(null)
+                  }}
                   className="text-red-500 hover:opacity-80 transition"
                 >
                   <XCircle className="w-5 h-5" />
@@ -162,7 +181,10 @@ export function AudioUploadField({
               <div className="flex items-center gap-4">
                 <button
                   type="button"
-                  onClick={togglePlay}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    togglePlay()
+                  }}
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white"
                 >
                   {isPlaying ? (
@@ -174,7 +196,10 @@ export function AudioUploadField({
 
                 <div
                   className="flex-1 h-2 bg-muted rounded-full cursor-pointer relative"
-                  onClick={handleSeek}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleSeek(e)
+                  }}
                 >
                   <motion.div
                     className="absolute left-0 top-0 h-2 bg-primary rounded-full"

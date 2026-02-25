@@ -1,8 +1,6 @@
-'use server'
-
 import axios, { AxiosProgressEvent } from "axios"
-import { getServerApiClient } from "@/src/shared/libs/axios"
 import type { CreateTrackFormValues } from "../validations/track.schema"
+import { apiURLs } from "@/src/shared/constants/urls"
 
 interface CreateTrackOptions {
   onProgress?: (percentage: number) => void
@@ -19,26 +17,28 @@ export async function createTrackRequest(
 
   const { audio, coverImage, authorsIds, ...dto } = data
 
-  // 🔹 Campos simples
+  // Campos simples
   Object.entries(dto).forEach(([key, value]) => {
-    formData.append(key, String(value))
+    if (value !== undefined && value !== null) {
+      formData.append(key, String(value))
+    }
   })
 
-  // 🔹 Arrays
+  // Arrays
   authorsIds.forEach((id) => {
     formData.append("authorsIds", id)
   })
 
-  // 🔹 Files
+  // Files
   formData.append("audio", audio)
 
   if (coverImage) {
     formData.append("coverImage", coverImage)
   }
-  const apiClient = await getServerApiClient()
 
-  const response = await apiClient.post("/tracks", formData, {
+  const response = await axios.post(apiURLs.tracks.all, formData, {
     signal,
+    withCredentials: true,
     onUploadProgress: (progressEvent: AxiosProgressEvent) => {
       if (!progressEvent.total) return
 

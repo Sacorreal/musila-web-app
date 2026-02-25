@@ -8,9 +8,9 @@ const externalIdSchema = z.object({
 
 export const createTrackSchema = z.object({
   title: z.string().min(1, 'El título es obligatorio'),
-  
-  // Validamos que sea un UUID v4 como exige el DTO
-  genreId: z.string().uuid('Debes seleccionar un género musical válido'),
+
+  // Para la UI basta con que haya un género seleccionado (id string)
+  genreId: z.string().min(1, 'Debes seleccionar un género musical'),
   
   subGenre: z.string().optional(), 
   
@@ -18,8 +18,11 @@ export const createTrackSchema = z.object({
   
   lyric: z.string().min(1, 'La letra es obligatoria'), 
   
-  // Exigimos un array de strings (UUIDs) y al menos 1 elemento
-  authorsIds: z.array(z.string().uuid('ID de autor inválido')).min(1, 'Debe haber al menos un autor seleccionado'),
+  // IDs de autores (opcional en la UI; el backend puede inferir el autor principal)
+  authorsIds: z
+    .array(z.string().min(1, 'ID de autor inválido'))
+    .optional()
+    .default([]),
   
   isAvailable: z.boolean().optional().default(true),
   

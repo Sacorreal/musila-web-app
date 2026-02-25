@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2, UserCircle } from 'lucide-react';
 import { createTrackSchema, type CreateTrackFormValues } from '../validations/track.schema';
 import { toast } from "sonner";
-import { AudioUploadField } from '../components/form-create-track/AudioUploadField';
+import { AudioUploadField } from './form-create-track/AudioUploadField';
 import { useRouter } from "next/navigation";
 
 
@@ -32,7 +32,7 @@ import {
 
 // Componentes Dinámicos
 import { GenreSelector } from '@domains/musical-genre/components/GenreSelector';
-import { LanguageSelector } from '../components/form-create-track/LanguageSelector';
+import { LanguageSelector } from './form-create-track/LanguageSelector';
 
 export function CreateTrackForm() {
   const router = useRouter();
@@ -55,20 +55,34 @@ export function CreateTrackForm() {
   });
 
 
-  const onSubmit = async (data: CreateTrackFormValues) => {
-    try {
-      console.log("data al backend", data)
-      setProgress(0)
-      useCreateTrackMutation.mutate(data)
-      toast.success("Canción publicada con éxito!");
-      reset();
-      router.push("/music");
-    } catch (error) {
-      toast.error("Error al publicar la canción", {
-        description:
-          error instanceof Error ? error.message : "Error inesperado",
-      });
+  const onSubmit = (data: CreateTrackFormValues) => {
+    if (!user?.id) {
+      toast.error("Debes iniciar sesión para publicar una canción.");
+      return;
     }
+    const payload: CreateTrackFormValues = {
+      ...data,
+      authorsIds:
+        data.authorsIds && data.authorsIds.length > 0
+          ? data.authorsIds
+          : [user.id],
+    };
+    console.log("Datos listos para enviar al backend:", payload);
+    setProgress(0);
+
+    useCreateTrackMutation.mutate(payload, {
+      onSuccess: () => {
+        toast.success("Canción publicada con éxito!");
+        reset();
+        router.push("/music");
+      },
+      onError: (error) => {
+        toast.error("Error al publicar la canción", {
+          description:
+            error instanceof Error ? error.message : "Error inesperado",
+        });
+      },
+    });
   };
 
   const isSubmitting = useCreateTrackMutation.isPending;
@@ -76,7 +90,13 @@ export function CreateTrackForm() {
   return (
 
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(
+        onSubmit,
+        (errors) => {
+          console.log("Errores de validación del formulario de track:", errors);
+          toast.error("Revisa los campos obligatorios del formulario.");
+        }
+      )}
       className="mx-auto max-w-6xl px-6 py-12"
     >
       <FieldGroup>
