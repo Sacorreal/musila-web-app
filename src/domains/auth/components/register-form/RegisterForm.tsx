@@ -7,7 +7,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { useRegisterUser } from "../../hooks/useRegisterUser";
+
 import { CountryCodeSelect } from "./CountryCodeSelect";
 import { SelectRoleUser } from "./SelectRoleUser";
 
@@ -24,11 +24,12 @@ import {
   registerSchema,
   RegisterUsersFormValues,
 } from "@domains/auth/validations/registerUserSchema";
+import { useAuth } from "../../hooks/useAuth";
 
 export function UserRegisterForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const { registerUser } = useRegisterUser();
+  const { registerUser} = useAuth()
 
   const {
     handleSubmit,
@@ -38,6 +39,14 @@ export function UserRegisterForm() {
   } = useForm<RegisterUsersFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      email: '',
+      lastName: '',
+      name: '',
+      password: '',
+      phone: '',
+      repeatPassword: '',
+      secondLastName: '',
+      secondName: '',
       countryCode: "+57",
     },
   });

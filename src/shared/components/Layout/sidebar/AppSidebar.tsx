@@ -8,7 +8,7 @@ import { useLogout } from '@/src/domains/auth/hooks/useLogout'
 import { cn } from '@/src/shared/libs/cn'
 import type { MenuRoute } from '@shared/types/shared.types'
 import { navItems } from "../../../constants/routes"
-import { hasMenuAccess } from '../../../utils/hasMenuAccess'
+import { hasMenuAccess } from '../../../libs/hasMenuAccess'
 import { SidebarLogo } from './SidebarLogo'
 import { SidebarNav } from './SidebarNav'
 import { SidebarToggle } from './SidebarToggle'

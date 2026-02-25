@@ -1,3 +1,4 @@
+
 import { PlayerProvider } from "@/src/domains/player/player.context"
 import { Toaster } from "@/src/shared/components/UI/sonner"
 import { Analytics } from "@vercel/analytics/next"
@@ -5,6 +6,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import type React from "react"
 import "./globals.css"
+import { Providers } from "../shared/components/Layout/provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -46,11 +48,13 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark">
       <body className={`${inter.className} font-sans antialiased`}>
+        <Providers>
         <PlayerProvider>
           {children}
           <Toaster position="bottom-right" />
         </PlayerProvider>
         <Analytics />
+        </Providers>
       </body>
     </html>
   )

@@ -11,10 +11,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useLogin } from "../../hooks/useLogin";
 import type { LoginDTO } from "../../types/auth.types";
+import { useAuth } from "../../hooks/useAuth";
 
 export function LoginForm() {
   const router = useRouter();
-  const { login } = useLogin();
+  const { login} = useAuth()
   const [showPassword, setShowPassword] = useState(false);
   const {
     register,

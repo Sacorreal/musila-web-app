@@ -9,3 +9,8 @@ export type UpdateTrackDTO = Partial<Track>
 
 export type TrackResponseDTO = Omit<Track, 'id'>
 
+export interface Language {
+    code: string; // ej: 'es', 'en'
+    label: string; // ej: 'Español', 'Inglés'
+  }
+
