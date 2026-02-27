@@ -2,7 +2,7 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@shared/components/UI/select';
 import { Loader2 } from 'lucide-react';
-import { useLanguages } from '@domains/tracks/hooks/useLanguages';
+import { useLanguages } from '@/src/domains/tracks/hooks/use-languages';
 
 interface LanguageSelectorProps {
   value?: string;

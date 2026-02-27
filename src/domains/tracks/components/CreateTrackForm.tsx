@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 // Stores & Hooks
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
-import { useCreateTrack } from '@domains/tracks/hooks/useCreateTrack';
+import { useCreateTrack } from '@/src/domains/tracks/hooks/use-create-track';
 
 // Validations
 import { createTrackSchema, type CreateTrackFormValues } from '../../validations/track.schema';

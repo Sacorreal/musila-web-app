@@ -19,8 +19,7 @@ export async function requestPresignedUrls(
       {
         folder: f.folder,
         fileType: f.file.type,
-      },
-      { withCredentials: true }
+      }
     );
 
     // 2. Inyectamos el 'field' a la respuesta del backend para no perder la referencia

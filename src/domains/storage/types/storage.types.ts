@@ -22,8 +22,11 @@ export interface UploadableFile {
     DOCUMENTS = 'documents',
   }
 
-  export interface UploadResult {
-    [field: string]: string
-  }
+export interface UploadedFileInfo {
+  field: string;
+  key: string;
+  publicUrl: string;
+}
+
 
   export type UploadField = "audio" | "cover" | "avatar" | "document";

@@ -1,5 +1,5 @@
 
-import { PlayerProvider } from "@/src/domains/player/player.context"
+
 import { Toaster } from "@/src/shared/components/UI/sonner"
 import { Analytics } from "@vercel/analytics/next"
 import type { Metadata, Viewport } from "next"
@@ -49,10 +49,10 @@ export default function RootLayout({
     <html lang="es" className="dark">
       <body className={`${inter.className} font-sans antialiased`}>
         <Providers>
-        <PlayerProvider>
+        
           {children}
           <Toaster position="bottom-right" />
-        </PlayerProvider>
+        
         <Analytics />
         </Providers>
       </body>

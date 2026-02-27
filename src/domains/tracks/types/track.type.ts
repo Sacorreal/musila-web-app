@@ -1,10 +1,3 @@
-import { Track } from "../models/track.model";
-
-
-export type UpdateTrackDTO = Partial<Track>
-
-export type TrackResponseDTO = Omit<Track, 'id'>
-
 export interface Language {
     code: string; // ej: 'es', 'en'
     label: string; // ej: 'Español', 'Inglés'
@@ -23,4 +16,14 @@ export interface CreateTrackPayload {
   audioUrl: string;
   coverKey?: string;
   coverUrl?: string; 
+}
+
+export interface TrackSummary {
+  id: string
+  title: string
+  coverUrl?: string
+  audioUrl?: string
+  genre: string
+  isAvailable: boolean
+  isGospel: boolean
 }
