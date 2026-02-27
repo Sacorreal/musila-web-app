@@ -3,7 +3,11 @@ import { BASE_API_URL } from '@shared/constants/env';
 export const apiURLs = {
   auth: {
     login: `${BASE_API_URL}/auth/login` as const,
-    register: `${BASE_API_URL}/auth/register` as const,
+    register: '/auth/register' as const,
+  },
+  storage: {
+    presignedUrls: '/storage/upload-url' as const,
+    deleteBatch: '/storage/delete-batch' as const
   },
   languages: {
     all: `${BASE_API_URL}/languages` as const,
@@ -13,7 +17,7 @@ export const apiURLs = {
     byId: (id: string) => `${BASE_API_URL}/musical-genre/${id}` as const,
   },
   tracks: {
-    all: `${BASE_API_URL}/tracks` as const,
+    all: '/tracks' as const,
     search: `${BASE_API_URL}/tracks/search` as const,
     byId: (id: string) => `${BASE_API_URL}/tracks/${id}` as const,
   },

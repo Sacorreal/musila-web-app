@@ -4,7 +4,7 @@ import { useAuthStore } from '@domains/auth/store/useAuthStore'
 import { usePathname } from 'next/navigation'
 import { useMemo, useState } from 'react'
 
-import { useLogout } from '@/src/domains/auth/hooks/useLogout'
+import { useAuth } from '@domains/auth/hooks/useAuth'
 import { cn } from '@/src/shared/libs/cn'
 import type { MenuRoute } from '@shared/types/shared.types'
 import { navItems } from "../../../constants/routes"
@@ -19,7 +19,7 @@ export function AppSidebar() {
   const [isOpen, setIsOpen] = useState(false)
 
   const { user} = useAuthStore()
-  const {logout} = useLogout()
+  const {logout} = useAuth()
 
   const allowedNavItems = useMemo(
     () => navItems.filter((item: MenuRoute) => hasMenuAccess(user?.role, item.rolAccess)),

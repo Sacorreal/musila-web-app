@@ -9,7 +9,7 @@ import { loginRequest, registerUserRequest } from '../services/auth.service';
 
 import type { LoginDTO } from '../types/auth.types';
 import type { CreateUserDTO } from '@domains/users/types/user.type';
-import { createSession, deleteCookie } from '../utils/authActions';
+import {  deleteCookie } from '../utils/authActions';
 
 // Utilidad nativa para leer cookies en el cliente sin librerías extra
 const getClientSideCookie = (name: string) => {
@@ -52,12 +52,9 @@ export function useAuth() {
 
         try {
             // 1. Petición al Backend
-            const token = await registerUserRequest(dto)
+            const token = await registerUserRequest(dto)          
       
-            // 2. Guardar en Cookie vía Server Action
-            await createSession(token)
-      
-            // 3. Actualizar Estado Global (Zustand)
+            // 2. Actualizar Estado Global (Zustand)
             processToken(token);
             
           } catch (error: any) {

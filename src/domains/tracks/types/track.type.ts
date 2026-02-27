@@ -1,9 +1,5 @@
 import { Track } from "../models/track.model";
 
-export type CreateTrackDTO = Pick<
-    Track,
-    'id'
->
 
 export type UpdateTrackDTO = Partial<Track>
 
@@ -14,3 +10,17 @@ export interface Language {
     label: string; // ej: 'Español', 'Inglés'
   }
 
+export interface CreateTrackPayload {
+  title: string;
+  genreId: string;
+  subGenre?: string;
+  language: string;
+  lyric: string;
+  authorsIds: string[];
+  isAvailable?: boolean;
+  isGospel: boolean;
+  audioKey: string;
+  audioUrl: string;
+  coverKey?: string;
+  coverUrl?: string; 
+}
