@@ -1,4 +1,4 @@
-import { UserRole } from "@/src/domains/users/types/user.type"
+import { UserRole } from "@/src/domains/users/types/user.types"
 import {
     ChatIcon,
     DashboardIcon,

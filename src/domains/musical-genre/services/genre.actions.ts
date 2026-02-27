@@ -1,6 +1,6 @@
 'use server'
 
-import type { MusicalGenre } from '../types/musical-genre.type';
+import type { MusicalGenre } from '../types/musical-genre.types';
 import { apiURLs } from '@/src/shared/constants/urls';
 
 

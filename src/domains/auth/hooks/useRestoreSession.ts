@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useAuthStore } from '../store/useAuthStore'
-import { decodeToken } from '../utils/decodeToken'
+import { useAuthStore } from '../store/use-auth-store'
+import { decodeToken } from '../utils/decode-token'
 
 export function useRestoreSession() {
     const { token, clearSession } = useAuthStore()

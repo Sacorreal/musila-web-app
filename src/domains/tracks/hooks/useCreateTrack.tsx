@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createTrackRequest } from '@domains/tracks/services/tracks.service';
+import { createTrackRequest } from '@/src/domains/tracks/services/tracks.client';
 import type { CreateTrackFormValues } from '@domains/tracks/validations/track.schema';
-import {queryKeys } from '@shared/constants/queryKeys'
+import {queryKeys } from '@/src/shared/constants/query-keys'
 
 export function useCreateTrack() {
   const queryClient = useQueryClient();

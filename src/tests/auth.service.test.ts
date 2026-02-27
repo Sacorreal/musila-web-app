@@ -1,4 +1,4 @@
-import { loginRequest } from '@domains/auth/services/auth.service'
+import { loginRequest } from '@/src/domains/auth/services/auth.actions'
 import { LoginDTO } from '@domains/auth/types/auth.types'
 
 // Mock de next/headers

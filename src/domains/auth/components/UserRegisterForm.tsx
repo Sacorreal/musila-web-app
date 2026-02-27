@@ -23,8 +23,8 @@ import {
 import {
   registerSchema,
   RegisterUsersFormValues,
-} from "@domains/auth/validations/registerUserSchema";
-import { useAuth } from "../../hooks/useAuth";
+} from "@/src/domains/auth/validations/register-user-schema";
+import { useAuth } from "../hooks/use-auth";
 
 export function UserRegisterForm() {
   const router = useRouter();

@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { CreateTrackFormValues } from "../validations/track.schema"
-import { createTrackRequest } from "../services/tracks.service"
-import { queryKeys} from '@shared/constants/queryKeys'
+import { createTrackRequest } from "../services/tracks.client"
+import { queryKeys} from '@/src/shared/constants/query-keys'
 
 export const useTrack = ( setProgress: (n: number) => void,) => {
     const useCreateTrackMutation = useMutation({

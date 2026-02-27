@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { UserRoleRegister } from '@/src/domains/users/types/user.type';
+import { UserRoleRegister } from '@/src/domains/users/types/user.types';
 
 /**
  * Schema de validación para el formulario de registro

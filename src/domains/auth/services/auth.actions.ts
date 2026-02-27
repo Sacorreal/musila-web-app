@@ -1,5 +1,5 @@
 'use server'
-import type { CreateUserDTO } from '@domains/users/types/user.type';
+import type { CreateUserDTO } from '@/src/domains/users/types/user.types';
 import { cookies } from 'next/headers';
 
 import { LoginDTO, loginResponse } from '../types/auth.types';

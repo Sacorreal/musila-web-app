@@ -1,6 +1,6 @@
 'use client'
 
-import { UserRole } from '@/src/domains/users/types/user.type'
+import { UserRole } from '@/src/domains/users/types/user.types'
 import { Button } from '@/src/shared/components/UI/button'
 import { LogOut } from 'lucide-react'
 

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { queryKeys } from '@shared/constants/queryKeys'; 
-import { fetchLanguages} from '@domains/tracks/services/languages.service'
+import { queryKeys } from '@/src/shared/constants/query-keys'; 
+import { fetchLanguages} from '@/src/domains/tracks/services/languages.actions'
 
 
 export function useLanguages() {

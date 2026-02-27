@@ -1,10 +1,10 @@
 'use client'
 
-import { useAuthStore } from '@domains/auth/store/useAuthStore'
+import { useAuthStore } from '@/src/domains/auth/store/use-auth-store'
 import { usePathname } from 'next/navigation'
 import { useMemo, useState } from 'react'
 
-import { useAuth } from '@domains/auth/hooks/useAuth'
+import { useAuth } from '@/src/domains/auth/hooks/use-auth'
 import { cn } from '@/src/shared/libs/cn'
 import type { MenuRoute } from '@shared/types/shared.types'
 import { navItems } from "../../../constants/routes"

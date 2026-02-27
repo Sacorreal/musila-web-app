@@ -10,7 +10,7 @@ import {
 } from "@shared/components/UI/select";
 import * as React from "react";
 
-import { getCountriesWithColombiaFirst } from "@domains/auth/utils/getCountriesWithColombiaFirst";
+import { getCountriesWithColombiaFirst } from "@/src/domains/auth/utils/get-countries";
 
 export interface CountryCodeSelectProps {
   value?: string; // "+57"

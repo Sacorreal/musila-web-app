@@ -1,5 +1,5 @@
 import { MusilaLogo } from "@/src/shared/components/Icons/icons";
-import { UserRegisterForm } from "@domains/auth/components/register-form/RegisterForm";
+import { UserRegisterForm } from "@/src/domains/auth/components/UserRegisterForm";
 import Link from "next/link";
 
 export default function RegisterPage() {

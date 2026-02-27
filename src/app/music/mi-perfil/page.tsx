@@ -2,7 +2,7 @@
 
 import { TrackCard } from "@/src/components/app/track-card"
 import { useAuth } from "@/src/domains/auth/components/auth.context"
-import { tracksService } from "@/src/domains/tracks/services/tracks.service"
+import { tracksService } from "@/src/domains/tracks/services/tracks.client"
 import { usersService, type UpdateUserInput } from "@/src/domains/users/services/users.service"
 import { UserIcon } from "@/src/shared/components/Icons/icons"
 import { Button } from "@/src/shared/components/UI/button"

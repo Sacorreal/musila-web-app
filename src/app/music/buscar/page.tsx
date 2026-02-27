@@ -3,7 +3,7 @@
 import { AddToPlaylistDialog } from "@/src/components/app/add-to-playlist-dialog"
 import { RequestUsageDialog } from "@/src/components/app/request-usage-dialog"
 import { TrackCard } from "@/src/components/app/track-card"
-import { tracksService } from "@/src/domains/tracks/services/tracks.service"
+import { tracksService } from "@/src/domains/tracks/services/tracks.client"
 import { Button } from "@/src/shared/components/UI/button"
 import type { MusicalGenre, Track } from "@/src/shared/types/shared.types"
 import { Loader2 } from "lucide-react"

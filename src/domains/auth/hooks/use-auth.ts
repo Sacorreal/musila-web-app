@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useCallback } from 'react';
-import { useAuthStore } from '../store/useAuthStore';
-import { decodeToken } from '../utils/decodeToken';
-import { loginRequest, registerUserRequest } from '../services/auth.service';
+import { useAuthStore } from '../store/use-auth-store';
+import { decodeToken } from '../utils/decode-token';
+import { loginRequest, registerUserRequest } from '../services/auth.actions';
 
 
 
 import type { LoginDTO } from '../types/auth.types';
-import type { CreateUserDTO } from '@domains/users/types/user.type';
-import {  deleteCookie } from '../utils/authActions';
+import type { CreateUserDTO } from '@/src/domains/users/types/user.types';
+import {  deleteCookie } from '../utils/auth.utils';
 
 // Utilidad nativa para leer cookies en el cliente sin librerías extra
 const getClientSideCookie = (name: string) => {

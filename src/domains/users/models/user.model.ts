@@ -1,4 +1,4 @@
-import { UserRoleRegister } from '@/src/domains/users/types/user.type';
+import { UserRoleRegister } from '@/src/domains/users/types/user.types';
 
 export interface User {
 

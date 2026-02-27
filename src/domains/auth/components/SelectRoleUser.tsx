@@ -1,6 +1,6 @@
 "use client";
 
-import { UserRoleRegister } from "@domains/users/types/user.type";
+import { UserRoleRegister } from "@/src/domains/users/types/user.types";
 import {
   Select,
   SelectContent,

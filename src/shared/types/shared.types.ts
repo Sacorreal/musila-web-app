@@ -1,4 +1,4 @@
-import type { UserRole } from '@/src/domains/users/types/user.type'
+import type { UserRole } from '@/src/domains/users/types/user.types'
 import type { ComponentType } from "react"
 
 

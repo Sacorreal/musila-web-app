@@ -1,4 +1,4 @@
-import { LoginForm } from "@/src/domains/auth/components/login-form/login-form";
+import { LoginForm } from "@/src/domains/auth/components/LoginForm";
 import { MusilaLogo } from "@/src/shared/components/Icons/icons";
 import Link from "next/link";
 

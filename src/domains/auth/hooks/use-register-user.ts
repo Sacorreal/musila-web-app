@@ -1,9 +1,9 @@
-import { CreateUserDTO } from '@domains/users/types/user.type'
-import { useAuthStore } from '../store/useAuthStore'
+import { CreateUserDTO } from '@/src/domains/users/types/user.types'
+import { useAuthStore } from '../store/use-auth-store'
 
-import { decodeToken } from '../utils/decodeToken'
+import { decodeToken } from '../utils/decode-token'
 
-import { registerUserRequest } from '../services/auth.service'
+import { registerUserRequest } from '../services/auth.actions'
 
 export function useRegisterUser() {
 

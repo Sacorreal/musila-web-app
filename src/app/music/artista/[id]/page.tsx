@@ -3,7 +3,7 @@
 import { AddToPlaylistDialog } from "@/src/components/app/add-to-playlist-dialog"
 import { RequestUsageDialog } from "@/src/components/app/request-usage-dialog"
 import { TrackCard } from "@/src/components/app/track-card"
-import { tracksService } from "@/src/domains/tracks/services/tracks.service"
+import { tracksService } from "@/src/domains/tracks/services/tracks.client"
 import { usersService } from "@/src/domains/users/services/users.service"
 import { UserIcon } from "@/src/shared/components/Icons/icons"
 import type { Track, User } from "@/src/shared/types/shared.types"

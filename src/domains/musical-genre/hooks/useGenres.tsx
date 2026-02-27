@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchGenresRequest } from '../services/genre.service';
-import { queryKeys } from '@/src/shared/constants/queryKeys';
+import { fetchGenresRequest } from '../services/genre.actions';
+import { queryKeys } from '@/src/shared/constants/query-keys';
 
 export function useGenres() {
   return useQuery({

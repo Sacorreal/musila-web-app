@@ -7,7 +7,7 @@ import { UserCircle, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { toast } from "sonner";
 
 // Stores & Hooks
-import { useAuthStore } from '@domains/auth/store/useAuthStore';
+import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 import { useCreateTrack } from '@domains/tracks/hooks/useCreateTrack';
 
 // Validations

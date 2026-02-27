@@ -3,7 +3,7 @@
 import { AddToPlaylistDialog } from "@/src/components/app/add-to-playlist-dialog"
 import { RequestUsageDialog } from "@/src/components/app/request-usage-dialog"
 import { usePlayer } from "@/src/domains/player/player.context"
-import { tracksService } from "@/src/domains/tracks/services/tracks.service"
+import { tracksService } from "@/src/domains/tracks/services/tracks.client"
 import { HeartIcon, MusicNoteIcon, PauseIcon, PlayIcon, PlusIcon, RequestIcon } from "@/src/shared/components/Icons/icons"
 import { Button } from "@/src/shared/components/UI/button"
 import type { Track } from "@/src/shared/types/shared.types"
