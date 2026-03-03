@@ -2,17 +2,17 @@
 
 import { usePlayer } from "@/src/domains/player/player.context"
 import {
-  HeartIcon,
-  MusicNoteIcon,
-  PauseIcon,
-  PlayIcon,
-  PlaylistIcon,
-  SkipNextIcon,
-  SkipPreviousIcon,
-  VolumeIcon,
-} from "@/src/shared/components/icons"
-import { Button } from "@/src/shared/ui/button"
-import { Slider } from "@/src/shared/ui/slider"
+    HeartIcon,
+    MusicNoteIcon,
+    PauseIcon,
+    PlayIcon,
+    PlaylistIcon,
+    SkipNextIcon,
+    SkipPreviousIcon,
+    VolumeIcon,
+} from "@/src/shared/components/Icons/icons"
+import { Button } from "@/src/shared/components/UI/button"
+import { Slider } from "@/src/shared/components/UI/slider"
 import { MoreHorizontal, Repeat, Shuffle } from "lucide-react"
 import { useState } from "react"
 

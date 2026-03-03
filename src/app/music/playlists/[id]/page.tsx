@@ -3,8 +3,7 @@
 import { TrackListItem } from "@/src/components/app/track-list-item"
 import { usePlayer } from "@/src/domains/player/player.context"
 import { playlistsService } from "@/src/domains/playlists/playlists.service"
-import type { Playlist, Track } from "@/src/lib/types"
-import { MoreIcon, PlayIcon, PlaylistIcon } from "@/src/shared/components/icons"
+import { MoreIcon, PlayIcon, PlaylistIcon } from "@/src/shared/components/Icons/icons"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,9 +13,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/src/shared/ui/alert-dialog"
-import { Button } from "@/src/shared/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/src/shared/ui/dropdown-menu"
+} from "@/src/shared/components/UI/alert-dialog"
+import { Button } from "@/src/shared/components/UI/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/src/shared/components/UI/dropdown-menu"
+import type { Playlist, Track } from "@/src/shared/types/shared.types"
 import { Loader2, Pencil, Trash2 } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"

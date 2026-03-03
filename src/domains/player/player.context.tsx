@@ -1,152 +1,134 @@
-"use client"
+"use client";
 
-import type { Track } from "@/src/lib/types"
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react"
+import React, { createContext, useContext, useMemo, useState, useCallback } from "react";
+import type { Track } from "@/src/shared/types/shared.types";
 
-interface PlayerContextType {
-  currentTrack: Track | null
-  isPlaying: boolean
-  currentTime: number
-  duration: number
-  volume: number
-  queue: Track[]
-  play: (track: Track) => void
-  pause: () => void
-  resume: () => void
-  stop: () => void
-  seek: (time: number) => void
-  setVolume: (volume: number) => void
-  addToQueue: (track: Track) => void
-  playNext: () => void
-  playPrevious: () => void
-  setQueue: (tracks: Track[]) => void
-}
+type PlayerContextValue = {
+  currentTrack: Track | null;
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  volume: number;
+  queue: Track[];
+  play: (track: Track) => void;
+  pause: () => void;
+  resume: () => void;
+  seek: (time: number) => void;
+  setVolume: (volume: number) => void;
+  playNext: () => void;
+  playPrevious: () => void;
+  setQueue: (tracks: Track[]) => void;
+};
 
-const PlayerContext = createContext<PlayerContextType | undefined>(undefined)
+const noop = () => {};
 
-export function PlayerProvider({ children }: { children: ReactNode }) {
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-  const [volume, setVolumeState] = useState(0.8)
-  const [queue, setQueue] = useState<Track[]>([])
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+const defaultValue: PlayerContextValue = {
+  currentTrack: null,
+  isPlaying: false,
+  currentTime: 0,
+  duration: 0,
+  volume: 1,
+  queue: [],
+  play: noop,
+  pause: noop,
+  resume: noop,
+  seek: noop,
+  setVolume: noop,
+  playNext: noop,
+  playPrevious: noop,
+  setQueue: noop,
+};
 
-  useEffect(() => {
-    audioRef.current = new Audio()
-    audioRef.current.volume = volume
+const PlayerContext = createContext<PlayerContextValue>(defaultValue);
 
-    const audio = audioRef.current
-
-    const handleTimeUpdate = () => setCurrentTime(audio.currentTime)
-    const handleDurationChange = () => setDuration(audio.duration)
-    const handleEnded = () => {
-      setIsPlaying(false)
-      playNext()
-    }
-
-    audio.addEventListener("timeupdate", handleTimeUpdate)
-    audio.addEventListener("durationchange", handleDurationChange)
-    audio.addEventListener("ended", handleEnded)
-
-    return () => {
-      audio.removeEventListener("timeupdate", handleTimeUpdate)
-      audio.removeEventListener("durationchange", handleDurationChange)
-      audio.removeEventListener("ended", handleEnded)
-      audio.pause()
-    }
-  }, [])
+export function PlayerProvider({ children }: { children: React.ReactNode }) {
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolumeState] = useState(1);
+  const [queue, setQueueState] = useState<Track[]>([]);
 
   const play = useCallback((track: Track) => {
-    if (audioRef.current) {
-      audioRef.current.src = track.audioUrl
-      audioRef.current.play()
-      setCurrentTrack(track)
-      setIsPlaying(true)
-    }
-  }, [])
+    setCurrentTrack(track);
+    setIsPlaying(true);
+    setCurrentTime(0);
+  }, []);
 
   const pause = useCallback(() => {
-    audioRef.current?.pause()
-    setIsPlaying(false)
-  }, [])
+    setIsPlaying(false);
+  }, []);
 
   const resume = useCallback(() => {
-    audioRef.current?.play()
-    setIsPlaying(true)
-  }, [])
-
-  const stop = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.currentTime = 0
+    if (currentTrack) {
+      setIsPlaying(true);
     }
-    setIsPlaying(false)
-    setCurrentTrack(null)
-  }, [])
+  }, [currentTrack]);
 
   const seek = useCallback((time: number) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = time
-    }
-  }, [])
+    setCurrentTime(time);
+  }, []);
 
-  const setVolume = useCallback((newVolume: number) => {
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume
-    }
-    setVolumeState(newVolume)
-  }, [])
-
-  const addToQueue = useCallback((track: Track) => {
-    setQueue((prev) => [...prev, track])
-  }, [])
+  const setVolume = useCallback((value: number) => {
+    setVolumeState(Math.min(1, Math.max(0, value)));
+  }, []);
 
   const playNext = useCallback(() => {
-    if (queue.length > 0) {
-      const [nextTrack, ...rest] = queue
-      setQueue(rest)
-      play(nextTrack)
-    }
-  }, [queue, play])
+    if (!queue.length) return;
+    const [next, ...rest] = queue;
+    setCurrentTrack(next);
+    setQueueState(rest);
+    setIsPlaying(true);
+    setCurrentTime(0);
+  }, [queue]);
 
   const playPrevious = useCallback(() => {
-    if (audioRef.current && currentTime > 3) {
-      audioRef.current.currentTime = 0
-    }
-  }, [currentTime])
+    // Implementación mínima: no manejamos historial por ahora.
+  }, []);
 
-  return (
-    <PlayerContext.Provider
-      value={{
-        currentTrack,
-        isPlaying,
-        currentTime,
-        duration,
-        volume,
-        queue,
-        play,
-        pause,
-        resume,
-        stop,
-        seek,
-        setVolume,
-        addToQueue,
-        playNext,
-        playPrevious,
-        setQueue,
-      }}
-    >
-      {children}
-    </PlayerContext.Provider>
-  )
+  const setQueue = useCallback((tracks: Track[]) => {
+    setQueueState(tracks ?? []);
+  }, []);
+
+  const value: PlayerContextValue = useMemo(
+    () => ({
+      currentTrack,
+      isPlaying,
+      currentTime,
+      duration,
+      volume,
+      queue,
+      play,
+      pause,
+      resume,
+      seek,
+      setVolume,
+      playNext,
+      playPrevious,
+      setQueue,
+    }),
+    [
+      currentTrack,
+      isPlaying,
+      currentTime,
+      duration,
+      volume,
+      queue,
+      play,
+      pause,
+      resume,
+      seek,
+      setVolume,
+      playNext,
+      playPrevious,
+      setQueue,
+    ],
+  );
+
+  return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
 }
 
-export function usePlayer() {
-  const context = useContext(PlayerContext)
-  if (!context) {
-    throw new Error("usePlayer must be used within a PlayerProvider")
-  }
-  return context
+export function usePlayer(): PlayerContextValue {
+  return useContext(PlayerContext);
 }
+

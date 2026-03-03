@@ -3,9 +3,8 @@
 import type React from "react"
 
 import { requestsService } from "@/src/domains/requests/requests.service"
-import type { Track } from "@/src/lib/types"
-import { MusicNoteIcon } from "@/src/shared/components/icons"
-import { Button } from "@/src/shared/ui/button"
+import { MusicNoteIcon } from "@/src/shared/components/Icons/icons"
+import { Button } from "@/src/shared/components/UI/button"
 import {
   Dialog,
   DialogContent,
@@ -13,9 +12,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/src/shared/ui/dialog"
-import { Label } from "@/src/shared/ui/label"
-import { Textarea } from "@/src/shared/ui/textarea"
+} from "@/src/shared/components/UI/dialog"
+import { Label } from "@/src/shared/components/UI/label"
+import { Textarea } from "@/src/shared/components/UI/textarea"
+import type { Track } from "@/src/shared/types/shared.types"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"

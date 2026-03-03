@@ -1,10 +1,9 @@
 "use client"
 
 import { requestsService } from "@/src/domains/requests/requests.service"
-import type { RequestedTrack } from "@/src/lib/types"
-import { MusicNoteIcon, UserIcon } from "@/src/shared/components/icons"
-import { Badge } from "@/src/shared/ui/badge"
-import { Button } from "@/src/shared/ui/button"
+import { MusicNoteIcon, UserIcon } from "@/src/shared/components/Icons/icons"
+import { Badge } from "@/src/shared/components/UI/badge"
+import { Button } from "@/src/shared/components/UI/button"
 import {
   Dialog,
   DialogContent,
@@ -12,9 +11,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/src/shared/ui/dialog"
-import { Label } from "@/src/shared/ui/label"
-import { Textarea } from "@/src/shared/ui/textarea"
+} from "@/src/shared/components/UI/dialog"
+import { Label } from "@/src/shared/components/UI/label"
+import { Textarea } from "@/src/shared/components/UI/textarea"
+import type { RequestedTrack } from "@/src/shared/types/shared.types"
 import { Check, Clock, Loader2, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"

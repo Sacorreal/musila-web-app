@@ -3,9 +3,9 @@
 import { CreatePlaylistDialog } from "@/src/components/app/create-playlist-dialog"
 import { PlaylistCard } from "@/src/components/app/playlist-card"
 import { playlistsService } from "@/src/domains/playlists/playlists.service"
-import type { Playlist } from "@/src/lib/types"
-import { PlusIcon } from "@/src/shared/components/icons"
-import { Button } from "@/src/shared/ui/button"
+import { PlusIcon } from "@/src/shared/components/Icons/icons"
+import { Button } from "@/src/shared/components/UI/button"
+import type { Playlist } from "@/src/shared/types/shared.types"
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 

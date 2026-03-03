@@ -1,7 +1,7 @@
 "use client"
 
-import { MusilaLogo } from "@/src/shared/components/icons"
-import { Button } from "@/src/shared/ui/button"
+import { MusilaLogo } from "@/src/shared/components/Icons/icons"
+import { Button } from "@/src/shared/components/UI/button"
 import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"

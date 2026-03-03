@@ -1,42 +1,72 @@
-import { api } from "@/src/lib/api"
-import type { Playlist } from "@/src/lib/types"
+"use client";
 
-export interface CreatePlaylistInput {
-  name: string
-  description?: string
-  coverUrl?: string
-  isPublic?: boolean
-  trackIds?: string[]
-}
+import { apiClient } from "@/src/shared/libs/axios/axios-client";
+import type { Playlist } from "@/src/domains/playlist/types/playlist.types";
 
-export interface UpdatePlaylistInput extends Partial<CreatePlaylistInput> {}
+type ServiceResult<T> = {
+  data?: T;
+  error?: string;
+};
 
 export const playlistsService = {
-  async getAll(): Promise<{ data: Playlist[] | null; error: string | null }> {
-    return api.get<Playlist[]>("/playlists")
+  async getAll(): Promise<ServiceResult<Playlist[]>> {
+    try {
+      const { data } = await apiClient.get<Playlist[]>("/playlists");
+      return { data };
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al obtener playlists";
+      return { error: message };
+    }
   },
 
-  async getById(id: string): Promise<{ data: Playlist | null; error: string | null }> {
-    return api.get<Playlist>(`/playlists/${id}`)
+  async getById(id: string): Promise<ServiceResult<Playlist>> {
+    try {
+      const { data } = await apiClient.get<Playlist>(`/playlists/${id}`);
+      return { data };
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al obtener la playlist";
+      return { error: message };
+    }
   },
 
-  async create(data: CreatePlaylistInput): Promise<{ data: Playlist | null; error: string | null }> {
-    return api.post<Playlist>("/playlists", data)
+  async create(input: { name: string; description?: string; isPublic: boolean }): Promise<ServiceResult<null>> {
+    try {
+      await apiClient.post("/playlists", input);
+      return {};
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al crear la playlist";
+      return { error: message };
+    }
   },
 
-  async update(id: string, data: UpdatePlaylistInput): Promise<{ data: Playlist | null; error: string | null }> {
-    return api.put<Playlist>(`/playlists/${id}`, data)
+  async delete(id: string): Promise<ServiceResult<null>> {
+    try {
+      await apiClient.delete(`/playlists/${id}`);
+      return {};
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al eliminar la playlist";
+      return { error: message };
+    }
   },
 
-  async delete(id: string): Promise<{ data: unknown; error: string | null }> {
-    return api.delete(`/playlists/${id}`)
+  async addTrack(playlistId: string, trackId: string): Promise<ServiceResult<null>> {
+    try {
+      await apiClient.post(`/playlists/${playlistId}/tracks`, { trackId });
+      return {};
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al agregar la canción a la playlist";
+      return { error: message };
+    }
   },
 
-  async addTrack(playlistId: string, trackId: string): Promise<{ data: Playlist | null; error: string | null }> {
-    return api.post<Playlist>(`/playlists/${playlistId}/tracks`, { trackId })
+  async removeTrack(playlistId: string, trackId: string): Promise<ServiceResult<null>> {
+    try {
+      await apiClient.delete(`/playlists/${playlistId}/tracks/${trackId}`);
+      return {};
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al eliminar la canción de la playlist";
+      return { error: message };
+    }
   },
+};
 
-  async removeTrack(playlistId: string, trackId: string): Promise<{ data: Playlist | null; error: string | null }> {
-    return api.delete<Playlist>(`/playlists/${playlistId}/tracks/${trackId}`)
-  },
-}

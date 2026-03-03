@@ -3,19 +3,19 @@
 import type React from "react"
 
 import { playlistsService } from "@/src/domains/playlists/playlists.service"
-import { Button } from "@/src/shared/ui/button"
+import { Button } from "@/src/shared/components/UI/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/src/shared/ui/dialog"
-import { Input } from "@/src/shared/ui/input"
-import { Label } from "@/src/shared/ui/label"
-import { Switch } from "@/src/shared/ui/switch"
-import { Textarea } from "@/src/shared/ui/textarea"
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/src/shared/components/UI/dialog"
+import { Input } from "@/src/shared/components/UI/input"
+import { Label } from "@/src/shared/components/UI/label"
+import { Switch } from "@/src/shared/components/UI/switch"
+import { Textarea } from "@/src/shared/components/UI/textarea"
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"

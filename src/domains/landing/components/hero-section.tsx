@@ -1,5 +1,5 @@
-import { PlayIcon } from "@/src/shared/components/icons"
-import { Button } from "@/src/shared/ui/button"
+import { PlayIcon } from "@/src/shared/components/Icons/icons"
+import { Button } from "@/src/shared/components/UI/button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 

@@ -1,34 +1,51 @@
-import { api } from "@/src/lib/api"
-import type { RequestedTrack } from "@/src/lib/types"
+"use client";
+
+import { apiClient } from "@/src/shared/libs/axios/axios-client";
+
+type ServiceResult<T> = {
+  data?: T;
+  error?: string;
+};
 
 export interface CreateRequestInput {
-  trackId: string
-  message?: string
+  trackId: string;
+  message: string;
 }
 
 export interface UpdateRequestInput {
-  status?: "PENDING" | "APPROVED" | "REJECTED"
-  response?: string
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  response?: string;
 }
 
 export const requestsService = {
-  async getAll(): Promise<{ data: RequestedTrack[] | null; error: string | null }> {
-    return api.get<RequestedTrack[]>("/requested-tracks")
+  async getAll<T = unknown>(): Promise<ServiceResult<T>> {
+    try {
+      const { data } = await apiClient.get<T>("/requests");
+      return { data };
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al obtener las solicitudes";
+      return { error: message };
+    }
   },
 
-  async getById(id: string): Promise<{ data: RequestedTrack | null; error: string | null }> {
-    return api.get<RequestedTrack>(`/requested-tracks/${id}`)
+  async create(input: CreateRequestInput): Promise<ServiceResult<null>> {
+    try {
+      await apiClient.post("/requests", input);
+      return {};
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al crear la solicitud";
+      return { error: message };
+    }
   },
 
-  async create(data: CreateRequestInput): Promise<{ data: RequestedTrack | null; error: string | null }> {
-    return api.post<RequestedTrack>("/requested-tracks", data)
+  async update(id: string, input: UpdateRequestInput): Promise<ServiceResult<null>> {
+    try {
+      await apiClient.patch(`/requests/${id}`, input);
+      return {};
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al actualizar la solicitud";
+      return { error: message };
+    }
   },
+};
 
-  async update(id: string, data: UpdateRequestInput): Promise<{ data: RequestedTrack | null; error: string | null }> {
-    return api.put<RequestedTrack>(`/requested-tracks/${id}`, data)
-  },
-
-  async delete(id: string): Promise<{ data: unknown; error: string | null }> {
-    return api.delete(`/requested-tracks/${id}`)
-  },
-}

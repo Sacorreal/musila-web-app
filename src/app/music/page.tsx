@@ -2,36 +2,20 @@
 
 import { ArtistCard } from "@/src/components/app/artist-card"
 import { TrackCard } from "@/src/components/app/track-card"
-import { useAuth } from "@/src/domains/auth/components/auth.context"
-import { tracksService } from "@/src/domains/tracks/tracks.service"
-import { usersService } from "@/src/domains/users/users.service"
-import type { Track, User } from "@/src/lib/types"
+
+import type { Track, User } from "@/src/shared/types/shared.types"
 import { Loader2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 export default function AppHomePage() {
-  const { user } = useAuth()
+
   const [tracks, setTracks] = useState<Track[]>([])
   const [featuredAuthors, setFeaturedAuthors] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    async function loadData() {
-      setIsLoading(true)
+  
 
-      const [tracksRes, authorsRes] = await Promise.all([
-        tracksService.getAll(),
-        user ? usersService.getFeaturedAuthors(user.id) : usersService.getAuthors(),
-      ])
-
-      if (tracksRes.data) setTracks(tracksRes.data)
-      if (authorsRes.data) setFeaturedAuthors(authorsRes.data.slice(0, 6))
-
-      setIsLoading(false)
-    }
-
-    loadData()
-  }, [user])
+   
 
   if (isLoading) {
     return (
