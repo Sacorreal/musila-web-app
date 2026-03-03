@@ -16,7 +16,6 @@ Implementamos un modelo **Backend For Frontend (BFF)** utilizando Next.js App Ro
 ---
 
 ## 📂 Definición Detallada de Capas
-
 ### 1. Capa de Acciones (`*.actions.ts`)
 Son **Server Actions**. Representan la lógica de negocio protegida que el usuario no puede interceptar en el navegador.
 
