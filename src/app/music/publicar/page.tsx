@@ -1,5 +1,5 @@
 "use client"
-import { CreateTrackForm } from "@/src/domains/tracks/components/create-track-form/CreateTrackForm"
+import { CreateTrackForm } from "@domains/tracks/components/CreateTrackForm"
 
 export default function UploadPage() {  
 

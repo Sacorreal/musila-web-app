@@ -7,6 +7,7 @@ import { Inter } from "next/font/google"
 import type React from "react"
 import "./globals.css"
 import { Providers } from "../shared/components/Layout/provider"
+import { PlayerProvider } from "@/src/domains/player/player.context"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -49,11 +50,11 @@ export default function RootLayout({
     <html lang="es" className="dark">
       <body className={`${inter.className} font-sans antialiased`}>
         <Providers>
-        
-          {children}
-          <Toaster position="bottom-right" />
-        
-        <Analytics />
+          <PlayerProvider>
+            {children}
+            <Toaster position="bottom-right" />
+            <Analytics />
+          </PlayerProvider>
         </Providers>
       </body>
     </html>

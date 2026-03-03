@@ -11,7 +11,7 @@ import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 import { useCreateTrack } from '@/src/domains/tracks/hooks/use-create-track';
 
 // Validations
-import { createTrackSchema, type CreateTrackFormValues } from '../../validations/track.schema';
+import { createTrackSchema, type CreateTrackFormValues } from '@domains/tracks/validations/track.schema';
 
 // UI Components (Shadcn & Custom)
 import { Input } from "@/src/shared/components/UI/input";
@@ -28,8 +28,8 @@ import {
 
 // Domain Components
 import { GenreSelector } from '@domains/musical-genre/components/GenreSelector';
-import { LanguageSelector } from '../create-track-form/LanguageSelector';
-import { AudioUploadField } from '../create-track-form/AudioUploadField';
+import { LanguageSelector } from '../components/LanguageSelector';
+import { AudioUploadField } from '../components/AudioUploadField';
 
 export function CreateTrackForm() {
   const router = useRouter();
