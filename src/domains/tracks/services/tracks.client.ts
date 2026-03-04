@@ -1,4 +1,4 @@
-import axios from "axios";
+import {apiClient } from '@shared/libs/axios/axios-client'
 import type { CreateTrackFormValues } from "../validations/track.schema";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { StorageFolder, type UploadableFile } from "@/src/domains/storage/types/storage.types";
@@ -64,7 +64,7 @@ export async function createTrackRequest(
   // 4️⃣ Guardar metadatos (Con Rollback inyectado)
   // ========================================================
   try {
-    const response = await axios.post<TrackSummary>(apiURLs.tracks.all, payload, {
+    const response = await apiClient.post<TrackSummary>(apiURLs.tracks.all, payload, {
       signal,
     });
     return response.data;
@@ -82,7 +82,7 @@ export async function createTrackRequest(
 export const tracksService = {
   async getAll<T = unknown>(): Promise<ServiceResult<T>> {
     try {
-      const { data } = await axios.get<T>(apiURLs.tracks.all);
+      const { data } = await apiClient.get<T>(apiURLs.tracks.all);
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al obtener las canciones";
@@ -92,7 +92,7 @@ export const tracksService = {
 
   async getById<T = unknown>(id: string): Promise<ServiceResult<T>> {
     try {
-      const { data } = await axios.get<T>(apiURLs.tracks.byId(id));
+      const { data } = await apiClient.get<T>(apiURLs.tracks.byId(id));
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al obtener la canción";
@@ -102,7 +102,7 @@ export const tracksService = {
 
   async search<T = unknown>(query: string): Promise<ServiceResult<T>> {
     try {
-      const { data } = await axios.get<T>(apiURLs.tracks.search, { params: { q: query } });
+      const { data } = await apiClient.get<T>(apiURLs.tracks.search, { params: { q: query } });
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al buscar canciones";
@@ -112,7 +112,7 @@ export const tracksService = {
 
   async getGenres<T = unknown>(): Promise<ServiceResult<T>> {
     try {
-      const { data } = await axios.get<T>(apiURLs.genres.all);
+      const { data } = await apiClient.get<T>(apiURLs.genres.all);
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al obtener géneros musicales";
@@ -122,7 +122,7 @@ export const tracksService = {
 
   async getMyTracks<T = unknown>(): Promise<ServiceResult<T>> {
     try {
-      const { data } = await axios.get<T>(`${apiURLs.tracks.all}/me`);
+      const { data } = await apiClient.get<T>(`${apiURLs.tracks.all}/me`);
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al obtener tus canciones";

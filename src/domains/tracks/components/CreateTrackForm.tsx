@@ -54,6 +54,7 @@ export function CreateTrackForm() {
 
   // 2️⃣ Lógica de envío limpia y unificada
   const onSubmit = async (data: CreateTrackFormValues) => {
+  
     if (!user?.id) {
       toast.error("Acceso denegado", {
         description: "Debes iniciar sesión para publicar una canción.",
