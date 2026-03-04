@@ -69,39 +69,11 @@ export function useAuth() {
         await deleteCookie();
         clearSession();
     }, [clearSession]);
-
-    const verifySession = useCallback(() => {        
-        const token = getClientSideCookie('access_token');        
-        if (!token) {
-            clearSession();
-            return;
-        }
-
-        try {
-            const decoded = decodeToken(token);
-            const now = Math.floor(Date.now() / 1000);
-
-            if (decoded.exp < now) {
-                clearSession();
-            } else {               
-                const currentUser = useAuthStore.getState().user;
-                if (!currentUser) {
-                    processToken(token);
-                }
-            }
-        } catch {
-            clearSession();
-        }
-    }, [clearSession, processToken]);
-
-    useEffect(() => {
-        verifySession();
-    }, [verifySession]);
+   
 
     return {
         login,
         registerUser,
-        logout,
-        verifySession,
+        logout
     };
 }
