@@ -1,4 +1,4 @@
-import axios from "axios"
+import {apiClient } from '@shared/libs/axios/axios-client'
 import type {
   UploadableFile,
   PresignedUrlResponse,
@@ -14,7 +14,7 @@ export async function requestPresignedUrls(
   // 1. Mapeamos cada archivo a una Promesa (una petición HTTP independiente)
   const uploadRequests = files.map(async (f) => {
     // Enviamos EXACTAMENTE lo que pide el DTO de NestJS: { folder, fileType }
-    const { data } = await axios.post(
+    const { data } = await apiClient.post(
       apiURLs.storage.presignedUrls, 
       {
         folder: f.folder,
@@ -42,7 +42,7 @@ export async function uploadFileToSpaces(
   file: File,
   onProgress?: (n: number) => void,
 ) {
-  await axios.put(uploadUrl, file, {
+  await apiClient.put(uploadUrl, file, {
     headers: {
       "Content-Type": file.type,
     },
@@ -63,7 +63,7 @@ export async function rollbackUploads(keys: string[]): Promise<void> {
   try {
     console.warn("Iniciando rollback de archivos huérfanos:", keys);
     
-    await axios.post(
+    await apiClient.post(
       apiURLs.storage.deleteBatch, // Apunta a tu nuevo endpoint de NestJS
       { keys },
       { withCredentials: true } // Importante si tu API usa cookies/sesiones
