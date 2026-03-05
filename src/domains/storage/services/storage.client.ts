@@ -46,6 +46,7 @@ export async function uploadFileToSpaces(
     headers: {
       "Content-Type": file.type      
     },
+    withCredentials:false,
     onUploadProgress: (event) => {
       if (!event.total) return
       const percent = Math.round(
@@ -66,7 +67,7 @@ export async function rollbackUploads(keys: string[]): Promise<void> {
     await apiClient.post(
       apiURLs.storage.deleteBatch, // Apunta a tu nuevo endpoint de NestJS
       { keys },
-      { withCredentials: true } // Importante si tu API usa cookies/sesiones
+      { withCredentials: false } // Importante si tu API usa cookies/sesiones
     );
 
     console.log("Rollback completado exitosamente.");
