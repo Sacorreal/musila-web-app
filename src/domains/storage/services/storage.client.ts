@@ -45,6 +45,7 @@ export async function uploadFileToSpaces(
   await apiClient.put(uploadUrl, file, {
     headers: {
       "Content-Type": file.type,
+      'x-amz-acl': 'public-read',
     },
     onUploadProgress: (event) => {
       if (!event.total) return
