@@ -19,6 +19,13 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@shared/components/UI/field";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@shared/components/UI/select";
 
 import {
   registerSchema,
@@ -48,6 +55,8 @@ export function UserRegisterForm() {
       secondLastName: '',
       secondName: '',
       countryCode: "+57",
+      typeCitizenID: '',
+      citizenID: '',
     },
   });
 
@@ -139,6 +148,47 @@ export function UserRegisterForm() {
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Segundo apellido</FieldLabel>
                 <Input {...field} placeholder="Opcional" />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </div>
+
+        {/* Tipo y Número de Documento */}
+        <div className="grid grid-cols-2 gap-4">
+          <Controller
+            name="typeCitizenID"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>Tipo de documento</FieldLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione un documento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="DNI">Documento Nacional de Identidad (DNI)</SelectItem>
+                    <SelectItem value="RG">Registro General (RG)</SelectItem>
+                    <SelectItem value="Cédula de Ciudadanía">Cédula de Ciudadanía</SelectItem>
+                    <SelectItem value="Cédula de Identidad">Cédula de Identidad</SelectItem>
+                    <SelectItem value="NUIP">NUIP</SelectItem>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <Controller
+            name="citizenID"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel>No. Documento</FieldLabel>
+                <Input
+                  {...field}
+                  placeholder="Ej: 40123456"
+                />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}

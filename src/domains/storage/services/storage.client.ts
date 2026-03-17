@@ -42,11 +42,17 @@ export async function uploadFileToSpaces(
   file: File,
   onProgress?: (n: number) => void,
 ) {
-  await apiClient.put(uploadUrl, file, {
+  // ⚠️ Usamos axios directo (NO apiClient) porque:
+  // 1. apiClient tiene baseURL que se antepone a la URL presignada
+  // 2. apiClient tiene interceptores de autenticación que no aplican a Spaces
+  // 3. apiClient envía withCredentials:true que puede causar problemas CORS con DO
+  const { default: axios } = await import("axios");
+
+  await axios.put(uploadUrl, file, {
     headers: {
-      "Content-Type": file.type      
+      "Content-Type": file.type,
+      'x-amz-acl': 'public-read'      
     },
-    withCredentials:false,
     onUploadProgress: (event) => {
       if (!event.total) return
       const percent = Math.round(

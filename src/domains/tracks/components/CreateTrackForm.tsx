@@ -65,16 +65,15 @@ export function CreateTrackForm() {
     const payload: CreateTrackFormValues = {
       ...data,
       // Garantizamos que siempre haya un autor
-      authorsIds: data.authorsIds?.length ? data.authorsIds : [user.id],
-    };
+      authorsIds: data.authorsIds?.length ? data.authorsIds : [user.id],      
+    };    
 
     try {
-      // Ejecutamos la mutación que orquesta firmas, subidas a Spaces y BD
       await mutateAsync(payload);
-
       toast.success("¡Canción publicada con éxito!");
       reset();
       router.push("/music");
+            
     } catch (error) {
       toast.error("Error al publicar la canción", {
         description: error instanceof Error ? error.message : "Error inesperado",

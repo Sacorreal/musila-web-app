@@ -13,19 +13,49 @@ export const apiClient = axios.create({
   },
 });
 
-// 2. Interceptores de Respuesta (Manejo global de errores)
+// 2. Interceptor de Petición (Inyectar Token)
+apiClient.interceptors.request.use(
+  (config) => {
+    // Obtenemos el token directamente del estado global de Zustand
+    // Lo importamos dinámicamente para evitar problemas de dependencias cíclicas y que funcione bien con SSR/CSR
+    const { useAuthStore } = require("@/src/domains/auth/store/use-auth-store");
+    const token = useAuthStore.getState().token;
+
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// 3. Interceptores de Respuesta (Manejo global de errores)
 apiClient.interceptors.response.use(
   (response) => response, // Si todo va bien, devolvemos la respuesta intacta
   (error) => {
-    // Si el backend devuelve un 401 (No autorizado)
-    if (error.response?.status === 401) {
+    // Verificamos si la petición fue a nuestro propio backend (no a URLs externas como DO Spaces)
+    const requestUrl = error.config?.url || "";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+    const isInternalRequest =
+      requestUrl.startsWith("/") || // Rutas relativas (usan baseURL)
+      (baseUrl && requestUrl.startsWith(baseUrl)); // URL absoluta de nuestro backend
+
+    // Solo manejamos 401 para peticiones a NUESTRO backend
+    if (error.response?.status === 401 && isInternalRequest) {
       console.warn("Sesión expirada o token inválido.");
-      
-      // Aquí podrías disparar una redirección al login
-      window.location.href = "/login";
-      
-      // O si usas Zustand, podrías llamar a una función para limpiar el estado
-      // useAuthStore.getState().logout();
+
+      // Limpiamos la sesión de Zustand sin hacer un hard redirect
+      // Esto permite que el componente maneje el error con un toast y no pierda el contexto
+      const { useAuthStore } = require("@/src/domains/auth/store/use-auth-store");
+      useAuthStore.getState().clearSession();
+
+      // Emitimos un evento personalizado para que la UI pueda reaccionar (ej. mostrar un modal)
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("auth:session-expired"));
+      }
     }
 
     // Errores de red (el backend está caído)

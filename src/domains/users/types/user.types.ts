@@ -29,6 +29,8 @@ type BaseUser = Pick<
   | 'repeatPassword'
   | 'countryCode'
   | 'phone'
+  | 'typeCitizenID'
+  | 'citizenID'
 >
 
 type OptionalUser = Partial<
