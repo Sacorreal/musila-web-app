@@ -37,7 +37,7 @@ export const navItems: NavItems = [
     },
 
     {
-        href: "/app/publicar",
+        href: "/music/publicar",
         icon: UploadIcon,
         label: "Publicar",
         rolAccess: [UserRole.AUTOR, UserRole.CANTAUTOR],

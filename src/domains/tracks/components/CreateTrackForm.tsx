@@ -1,22 +1,25 @@
-'use client';
+"use client";
 
 import { useRouter } from "next/navigation";
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { UserCircle, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserCircle, Image as ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 // Stores & Hooks
-import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
-import { useCreateTrack } from '@/src/domains/tracks/hooks/use-create-track';
+import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import { useCreateTrack } from "@/src/domains/tracks/hooks/use-create-track";
 
 // Validations
-import { createTrackSchema, type CreateTrackFormValues } from '@domains/tracks/validations/track.schema';
+import {
+  createTrackSchema,
+  type CreateTrackFormValues,
+} from "@domains/tracks/validations/track.schema";
 
 // UI Components (Shadcn & Custom)
 import { Input } from "@/src/shared/components/UI/input";
-import { Textarea } from '@shared/components/UI/textarea';
-import { Switch } from '@shared/components/UI/switch';
+import { Textarea } from "@shared/components/UI/textarea";
+import { Switch } from "@shared/components/UI/switch";
 import { Button } from "@shared/components/UI/button";
 import { Progress } from "@shared/components/UI/progress";
 import {
@@ -27,9 +30,9 @@ import {
 } from "@shared/components/UI/field";
 
 // Domain Components
-import { GenreSelector } from '@domains/musical-genre/components/GenreSelector';
-import { LanguageSelector } from '../components/LanguageSelector';
-import { AudioUploadField } from '../components/AudioUploadField';
+import { GenreSelector } from "@domains/musical-genre/components/GenreSelector";
+import { LanguageSelector } from "../components/LanguageSelector";
+import { AudioUploadField } from "../components/AudioUploadField";
 
 export function CreateTrackForm() {
   const router = useRouter();
@@ -38,23 +41,23 @@ export function CreateTrackForm() {
   // 1️⃣ Utilizamos el hook unificado. Él se encarga de todo el flujo y estado.
   const { mutateAsync, isPending, globalProgress } = useCreateTrack();
 
-  const { control, handleSubmit, watch, setValue, reset } = useForm<CreateTrackFormValues>({
-    resolver: zodResolver(createTrackSchema),
-    defaultValues: {
-      title: '',
-      genreId: '',
-      subGenre: '',
-      language: '',
-      lyric: '',
-      authorsIds: user?.id ? [user.id] : [],
-      isAvailable: true,
-      isGospel: false,
-    },
-  });
+  const { control, handleSubmit, watch, setValue, reset } =
+    useForm<CreateTrackFormValues>({
+      resolver: zodResolver(createTrackSchema),
+      defaultValues: {
+        title: "",
+        genreId: "",
+        subGenre: "",
+        language: "",
+        lyric: "",
+        authorsIds: user?.id ? [user.id] : [],
+        isAvailable: true,
+        isGospel: false,
+      },
+    });
 
   // 2️⃣ Lógica de envío limpia y unificada
   const onSubmit = async (data: CreateTrackFormValues) => {
-  
     if (!user?.id) {
       toast.error("Acceso denegado", {
         description: "Debes iniciar sesión para publicar una canción.",
@@ -65,18 +68,18 @@ export function CreateTrackForm() {
     const payload: CreateTrackFormValues = {
       ...data,
       // Garantizamos que siempre haya un autor
-      authorsIds: data.authorsIds?.length ? data.authorsIds : [user.id],      
-    };    
+      authorsIds: data.authorsIds?.length ? data.authorsIds : [user.id],
+    };
 
     try {
       await mutateAsync(payload);
       toast.success("¡Canción publicada con éxito!");
       reset();
       router.push("/music");
-            
     } catch (error) {
       toast.error("Error al publicar la canción", {
-        description: error instanceof Error ? error.message : "Error inesperado",
+        description:
+          error instanceof Error ? error.message : "Error inesperado",
       });
     }
   };
@@ -93,9 +96,12 @@ export function CreateTrackForm() {
       {/* Deshabilitamos la interacción (pointer-events-none) y bajamos la opacidad
         solo si está subiendo, para dar un excelente feedback visual 
       */}
-      <FieldGroup className={isPending ? "pointer-events-none opacity-60 transition-opacity" : ""}>
+      <FieldGroup
+        className={
+          isPending ? "pointer-events-none opacity-60 transition-opacity" : ""
+        }
+      >
         <div className="space-y-12">
-
           {/* HEADER */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
@@ -103,7 +109,8 @@ export function CreateTrackForm() {
                 Publicar nueva canción
               </h1>
               <p className="text-muted-foreground mt-1 max-w-xl">
-                Completa la información, adjunta los archivos y configura la disponibilidad.
+                Completa la información, adjunta los archivos y configura la
+                disponibilidad.
               </p>
             </div>
 
@@ -120,17 +127,15 @@ export function CreateTrackForm() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-10">
-
             {/* MAIN CONTENT (Columna Izquierda) */}
             <div className="space-y-10">
-
               {/* AUTOR INFO */}
               <div className="flex items-center gap-3 rounded-xl border bg-primary/5 p-4">
                 <UserCircle className="w-6 h-6 text-primary" />
                 <p className="text-sm">
                   Autor principal:
                   <span className="font-semibold ml-1">
-                    {user?.name ?? 'Usuario actual'}
+                    {user?.name ?? "Usuario actual"}
                   </span>
                 </p>
               </div>
@@ -151,7 +156,9 @@ export function CreateTrackForm() {
                     <Field data-invalid={fieldState.invalid}>
                       <FieldLabel>Título</FieldLabel>
                       <Input placeholder="Ej: La casa en el cielo" {...field} />
-                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
                     </Field>
                   )}
                 />
@@ -170,7 +177,9 @@ export function CreateTrackForm() {
                           setValue("subGenre", val, { shouldValidate: true })
                         }
                       />
-                      {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
                     </Field>
                   )}
                 />
@@ -182,7 +191,10 @@ export function CreateTrackForm() {
                     render={({ field }) => (
                       <Field>
                         <FieldLabel>Idioma</FieldLabel>
-                        <LanguageSelector value={field.value} onChange={field.onChange} />
+                        <LanguageSelector
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
                       </Field>
                     )}
                   />
@@ -207,7 +219,8 @@ export function CreateTrackForm() {
                   control={control}
                   render={({ field }) => {
                     const file = watch("coverImage");
-                    const preview = file instanceof File ? URL.createObjectURL(file) : null;
+                    const preview =
+                      file instanceof File ? URL.createObjectURL(file) : null;
 
                     return (
                       <Field>
@@ -219,15 +232,23 @@ export function CreateTrackForm() {
                           >
                             {preview ? (
                               <>
-                                <img src={preview} alt="Cover preview" className="w-full h-full object-cover" />
+                                <img
+                                  src={preview}
+                                  alt="Cover preview"
+                                  className="w-full h-full object-cover"
+                                />
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <p className="text-white text-xs font-medium">Cambiar</p>
+                                  <p className="text-white text-xs font-medium">
+                                    Cambiar
+                                  </p>
                                 </div>
                               </>
                             ) : (
                               <div className="flex flex-col items-center justify-center text-muted-foreground">
                                 <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
-                                <span className="text-xs font-medium">Subir imagen</span>
+                                <span className="text-xs font-medium">
+                                  Subir imagen
+                                </span>
                               </div>
                             )}
                             <input
@@ -235,10 +256,12 @@ export function CreateTrackForm() {
                               type="file"
                               accept="image/*"
                               className="sr-only"
-                              onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
+                              onChange={(e) =>
+                                field.onChange(e.target.files?.[0] ?? null)
+                              }
                             />
                           </label>
-                          <div className="text-xs text-muted-foreground space-y-1">                            
+                          <div className="text-xs text-muted-foreground space-y-1">
                             <p>Formatos: JPG, PNG. Máx 5MB.</p>
                           </div>
                         </div>
@@ -267,7 +290,6 @@ export function CreateTrackForm() {
 
             {/* SIDEBAR STICKY (Columna Derecha) */}
             <aside className="space-y-8 lg:sticky lg:top-24 self-start">
-
               {/* CONFIGURACIÓN */}
               <div className="rounded-2xl border bg-card p-6 shadow-sm space-y-6">
                 <h2 className="text-lg font-semibold">Configuración</h2>
@@ -279,9 +301,14 @@ export function CreateTrackForm() {
                     <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                       <div className="space-y-0.5">
                         <p className="text-sm font-medium">Pública</p>
-                        <p className="text-xs text-muted-foreground">Visible para todos</p>
+                        <p className="text-xs text-muted-foreground">
+                          Visible para todos
+                        </p>
                       </div>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
                     </div>
                   )}
                 />
@@ -293,9 +320,14 @@ export function CreateTrackForm() {
                     <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                       <div className="space-y-0.5">
                         <p className="text-sm font-medium">Música Gospel</p>
-                        <p className="text-xs text-muted-foreground">¿Es una canción góspel?</p>
+                        <p className="text-xs text-muted-foreground">
+                          ¿Es una canción góspel?
+                        </p>
                       </div>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
                     </div>
                   )}
                 />
@@ -319,7 +351,8 @@ export function CreateTrackForm() {
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  Al publicar, aceptas los términos de publicación. Podrás editar la metadata más adelante.
+                  Al publicar, aceptas los términos de publicación. Podrás
+                  editar la metadata más adelante.
                 </p>
               </div>
             </aside>
