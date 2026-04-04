@@ -64,7 +64,7 @@ export async function createTrackRequest(
   // 4️⃣ Guardar metadatos (Con Rollback inyectado)
   // ========================================================
   try {
-    const response = await apiClient.post<TrackSummary>(apiURLs.tracks.all, payload, {
+    const response = await apiClient.post<TrackSummary>(apiURLs.tracks.base, payload, {
       signal,
     });
     return response.data;
@@ -82,7 +82,7 @@ export async function createTrackRequest(
 export const tracksService = {
   async getAll<T = unknown>(): Promise<ServiceResult<T>> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.all);
+      const { data } = await apiClient.get<T>(apiURLs.tracks.base);
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al obtener las canciones";
@@ -102,7 +102,7 @@ export const tracksService = {
 
   async search<T = unknown>(query: string): Promise<ServiceResult<T>> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.search, { params: { q: query } });
+      const { data } = await apiClient.get<T>(apiURLs.tracks.base, { params: { q: query } });
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al buscar canciones";
@@ -112,7 +112,7 @@ export const tracksService = {
 
   async getGenres<T = unknown>(): Promise<ServiceResult<T>> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.genres.all);
+      const { data } = await apiClient.get<T>(apiURLs.genres.base);
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al obtener géneros musicales";
@@ -122,7 +122,7 @@ export const tracksService = {
 
   async getMyTracks<T = unknown>(): Promise<ServiceResult<T>> {
     try {
-      const { data } = await apiClient.get<T>(`${apiURLs.tracks.all}/me`);
+      const { data } = await apiClient.get<T>(`${apiURLs.tracks.base}/me`);
       return { data };
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al obtener tus canciones";
