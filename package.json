@@ -11,7 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "generate:domain": "node scripts/generate-domain.js"
+    "generate:domain": "node scripts/generate-domain.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

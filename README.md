@@ -7,6 +7,7 @@ Musila es una aplicación para la gestión de canciones inéditas, donde los aut
 - Crear y administrar playlists.
 - Invitar a otros usuarios para administrar las playlists.
 - Solicitar el uso de las canciones por medio de acuerdos comerciales.
+- Documentacion de API [API DOCS](https://musila-api-development.up.railway.app/api)
 
 # 📖 Guía de Arquitectura: Convención de Sufijos y Capas
 

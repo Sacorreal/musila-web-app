@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import Link from 'next/link';
 import { useFeaturedArtists } from '../hooks/use-artists.hooks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/shared/components/UI/avatar';
 
@@ -32,7 +33,7 @@ export function ArtistsCarousel() {
       <h2 className="text-xl font-bold text-white mb-4">Autores Destacados</h2>
       <div className="flex gap-8 overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {artists.map((artist) => (
-          <div key={artist.id} className="flex flex-col items-center gap-3 shrink-0 snap-center cursor-pointer hover:opacity-90 transition-opacity">
+          <Link key={artist.id} href={`/music/artista/${artist.id}`} className="flex flex-col items-center gap-3 shrink-0 snap-center cursor-pointer hover:opacity-90 transition-opacity outline-none ring-0">
             <div className="p-1 rounded-full bg-white relative shadow-md">
                <Avatar className="w-24 h-24 sm:w-28 sm:h-28">
                   <AvatarImage src={artist.avatar} alt={`${artist.name || ''} ${artist.lastName || ''}`} className="object-cover" />
@@ -44,7 +45,7 @@ export function ArtistsCarousel() {
             <span className="text-sm font-semibold text-white whitespace-nowrap mt-1">
               {artist.name} {artist.lastName}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

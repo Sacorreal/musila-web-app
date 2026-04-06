@@ -1,10 +1,14 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const domainName = process.argv[2];
 
 if (!domainName) {
-  console.error('❌ Por favor, indica el nombre del dominio (ej: npm run generate:domain playlist)');
+  console.error('❌ Por favor, indica el nombre del dominio (ej: pnpm run generate:domain playlist)');
   process.exit(1);
 }
 
