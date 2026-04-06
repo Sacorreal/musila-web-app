@@ -9,8 +9,7 @@ import { TrackSummary } from '@/src/domains/tracks/types/track.type';
 export async function fetchFeaturedArtists(): Promise<User[]> {
   const client = await getServerApiClient();
   const response = await client.get<User[]>(apiURLs.users.authors, {
-    params: {
-      role: `${UserRole.AUTOR},${UserRole.CANTAUTOR}`,
+    params: {      
       limit: 10
     }
   });
@@ -19,15 +18,7 @@ export async function fetchFeaturedArtists(): Promise<User[]> {
 
 export async function fetchArtistById(id: string): Promise<User> {
   const client = await getServerApiClient();
-  const response = await client.get<User>(apiURLs.users.authorById(id));
+  const response = await client.get<User>(apiURLs.users.userById(id));
   return response.data;
 }
 
-export async function fetchArtistTracks(artistId: string): Promise<TrackSummary[]> {
-  // We use apiURLs.tracks.base and send authorsIds to let the backend filter the results.
-  const client = await getServerApiClient();
-  const response = await client.get<TrackSummary[]>(apiURLs.tracks.base, {
-    params: { authorsIds: artistId }
-  });
-  return response.data;
-}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { TrackSummary } from '@/src/domains/tracks/types/track.type';
+import { ArtistNoTracks } from './ArtistNoTracks';
 import { Button } from '@/src/shared/components/UI/button';
 import { Play, MoreHorizontal } from 'lucide-react';
 import {
@@ -11,10 +12,15 @@ import {
 } from '@/src/shared/components/UI/select';
 
 interface ArtistTracksListProps {
-  tracks: TrackSummary[];
+  tracks: TrackSummary[] | string[];
 }
 
 export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
+  // The artist-by-id endpoint populates the tracks relation as TrackSummary objects.
+  // Filter out any plain string IDs that may come from list endpoints.
+  const populatedTracks = (tracks as Array<TrackSummary | string>).filter(
+    (t): t is TrackSummary => typeof t === 'object' && t !== null,
+  );
   return (
     <div className="mt-10 px-2 pb-20">
       <h2 className="text-2xl font-bold text-white mb-6">Canciones</h2>
@@ -49,10 +55,10 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
 
       {/* Tracks List */}
       <div className="flex flex-col gap-2">
-        {tracks.length === 0 ? (
-          <p className="text-slate-400 mt-4">Este artista aún no tiene canciones.</p>
+        {populatedTracks.length === 0 ? (
+          <ArtistNoTracks />
         ) : (
-          tracks.map((track, index) => (
+          populatedTracks.map((track, index) => (
             <div 
               key={track.id} 
               className="group flex flex-col sm:flex-row items-start sm:items-center py-2 px-3 hover:bg-white/5 rounded-lg transition-colors gap-4 sm:gap-6 w-full cursor-pointer"

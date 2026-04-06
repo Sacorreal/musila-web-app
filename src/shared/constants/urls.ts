@@ -7,9 +7,9 @@ export const apiURLs = {
   },
   users: {
     base: '/users' as const,
-    roles: '/users/roles' as const,
+    roles: '/users/roles' as const,    
     authors: '/users/authors' as const,
-    authorById: (id: string) => `/users/author/${id}` as const,
+    userById: (id: string) => `/users/${id}` as const,
     me: '/users/me' as const,
     deleteMe: (id: string) => `/users/me/${id}` as const,
   },

@@ -1,4 +1,5 @@
 import { UserRoleRegister } from '@/src/domains/users/types/user.types';
+import { TrackSummary } from '@/src/domains/tracks/types/track.type';
 
 export interface User {
 
@@ -18,7 +19,7 @@ export interface User {
     isVerified: boolean;
     biography: string;
     socialNetworks: Record<string, string>;
-    tracks: string[]
+    tracks: TrackSummary[] | string[]
     preferredGenres: string[]
     guests: string[]
     playlists: string[]
