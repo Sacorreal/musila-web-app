@@ -42,9 +42,16 @@ export async function uploadFileToSpaces(
   file: File,
   onProgress?: (n: number) => void,
 ) {
-  await apiClient.put(uploadUrl, file, {
+  // ⚠️ Usamos axios directo (NO apiClient) porque:
+  // 1. apiClient tiene baseURL que se antepone a la URL presignada
+  // 2. apiClient tiene interceptores de autenticación que no aplican a Spaces
+  // 3. apiClient envía withCredentials:true que puede causar problemas CORS con DO
+  const { default: axios } = await import("axios");
+
+  await axios.put(uploadUrl, file, {
     headers: {
       "Content-Type": file.type,
+      'x-amz-acl': 'public-read'      
     },
     onUploadProgress: (event) => {
       if (!event.total) return
@@ -66,7 +73,7 @@ export async function rollbackUploads(keys: string[]): Promise<void> {
     await apiClient.post(
       apiURLs.storage.deleteBatch, // Apunta a tu nuevo endpoint de NestJS
       { keys },
-      { withCredentials: true } // Importante si tu API usa cookies/sesiones
+      { withCredentials: false } // Importante si tu API usa cookies/sesiones
     );
 
     console.log("Rollback completado exitosamente.");

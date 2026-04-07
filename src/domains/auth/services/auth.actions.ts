@@ -16,8 +16,6 @@ export async function loginRequest(loginDto: LoginDTO): Promise<string> {
     body: JSON.stringify(loginDto),
   });
 
-
-
   if (!response.ok) {
     throw new Error("Credenciales incorrectas");
   }

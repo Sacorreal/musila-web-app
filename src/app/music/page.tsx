@@ -2,16 +2,11 @@
 
 import { Loader2 } from "lucide-react"
 import { useState } from "react"
+import { ArtistsCarousel } from "@/src/domains/artists/components/ArtistsCarousel"
 
 export default function AppHomePage() {
 
-
-
-  const [isLoading, setIsLoading] = useState(true)
-
-  
-
-   
+  const [isLoading, setIsLoading] = useState(false)
 
   if (isLoading) {
     return (
@@ -22,6 +17,9 @@ export default function AppHomePage() {
   }
 
   return (
-   <>Contenido principal de la app</>
+   <main className="container mx-auto p-4 md:p-8">
+     {/* Contenido principal de la app */}
+     <ArtistsCarousel />
+   </main>
   )
 }

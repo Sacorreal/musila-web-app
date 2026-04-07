@@ -7,7 +7,7 @@ const externalIdSchema = z.object({
 });
 
 export const createTrackSchema = z.object({
-  title: z.string().min(1, 'El título es obligatorio'),
+  title: z.string().min(1, 'El título es obligatorio').trim(),
 
   // Para la UI basta con que haya un género seleccionado (id string)
   genreId: z.string().min(1, 'Debes seleccionar un género musical'),
@@ -16,7 +16,7 @@ export const createTrackSchema = z.object({
   
   language: z.string().min(1, 'El idioma es obligatorio'),
   
-  lyric: z.string().min(1, 'La letra es obligatoria'), 
+  lyric: z.string().min(1, 'La letra es obligatoria').transform((val) => val.replace(/\s+/g, " ")), 
   
   // IDs de autores (opcional en la UI; el backend puede inferir el autor principal)
   authorsIds: z

@@ -1,7 +1,7 @@
 import { UserRole } from "@/src/domains/users/types/user.types";
 
 export interface LoginDTO {
-    email: string;
+    citizenID: string;
     password: string;
 }
 
@@ -23,10 +23,11 @@ export type UserJWTResponse = {
 
 export type AuthState = {
     user: UserJWTResponse | null
+    token: string | null
 
     isAuthenticated: boolean
 
-    setSession: (data: { user: UserJWTResponse }) => void
+    setSession: (data: { user: UserJWTResponse; token: string }) => void
     clearSession: () => void
 }
 

@@ -24,7 +24,9 @@ export function LoginForm() {
   } = useForm<LoginDTO>();
 
   const onSubmit = async (data: LoginDTO) => {
-    try {
+    try {      
+      data.citizenID = data.citizenID.trim(); 
+      console.log('envio estos datos:',data)
       await login(data);
       toast.success("Bienvenido de vuelta");
       reset();
@@ -41,15 +43,14 @@ export function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="email">Correo electrónico</Label>
+        <Label htmlFor="email">Número de Documento</Label>
         <Input
-          id="email"
-          type="email"
-          placeholder="tu@email.com"
+          id="citizenID"
+          type="text"         
           required
           disabled={isSubmitting}
           className="bg-card"
-          {...register("email")}
+          {...register("citizenID")}
         />
       </div>
 

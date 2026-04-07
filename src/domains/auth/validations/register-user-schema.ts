@@ -46,6 +46,14 @@ export const registerSchema = z
             .string()
             .min(1, "El teléfono es obligatorio"),
 
+        typeCitizenID: z
+            .string()
+            .min(1, "El tipo de documento es obligatorio"),
+
+        citizenID: z
+            .string()
+            .min(1, "El número de documento es obligatorio"),
+
         role: z.nativeEnum(UserRoleRegister, {
             errorMap: () => ({ message: "El rol es obligatorio" }),
         }),

@@ -7,6 +7,7 @@ import { LandingHeader } from "@/src/domains/landing/components/landing-header"
 import { TestimonialsSection } from "@/src/domains/landing/components/testimonials-section"
 
 export default function LandingPage() {
+ 
   return (
     <main className="min-h-screen bg-background">
       <LandingHeader />

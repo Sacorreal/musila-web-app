@@ -2,15 +2,14 @@
 
 import { apiURLs } from "@/src/shared/constants/urls";
 import { Language } from "../types/track.type";
+import { getServerApiClient } from "@/src/shared/libs/axios/axios-server";
 
 export async function fetchLanguages(): Promise<Language[]> {
-    const response = await fetch(apiURLs.languages.all)
+  try {
+    const client = await getServerApiClient();
+    const response = await client.get<Language[]>(apiURLs.languages.base);
   
-    if (!response.ok) {
-      throw new Error("Error al cargar idiomas")
-    }
-  
-    const languages: Language[] = await response.json()
+    const languages = response.data;
   
     return languages.sort((a, b) => {
       const isASpanish = a.label.toLowerCase() === "español"
@@ -20,4 +19,7 @@ export async function fetchLanguages(): Promise<Language[]> {
       if (!isASpanish && isBSpanish) return 1
       return a.label.localeCompare(b.label)
     })
+  } catch (error) {
+    throw new Error("Error al cargar idiomas")
   }
+}

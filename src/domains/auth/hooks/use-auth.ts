@@ -39,7 +39,8 @@ export function useAuth() {
                 id: decoded.id,
                 role: decoded.role,
                 name: decoded.name
-            }
+            },
+            token: newToken
         });
     }, [setSession]);
 
