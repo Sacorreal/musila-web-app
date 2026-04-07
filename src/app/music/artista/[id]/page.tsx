@@ -9,7 +9,6 @@ export default async function ArtistDetailServerPage({ params }: { params: Promi
   const { id } = await params;
 
   try {
-    // fetchArtistById already includes the populated tracks relationship
     const artist = await fetchArtistById(id);
 
     if (!artist) {
@@ -20,7 +19,6 @@ export default async function ArtistDetailServerPage({ params }: { params: Promi
       <main className="container mx-auto p-4 md:p-8">
         <ArtistProfileBanner artist={artist} />
         <ArtistBiography biography={artist.biography} />
-        {/* artist.tracks comes pre-populated from the backend relation */}
         <ArtistTracksList tracks={artist.tracks} />
       </main>
     );
