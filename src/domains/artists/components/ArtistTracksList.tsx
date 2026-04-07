@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/shared/components/UI/select';
-import { useArtistTracksFilter } from '../hooks/use-artist-tracks-filter.hook';
+import { useArtistTracksFilter, resolveGenreName } from '../hooks/use-artist-tracks-filter.hook';
 
 interface ArtistTracksListProps {
   tracks: TrackSummary[] | string[];
@@ -26,8 +26,11 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
 
   const {
     filteredTracks,
+    genreOptions,
     subGenreOptions,
+    selectedGenre,
     selectedSubGenre,
+    handleGenreChange,
     handleSubGenreChange,
   } = useArtistTracksFilter(populatedTracks);
 
@@ -42,18 +45,35 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
         </Button>
 
         <div className="flex gap-3">
-          {/* SubGenre filter — the only genre-level data the backend returns on tracks */}
-          <Select value={selectedSubGenre} onValueChange={handleSubGenreChange}>
-            <SelectTrigger className="w-[180px] bg-[#1E293B] border-0 text-slate-300 rounded-full h-10 px-4 shadow-sm hover:!bg-[#334155] cursor-pointer ring-0 focus:ring-0">
+          {/* Genre select — populated from track.genre string */}
+          <Select value={selectedGenre} onValueChange={handleGenreChange}>
+            <SelectTrigger className="w-[150px] bg-[#1E293B] border-0 text-slate-300 rounded-full h-10 px-4 shadow-sm hover:!bg-[#334155] cursor-pointer ring-0 focus:ring-0">
               <SelectValue>
-                {selectedSubGenre === 'all' ? 'Filtrar por género' : selectedSubGenre}
+                {selectedGenre === 'all' ? 'Género' : selectedGenre}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-[#1E293B] border-slate-700 text-white">
               <SelectItem value="all">Todos los géneros</SelectItem>
-              {subGenreOptions.map(option => (
-                <SelectItem key={option} value={option}>
-                  {option}
+              {genreOptions.map(genre => (
+                <SelectItem key={genre} value={genre}>
+                  {genre}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* SubGenre select — populated from track.subGenre string, filtered by selected genre */}
+          <Select value={selectedSubGenre} onValueChange={handleSubGenreChange}>
+            <SelectTrigger className="w-[170px] bg-[#1E293B] border-0 text-slate-300 rounded-full h-10 px-4 shadow-sm hover:!bg-[#334155] cursor-pointer ring-0 focus:ring-0">
+              <SelectValue>
+                {selectedSubGenre === 'all' ? 'Subgénero' : selectedSubGenre}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="bg-[#1E293B] border-slate-700 text-white">
+              <SelectItem value="all">Todos los subgéneros</SelectItem>
+              {subGenreOptions.map(sub => (
+                <SelectItem key={sub} value={sub}>
+                  {sub}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -67,13 +87,13 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
           <ArtistNoTracks />
         ) : filteredTracks.length === 0 ? (
           <div className="text-center py-10">
-            <p className="text-slate-400">No hay canciones que coincidan con el filtro aplicado.</p>
+            <p className="text-slate-400">No hay canciones que coincidan con los filtros aplicados.</p>
             <Button
               variant="link"
               className="text-emerald-500 mt-2"
-              onClick={() => handleSubGenreChange('all')}
+              onClick={() => handleGenreChange('all')}
             >
-              Limpiar filtro
+              Limpiar filtros
             </Button>
           </div>
         ) : (
@@ -95,10 +115,12 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
                 <span className="text-white font-semibold truncate hover:underline">{track.title}</span>
               </div>
 
-              <div className="flex items-center gap-4 sm:gap-14 ml-10 sm:ml-0 text-sm text-slate-400 font-medium whitespace-nowrap overflow-hidden">
+              <div className="flex items-center gap-4 sm:gap-10 ml-10 sm:ml-0 text-sm text-slate-400 font-medium whitespace-nowrap overflow-hidden">
                 <span className="text-emerald-500 min-w-[3rem]">{'3:12'}</span>
-                {/* subGenre is the only genre-level field returned by the backend */}
-                <span className="min-w-[9rem] hidden md:block truncate opacity-80 italic">
+                <span className="min-w-[6rem] hidden md:block truncate opacity-80 italic">
+                  {resolveGenreName(track.genre) || '—'}
+                </span>
+                <span className="min-w-[9rem] hidden md:block truncate">
                   {track.subGenre || '—'}
                 </span>
               </div>

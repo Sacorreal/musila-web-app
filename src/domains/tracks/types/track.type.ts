@@ -1,3 +1,5 @@
+import { MusicalGenre } from '@/src/domains/musical-genre/types/musical-genre.types';
+
 export interface Language {
     code: string; // ej: 'es', 'en'
     label: string; // ej: 'Español', 'Inglés'
@@ -23,9 +25,8 @@ export interface TrackSummary {
   title: string
   coverUrl?: string
   audioUrl?: string
-  genre?: string
-  genreId?: string
-  subGenre?: string
+  genre?: MusicalGenre | string // Backend populates as full MusicalGenre object
+  subGenre?: string             // Plain string (e.g. "Rock Alternativo")
   album?: string
   isAvailable: boolean
   isGospel: boolean
