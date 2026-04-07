@@ -129,4 +129,27 @@ export const tracksService = {
       return { error: message };
     }
   },
+
+  async getFeaturedTracks(): Promise<TrackSummary[]> {
+    try {
+      const { data } = await apiClient.get<TrackSummary[]>(apiURLs.tracks.base, {
+        params: { limit: 20 },
+      });
+      return Array.isArray(data) ? data : [];
+    } catch (errorWithLimit) {
+      console.warn('[FeaturedTracks] GET /tracks?limit=20 falló, reintentando sin parámetros...', errorWithLimit);
+      try {
+        const { data } = await apiClient.get<TrackSummary[]>(apiURLs.tracks.base);
+        return Array.isArray(data) ? data : [];
+      } catch (errorWithoutLimit) {
+        console.error('[FeaturedTracks] GET /tracks también falló sin parámetros:', errorWithoutLimit);
+        throw errorWithoutLimit;
+      }
+    }
+  },
+
+  async fetchById(id: string): Promise<TrackSummary> {
+    const { data } = await apiClient.get<TrackSummary>(apiURLs.tracks.byId(id));
+    return data;
+  },
 };

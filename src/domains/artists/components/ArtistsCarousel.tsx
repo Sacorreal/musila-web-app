@@ -46,7 +46,7 @@ export function ArtistsCarousel() {
       <div className="flex items-center justify-between mb-6 px-4">
         <div className="flex flex-col">
           <h2 className="text-2xl font-bold text-white tracking-tight">Autores Destacados</h2>
-          <span className="text-xs text-slate-500 font-medium">10 Artistas destacados esta semana</span>
+          <span className="text-xs text-slate-500 font-medium">10 Autores destacados esta semana</span>
         </div>
         <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-700/50 to-transparent ml-6 hidden md:block" />
       </div>
@@ -82,9 +82,9 @@ export function ArtistsCarousel() {
             >
               <div className="relative p-1 rounded-full transition-all duration-300 group-hover/artist:scale-105 group-active/artist:scale-95">
                 {/* Visual ring/glow effect on hover */}
-                <div className="absolute inset-0 rounded-full bg-emerald-500/15 opacity-0 group-hover/artist:opacity-100 blur-lg transition-opacity" />
+                <div className="absolute inset-0 rounded-full bg-blue-500/15 opacity-0 group-hover/artist:opacity-100 blur-lg transition-opacity" />
                 
-                <div className="relative p-1 rounded-full bg-slate-900 border-2 border-slate-800 group-hover/artist:border-emerald-500/40 transition-all duration-300 shadow-xl">
+                <div className="relative p-1 rounded-full bg-slate-900 border-2 border-slate-800 group-hover/artist:border-blue-500/40 transition-all duration-300 shadow-xl">
                   <Avatar className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 shadow-2xl">
                     <AvatarImage 
                       src={artist.avatar} 
@@ -99,7 +99,7 @@ export function ArtistsCarousel() {
               </div>
               
               <div className="flex flex-col items-center text-center px-1">
-                <span className="text-sm sm:text-[15px] font-bold text-white group-hover/artist:text-emerald-400 transition-colors line-clamp-1 w-full">
+                <span className="text-sm sm:text-[15px] font-bold text-white group-hover/artist:text-blue-400 transition-colors line-clamp-1 w-full">
                   {artist.name} {artist.lastName}
                 </span>
                 <div className="flex items-center gap-1.5 mt-0.5">

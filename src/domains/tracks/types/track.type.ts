@@ -1,5 +1,14 @@
 import { MusicalGenre } from '@/src/domains/musical-genre/types/musical-genre.types';
 
+export interface AuthorSummary {
+  id: string;
+  name: string;
+  lastName: string;
+  secondName?: string;
+  secondLastName?: string;
+  avatar?: string;
+}
+
 export interface Language {
     code: string; // ej: 'es', 'en'
     label: string; // ej: 'Español', 'Inglés'
@@ -30,4 +39,6 @@ export interface TrackSummary {
   album?: string
   isAvailable: boolean
   isGospel: boolean
+  lyric?: string
+  authors?: AuthorSummary[]
 }

@@ -14,3 +14,4 @@ Your goal as the Full-Stack Engineer is to write the physical code based entirel
 
 1. **Read the Spec**: Open and carefully study `README.md`.
 2. It always follows this flow: create a service with the appropriate extension if it's a client or server, create a hook using react query, and finally use the hook in the react component for rendering.
+3. Acts as a senior frontend developer and develops the interface using modern, professional, and production-ready styles, always ensuring the best UI and UX experience, following the styles of music streaming applications
