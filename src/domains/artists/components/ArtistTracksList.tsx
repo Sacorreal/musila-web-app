@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import { TrackSummary } from '@/src/domains/tracks/types/track.type';
 import { ArtistNoTracks } from './ArtistNoTracks';
@@ -10,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/src/shared/components/UI/select';
+import { useArtistTracksFilter } from '../hooks/use-artist-tracks-filter.hook';
 
 interface ArtistTracksListProps {
   tracks: TrackSummary[] | string[];
@@ -21,6 +24,40 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
   const populatedTracks = (tracks as Array<TrackSummary | string>).filter(
     (t): t is TrackSummary => typeof t === 'object' && t !== null,
   );
+
+  const {
+    filteredTracks,
+    genreOptions,
+    subGenres,
+    selectedGenre,
+    selectedSubGenre,
+    genreIdToName,
+    handleGenreChange,
+    handleSubGenreChange,
+  } = useArtistTracksFilter(populatedTracks);
+
+  // Helper to resolve genre name
+  const resolveGenreName = (track: TrackSummary) => {
+    // Try to find the genre identifier in various common fields
+    const genreCandidate = (track as any).genreId || (track as any).genre || (track as any).musicalGenre || (track as any).musicalGenreId;
+    
+    if (!genreCandidate) return 'Sin género';
+
+    // 1. If it's already a populated object, extract the name 
+    // Usually MusicalGenre { id: string, genre: string } or { id, name }
+    if (typeof genreCandidate === 'object') {
+      return genreCandidate.genre || genreCandidate.name || 'Género';
+    }
+    
+    // 2. If it's a string ID, resolve it via our hook's genre map
+    if (typeof genreCandidate === 'string') {
+      const name = genreIdToName[genreCandidate];
+      return name || 'Cargando...';
+    }
+
+    return 'Género';
+  };
+
   return (
     <div className="mt-10 px-2 pb-20">
       <h2 className="text-2xl font-bold text-white mb-6">Canciones</h2>
@@ -32,22 +69,37 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
         </Button>
         
         <div className="flex gap-3">
-          <Select>
-            <SelectTrigger className="w-[140px] bg-[#1E293B] border-0 text-slate-300 rounded-full h-10 px-4 shadow-sm hover:!bg-[#334155] cursor-pointer ring-0 focus:ring-0">
-              <SelectValue placeholder="género" />
+          {/* Genre Select */}
+          <Select value={selectedGenre} onValueChange={handleGenreChange}>
+            <SelectTrigger className="w-[160px] bg-[#1E293B] border-0 text-slate-300 rounded-full h-10 px-4 shadow-sm hover:!bg-[#334155] cursor-pointer ring-0 focus:ring-0">
+              <SelectValue>
+                {selectedGenre === 'all' ? 'Filtrar por género' : genreIdToName[selectedGenre] || 'Género'}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-[#1E293B] border-slate-700 text-white">
-              <SelectItem value="vallenato">Vallenato</SelectItem>
-              <SelectItem value="pop">Pop</SelectItem>
+              <SelectItem value="all">Todos los géneros</SelectItem>
+              {genreOptions.map(({ id, name }) => (
+                <SelectItem key={id} value={id}>
+                  {name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
-          <Select>
-            <SelectTrigger className="w-[140px] bg-[#1E293B] border-0 text-slate-300 rounded-full h-10 px-4 shadow-sm hover:!bg-[#334155] cursor-pointer ring-0 focus:ring-0">
-              <SelectValue placeholder="subgénero" />
+
+          {/* Subgenre Select */}
+          <Select value={selectedSubGenre} onValueChange={handleSubGenreChange}>
+            <SelectTrigger className="w-[180px] bg-[#1E293B] border-0 text-slate-300 rounded-full h-10 px-4 shadow-sm hover:!bg-[#334155] cursor-pointer ring-0 focus:ring-0">
+              <SelectValue>
+                {selectedSubGenre === 'all' ? 'Filtrar por subgénero' : selectedSubGenre}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-[#1E293B] border-slate-700 text-white">
-              <SelectItem value="paseo">Paseo</SelectItem>
-              <SelectItem value="romantico">Romántico</SelectItem>
+              <SelectItem value="all">Todos los subgéneros</SelectItem>
+              {subGenres.map(subGenre => (
+                <SelectItem key={subGenre} value={subGenre}>
+                  {subGenre.charAt(0).toUpperCase() + subGenre.slice(1)}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -57,8 +109,21 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
       <div className="flex flex-col gap-2">
         {populatedTracks.length === 0 ? (
           <ArtistNoTracks />
+        ) : filteredTracks.length === 0 ? (
+          <div className="text-center py-10">
+            <p className="text-slate-400">No hay canciones que coincidan con los filtros aplicados.</p>
+            <Button 
+              variant="link" 
+              className="text-emerald-500 mt-2"
+              onClick={() => {
+                handleGenreChange('all');
+              }}
+            >
+              Limpiar filtros
+            </Button>
+          </div>
         ) : (
-          populatedTracks.map((track, index) => (
+          filteredTracks.map((track, index) => (
             <div 
               key={track.id} 
               className="group flex flex-col sm:flex-row items-start sm:items-center py-2 px-3 hover:bg-white/5 rounded-lg transition-colors gap-4 sm:gap-6 w-full cursor-pointer"
@@ -76,12 +141,14 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
                  <span className="text-white font-semibold truncate hover:underline">{track.title}</span>
               </div>
               
-              {/* Optional data for visual completeness against the mock. Mock data duration if not provided */}
               <div className="flex items-center gap-4 sm:gap-14 ml-10 sm:ml-0 text-sm text-slate-400 font-medium whitespace-nowrap overflow-hidden">
                 <span className="text-emerald-500 min-w-[3rem]">{'3:12'}</span>
-                <span className="min-w-[6rem] hidden md:block truncate">{track.genre || 'vallenato'}</span>
-                {/* Fallback to 'paseo' if subgenre is not in track, just to match visual mock */}
-                <span className="min-w-[6rem] hidden md:block truncate">{'paseo'}</span>
+                <span className="min-w-[7rem] hidden md:block truncate opacity-80 italic">
+                  {resolveGenreName(track)}
+                </span>
+                <span className="min-w-[8rem] hidden md:block truncate">
+                  {track.subGenre || '-'}
+                </span>
               </div>
               
               <button className="text-slate-500 hover:text-white p-2 self-end sm:self-auto shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -94,3 +161,4 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
     </div>
   );
 }
+

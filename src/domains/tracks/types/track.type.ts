@@ -23,7 +23,10 @@ export interface TrackSummary {
   title: string
   coverUrl?: string
   audioUrl?: string
-  genre: string
+  genre?: string
+  genreId?: string
+  subGenre?: string
+  album?: string
   isAvailable: boolean
   isGospel: boolean
 }
