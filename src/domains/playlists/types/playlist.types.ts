@@ -1,8 +1,9 @@
-import { AuthorSummary} from '@domains/artists/types/artist.types'
+import { AuthorSummary} from '@domains/artists/types/artist.types'; 
+import { PaginatedResponse} from '@shared/types/shared.types'
 
 export type PlaylistOwner = AuthorSummary; 
 
-export interface Playlist {
+export interface PlaylistSummary {
   id: string;
   title: string;
   owner: PlaylistOwner;
@@ -23,3 +24,6 @@ export interface PlaylistTrack {
   title: string;  
 }
 
+export type UpdatePlaylistInput = Partial<PlaylistSummary>
+
+export type AuthorsResponse = PaginatedResponse<PlaylistSummary>;

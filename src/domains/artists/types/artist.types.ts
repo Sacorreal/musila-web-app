@@ -3,7 +3,7 @@ import {MusicalGenre } from '@domains/musical-genre/types/musical-genre.types'
 import { PaginatedResponse} from '@shared/types/shared.types'
 
 export interface AuthorSummary {
- id: string;
+  id: string;
   name: string;
   secondName?: string | null;
   lastName: string;

@@ -65,3 +65,6 @@ export interface TrackDetails {
 }
 
 export type TracksResponse = PaginatedResponse<TrackSummary>;
+
+export type UpdateTrackInput = Partial<CreateTrackPayload>
+
