@@ -1,4 +1,4 @@
-import { TrackSummary } from '@/src/domains/tracks/types/track.type';
+import { TrackSummary } from '@/src/domains/tracks/types/track.types';
 
 export function getUniqueGenres(tracks: TrackSummary[]): string[] {
   // Check both 'genre' and 'genreId' as the backend field name may vary

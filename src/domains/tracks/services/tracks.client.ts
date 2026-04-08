@@ -2,17 +2,17 @@ import {apiClient } from '@shared/libs/axios/axios-client'
 import type { CreateTrackFormValues } from "../validations/track.schema";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { StorageFolder, type UploadableFile } from "@/src/domains/storage/types/storage.types";
-import type { CreateTrackPayload, TrackSummary } from "@domains/tracks/types/track.type";
+import type { CreateTrackPayload, TrackSummary, TrackDetails } from "@/src/domains/tracks/types/track.types";
 import type { UploadedFileInfo } from "@domains/storage/types/storage.types";
+import { handleApiError} from '@shared/libs/handle-api-error'
+import { TracksResponse} from '../types/track.types'
 
-type ServiceResult<T> = {
-  data?: T;
-  error?: string;
-};
 
 interface CreateTrackOptions {
   signal?: AbortSignal;
 }
+
+
 
 export async function createTrackRequest(
   data: CreateTrackFormValues,
@@ -80,76 +80,81 @@ export async function createTrackRequest(
 }
 
 export const tracksService = {
-  async getAll<T = unknown>(): Promise<ServiceResult<T>> {
+  // ✅ Obtener todas las canciones
+  async getAll(): Promise<TracksResponse> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.base);
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener las canciones";
-      return { error: message };
+      const { data } = await apiClient.get<TracksResponse>(
+        apiURLs.tracks.base
+      );
+      return data
+    } catch (error) {
+      handleApiError(error, "Error al obtener las canciones");
     }
   },
 
-  async getById<T = unknown>(id: string): Promise<ServiceResult<T>> {
+  // ✅ Obtener canciones del usuario
+  async getMyTracks(): Promise<TrackSummary[]> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.byId(id));
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener la canción";
-      return { error: message };
+      const { data } = await apiClient.get<TrackSummary[]>(
+        `${apiURLs.tracks.base}/me`
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, "Error al obtener tus canciones");
     }
   },
 
-  async search<T = unknown>(query: string): Promise<ServiceResult<T>> {
+  // ✅ Buscar canciones
+  async search(query: string): Promise<TracksResponse> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.base, { params: { q: query } });
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al buscar canciones";
-      return { error: message };
+      const { data } = await apiClient.get<TracksResponse>(
+        apiURLs.tracks.base,
+        { params: { q: query } }
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, "Error al buscar canciones");
     }
   },
 
-  async getGenres<T = unknown>(): Promise<ServiceResult<T>> {
-    try {
-      const { data } = await apiClient.get<T>(apiURLs.genres.base);
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener géneros musicales";
-      return { error: message };
-    }
-  },
 
-  async getMyTracks<T = unknown>(): Promise<ServiceResult<T>> {
-    try {
-      const { data } = await apiClient.get<T>(`${apiURLs.tracks.base}/me`);
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener tus canciones";
-      return { error: message };
-    }
-  },
-
+  // ✅ Featured (con fallback inteligente)
   async getFeaturedTracks(): Promise<TrackSummary[]> {
     try {
-      const { data } = await apiClient.get<TrackSummary[]>(apiURLs.tracks.base, {
-        params: { limit: 20 },
-      });
+      const { data } = await apiClient.get<TrackSummary[]>(
+        apiURLs.tracks.base,
+        { params: { limit: 20 } }
+      );
+
       return Array.isArray(data) ? data : [];
     } catch (errorWithLimit) {
-      console.warn('[FeaturedTracks] GET /tracks?limit=20 falló, reintentando sin parámetros...', errorWithLimit);
+      console.warn(
+        "[FeaturedTracks] fallback sin params",
+        errorWithLimit
+      );
+
       try {
-        const { data } = await apiClient.get<TrackSummary[]>(apiURLs.tracks.base);
+        const { data } = await apiClient.get<TrackSummary[]>(
+          apiURLs.tracks.base
+        );
         return Array.isArray(data) ? data : [];
-      } catch (errorWithoutLimit) {
-        console.error('[FeaturedTracks] GET /tracks también falló sin parámetros:', errorWithoutLimit);
-        throw errorWithoutLimit;
+      } catch (error) {
+        handleApiError(error, "Error al obtener canciones destacadas");
       }
     }
   },
 
-  async fetchById(id: string): Promise<TrackSummary> {
-    const { data } = await apiClient.get<TrackSummary>(apiURLs.tracks.byId(id));
-    return data;
+  // ✅ Detalle de canción
+  async getById(id: string): Promise<TrackDetails> {
+    try {
+      const { data } = await apiClient.get<TrackDetails>(
+        apiURLs.tracks.byId(id)
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, "Error al obtener la canción");
+    }
   },
 };
+
+

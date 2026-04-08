@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useMemo } from 'react';
-import { TrackSummary } from '@/src/domains/tracks/types/track.type';
+import { TrackSummary } from '@/src/domains/tracks/types/track.types';
 import { MusicalGenre } from '@/src/domains/musical-genre/types/musical-genre.types';
 
 interface FilterForm {

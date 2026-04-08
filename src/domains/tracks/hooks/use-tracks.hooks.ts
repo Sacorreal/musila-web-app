@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { tracksService } from '../services/tracks.client';
-import { TrackSummary } from '@/src/domains/tracks/types/track.type';
+import { TrackSummary } from '@/src/domains/tracks/types/track.types';
 
 /**
  * Obtiene canciones destacadas desde el cliente (axios con token Zustand).

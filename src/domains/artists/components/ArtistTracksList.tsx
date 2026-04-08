@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import { TrackSummary } from '@/src/domains/tracks/types/track.type';
+import { TrackSummary } from '@/src/domains/tracks/types/track.types';
 import { ArtistNoTracks } from './ArtistNoTracks';
 import { Button } from '@/src/shared/components/UI/button';
 import { Play, MoreHorizontal } from 'lucide-react';

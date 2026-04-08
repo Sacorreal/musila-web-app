@@ -10,3 +10,8 @@ export interface MenuRoute {
 }
 
 export type NavItems = MenuRoute[]
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+}

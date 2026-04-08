@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Music2, User2 } from 'lucide-react';
-import { TrackSummary } from '@/src/domains/tracks/types/track.type';
+import { TrackSummary } from '@/src/domains/tracks/types/track.types';
 import { MusicalGenre } from '@/src/domains/musical-genre/types/musical-genre.types';
 
 interface TrackDetailHeroProps {

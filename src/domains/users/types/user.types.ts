@@ -1,4 +1,32 @@
-import { User } from '../models/user.model'
+import { TrackSummary } from '@/src/domains/tracks/types/track.types';
+
+export interface User {
+
+    id: string
+    name: string
+    secondName: string
+    lastName: string
+    secondLastName: string
+    role: UserRoleRegister
+    email: string
+    password: string;
+    countryCode: string;
+    phone: string;
+    typeCitizenID: string;
+    citizenID: string;
+    avatar: string;
+    isVerified: boolean;
+    biography: string;
+    socialNetworks: Record<string, string>;
+    tracks: TrackSummary[] | string[]
+    preferredGenres: string[]
+    guests: string[]
+    playlists: string[]
+    requestSent: string[]
+    isUserFree: boolean;
+    repeatPassword: string
+}
+
 
 export enum UserRole {
   ADMIN = "admin",
