@@ -2,7 +2,7 @@ import {apiClient } from '@shared/libs/axios/axios-client'
 import type { CreateTrackFormValues } from "../validations/track.schema";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { StorageFolder, type UploadableFile } from "@/src/domains/storage/types/storage.types";
-import type { CreateTrackPayload, TrackSummary, TrackDetails } from "@/src/domains/tracks/types/track.types";
+import type { CreateTrackDTO, TrackSummary, TrackDetails } from "@/src/domains/tracks/types/track.types";
 import type { UploadedFileInfo } from "@domains/storage/types/storage.types";
 import { handleApiError} from '@shared/libs/handle-api-error'
 import { TracksResponse} from '../types/track.types'
@@ -51,7 +51,7 @@ export async function createTrackRequest(
   // ========================================================
   // 3️⃣ Construir el Payload
   // ========================================================
-  const payload: CreateTrackPayload = {
+  const payload: CreateTrackDTO = {
     ...dto,
     authorsIds,
     audioKey: audioInfo.key,

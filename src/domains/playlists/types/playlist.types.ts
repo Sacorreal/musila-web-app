@@ -17,13 +17,34 @@ export interface PlaylistSummary {
   deletedAt: string | null;
 }
 
-export interface CreatePlaylist{ title:string}
+export interface CreatePlaylistDTO{ title:string}
 
 export interface PlaylistTrack {
   id: string;
-  title: string;  
+  title: string;
+  genre: GenreLite;
+  subGenre: string;
+  coverUrl?: string | null;
+  audioUrl?: string | null;
+  year: number;
+  audioKey: string;
+  language: string;
+  lyric: string;
+  externalsIds: any;
+  isAvailable: boolean;
+  isGospel: boolean;
+  coverKey: any;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
-export type UpdatePlaylistInput = Partial<PlaylistSummary>
+export type UpdatePlaylistDTO = Partial<PlaylistSummary>
 
 export type AuthorsResponse = PaginatedResponse<PlaylistSummary>;
+
+export interface GenreLite {
+  id: string;
+  genre: string;
+  slug: string;
+}

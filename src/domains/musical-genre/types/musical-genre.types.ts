@@ -1,5 +1,5 @@
 export interface MusicalGenre {
-    id: string;
+  id: string;
   genre: string;
   slug: string;
   createdAt: string;

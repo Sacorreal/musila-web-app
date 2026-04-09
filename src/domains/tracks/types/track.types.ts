@@ -1,5 +1,6 @@
 import {PaginatedResponse } from  '@shared/types/shared.types'
 import { AuthorsTracks} from '@domains/artists/types/artist.types'
+import { PaginationDTO} from '@shared/types/shared.types'
 
 
 export interface Language {
@@ -7,7 +8,7 @@ export interface Language {
     label: string; // ej: 'Español', 'Inglés'
   }
 
-export interface CreateTrackPayload {
+export interface CreateTrackDTO {
   title: string;
   genreId: string;
   subGenre?: string;
@@ -66,5 +67,13 @@ export interface TrackDetails {
 
 export type TracksResponse = PaginatedResponse<TrackSummary>;
 
-export type UpdateTrackInput = Partial<CreateTrackPayload>
+export type UpdateTrackDTO = Partial<CreateTrackDTO>
+
+export interface FilterTrackDto extends PaginationDTO {
+ isGospel?: boolean;
+ genreId?: string;
+ subGenre?: string;
+ language?: string;
+ isAvailable?: boolean;
+}
 
