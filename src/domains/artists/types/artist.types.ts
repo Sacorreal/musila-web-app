@@ -2,7 +2,7 @@ import { UserRole } from '@domains/users/types/user.types'
 import { MusicalGenreDto } from '@domains/musical-genre/types/musical-genre.types'
 import { PaginatedResponse } from '@shared/types/shared.types'
 
-export interface AuthorResponse {
+export interface AuthorsResponseDto {
   id: string;
   name: string;
   secondName?: string | null;
@@ -22,13 +22,9 @@ export interface AuthorResponse {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
- 
-} 
 
-export type AuthorTrackDto = Pick<
-  AuthorResponse,
-  | 'email' | 'id' | 'name' | 'lastName' | 'role'
->
+}
+
 
 export interface AuthorTrackDetailDto {
   id: string;
@@ -60,7 +56,7 @@ export interface AuthorPlaylistDto {
 }
 
 
-export interface AuthorDetailResponse {
+export interface AuthorResponse {
   id: string;
   name: string;
   secondName?: string | null;

@@ -1,11 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { Music2, User2 } from 'lucide-react';
-import { TrackDetailResponse } from '@/src/domains/tracks/types/track.types';
+import { TrackResponse } from '@/src/domains/tracks/types/track.types';
 import { MusicalGenreDto } from '@/src/domains/musical-genre/types/musical-genre.types';
 
 interface TrackDetailHeroProps {
-  track: TrackDetailResponse;
+  track: TrackResponse;
 }
 
 function resolveGenreName(genre?: MusicalGenreDto | string): string {
@@ -76,7 +76,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
                     href={`/music/artista/${author.id}`}
                     className="text-sm font-semibold text-slate-300 hover:text-white transition-colors underline-offset-4 hover:underline"
                   >
-                    {author.name} {author.lastName}
+                    {author.name} 
                   </Link>
                   {index < track.authors!.length - 1 && (
                     <span className="text-slate-600 text-xs">·</span>

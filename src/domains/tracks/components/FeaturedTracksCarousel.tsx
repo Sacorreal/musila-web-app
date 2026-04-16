@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Music2 } from 'lucide-react';
 import { useFeaturedTracks } from '../hooks/use-tracks.hooks';
 import { MusicalGenreDto } from '@/src/domains/musical-genre/types/musical-genre.types';
+import { TracksResponseDto } from '@/src/domains/tracks/types/track.types';
 
 function resolveGenreName(genre?: MusicalGenreDto | string): string {
   if (!genre) return '';

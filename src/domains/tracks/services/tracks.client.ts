@@ -1,11 +1,11 @@
-import {apiClient } from '@shared/libs/axios/axios-client'
+import { apiClient } from '@shared/libs/axios/axios-client'
 import type { CreateTrackFormValues } from "../validations/track.schema";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { StorageFolder, type UploadableFileDto } from "@/src/domains/storage/types/storage.types";
-import type { CreateTrackInput, TrackResponse, TrackDetailResponse } from "@/src/domains/tracks/types/track.types";
+import type { CreateTrackInput, TrackResponse, TracksResponseDto } from "@/src/domains/tracks/types/track.types";
 import type { UploadedFileDto } from "@domains/storage/types/storage.types";
-import { handleApiError} from '@shared/libs/handle-api-error'
-import { TracksResponse} from '../types/track.types'
+import { handleApiError } from '@shared/libs/handle-api-error'
+import { TracksResponse } from '../types/track.types'
 
 
 interface CreateTrackOptions {
@@ -119,14 +119,15 @@ export const tracksService = {
 
 
   // ✅ Featured (con fallback inteligente)
-  async getFeaturedTracks(): Promise<TrackResponse[]> {
+  async getFeaturedTracks(): Promise<TracksResponseDto[]> {
     try {
-      const { data } = await apiClient.get<TrackResponse[]>(
+      const { data } = await apiClient.get<TracksResponse>(
         apiURLs.tracks.base,
         { params: { limit: 20 } }
       );
 
-      return Array.isArray(data) ? data : [];
+      // El backend retorna { data: [], total: N } — extraemos el array interno
+      return Array.isArray(data.data) ? data.data : [];
     } catch (errorWithLimit) {
       console.warn(
         "[FeaturedTracks] fallback sin params",
@@ -134,10 +135,10 @@ export const tracksService = {
       );
 
       try {
-        const { data } = await apiClient.get<TrackResponse[]>(
+        const { data } = await apiClient.get<TracksResponse>(
           apiURLs.tracks.base
         );
-        return Array.isArray(data) ? data : [];
+        return Array.isArray(data.data) ? data.data : [];
       } catch (error) {
         handleApiError(error, "Error al obtener canciones destacadas");
       }
@@ -145,9 +146,9 @@ export const tracksService = {
   },
 
   // ✅ Detalle de canción
-  async getById(id: string): Promise<TrackDetailResponse> {
+  async getById(id: string): Promise<TrackResponse> {
     try {
-      const { data } = await apiClient.get<TrackDetailResponse>(
+      const { data } = await apiClient.get<TrackResponse>(
         apiURLs.tracks.byId(id)
       );
       return data;

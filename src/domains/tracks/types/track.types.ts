@@ -1,12 +1,18 @@
 import { PaginatedResponse } from '@shared/types/shared.types'
-import { AuthorTrackDto } from '@domains/artists/types/artist.types'
+import { AuthorsResponseDto } from '@domains/artists/types/artist.types'
 import { PaginationInput } from '@shared/types/shared.types'
 
 
 export interface LanguageDto {
-    code: string; // ej: 'es', 'en'
-    label: string; // ej: 'Español', 'Inglés'
-  }
+  code: string; // ej: 'es', 'en'
+  label: string; // ej: 'Español', 'Inglés'
+}
+
+export type AuthorTrackDto = Pick<
+  AuthorsResponseDto,
+  | 'email' | 'id' | 'name' | 'role'
+>
+
 
 export interface CreateTrackInput {
   title: string;
@@ -20,60 +26,76 @@ export interface CreateTrackInput {
   audioKey: string;
   audioUrl: string;
   coverKey?: string;
-  coverUrl?: string; 
+  coverUrl?: string;
 }
 
-export interface TrackResponse  {
-  id: string
-  title: string
-  genre: string
-  subGenre: string
-  coverUrl?: string
-  audioUrl?: string
-  year: number
-  audioKey: string
-  language: string
-  lyric: string
-  externalsIds: any
-  isAvailable: boolean
-  isGospel: boolean
-  coverKey: any  
-  createdAt: string
-  updatedAt: string
-}
-
-export interface TrackDetailResponse {
+export interface TracksResponseDto {
   id: string;
   title: string;
   genre: string;
   subGenre: string;
-  coverUrl?: string | null;
-  audioUrl: string;
+  coverUrl: string;
+  audioUrl: string | null;
   year: number;
-  audioKey?: string | null
+  audioKey: string;
   language: string;
   lyric: string;
-  externalsIds: any;
+  externalsIds: Record<string, unknown> | null;
   isAvailable: boolean;
   isGospel: boolean;
-  coverKey: string;
-  authors: AuthorTrackDto[];
-  intellectualProperties: any[];
-  playlists: Record<string, any>;
-  requestedTrack: Record<string, any>;
+  coverKey: string | null;
+  authors: string[];
+  intellectualProperties: string[];
+
+  playlists: string[]
+  requestedTrack: string[]
+
   createdAt: string;
   updatedAt: string;
 }
 
-export type TracksResponse = PaginatedResponse<TrackResponse>;
+export interface TrackResponse {
+  id: string;
+  title: string;
+  genre: string;
+  subGenre: string;
+  coverUrl: string;
+  audioUrl: string | null;
+  year: number;
+  audioKey: string;
+  language: string;
+  lyric: string;
+  externalsIds: Record<string, unknown> | null;
+  isAvailable: boolean;
+  isGospel: boolean;
+  coverKey: string | null;
+  intellectualProperties: string[];
+  playlists: PlaylistTrackDto[];
+  requestedTrack: string[];
+  createdAt: string;
+  updatedAt: string;
+  authors: AuthorTrackDto[];
+
+}
+
+export interface PlaylistTrackDto {
+  id: string;
+  title: string;
+  cover: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+export type TracksResponse = PaginatedResponse<TracksResponseDto>;
 
 export type UpdateTrackInput = Partial<CreateTrackInput>
 
 export interface FilterTrackInput extends PaginationInput {
- isGospel?: boolean;
- genreId?: string;
- subGenre?: string;
- language?: string;
- isAvailable?: boolean;
+  isGospel?: boolean;
+  genreId?: string;
+  subGenre?: string;
+  language?: string;
+  isAvailable?: boolean;
 }
 
