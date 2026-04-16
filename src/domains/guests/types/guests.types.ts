@@ -1,8 +1,8 @@
-export interface GuestsSummary {
+export interface GuestResponse {
 
   
 }
 
-export interface CreateGuestDTO {
+export interface CreateGuestInput {
   
 }

@@ -4,9 +4,9 @@ import React, { useRef } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Music2 } from 'lucide-react';
 import { useFeaturedTracks } from '../hooks/use-tracks.hooks';
-import { MusicalGenre } from '@/src/domains/musical-genre/types/musical-genre.types';
+import { MusicalGenreDto } from '@/src/domains/musical-genre/types/musical-genre.types';
 
-function resolveGenreName(genre?: MusicalGenre | string): string {
+function resolveGenreName(genre?: MusicalGenreDto | string): string {
   if (!genre) return '';
   if (typeof genre === 'string') return genre;
   return genre.genre ?? '';
@@ -86,9 +86,6 @@ export function FeaturedTracksCarousel() {
         >
           {featuredTracks.map((track) => {
             const genreName = resolveGenreName(track.genre);
-            const authorNames = track.authors
-              ?.map((a) => `${a.name} ${a.lastName}`.trim())
-              .join(', ');
 
             return (
               <Link
@@ -131,12 +128,8 @@ export function FeaturedTracksCarousel() {
                   {track.title}
                 </span>
 
-                {/* Authors */}
-                {authorNames ? (
-                  <span className="text-xs text-slate-500 line-clamp-1">{authorNames}</span>
-                ) : (
-                  <span className="text-xs text-slate-600 italic">Sin autor</span>
-                )}
+                {/* Authors — not available in list response */}
+                <span className="text-xs text-slate-500 line-clamp-1">—</span>
               </Link>
             );
           })}

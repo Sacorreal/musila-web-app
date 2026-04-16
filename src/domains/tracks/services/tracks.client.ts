@@ -1,9 +1,9 @@
 import {apiClient } from '@shared/libs/axios/axios-client'
 import type { CreateTrackFormValues } from "../validations/track.schema";
 import { apiURLs } from "@/src/shared/constants/urls";
-import { StorageFolder, type UploadableFile } from "@/src/domains/storage/types/storage.types";
-import type { CreateTrackDTO, TrackSummary, TrackDetails } from "@/src/domains/tracks/types/track.types";
-import type { UploadedFileInfo } from "@domains/storage/types/storage.types";
+import { StorageFolder, type UploadableFileDto } from "@/src/domains/storage/types/storage.types";
+import type { CreateTrackInput, TrackResponse, TrackDetailResponse } from "@/src/domains/tracks/types/track.types";
+import type { UploadedFileDto } from "@domains/storage/types/storage.types";
 import { handleApiError} from '@shared/libs/handle-api-error'
 import { TracksResponse} from '../types/track.types'
 
@@ -17,21 +17,21 @@ interface CreateTrackOptions {
 export async function createTrackRequest(
   data: CreateTrackFormValues,
   // Recibimos las funciones inyectadas desde el Hook
-  uploadFilesFn: (files: UploadableFile[]) => Promise<UploadedFileInfo[]>,
+  uploadFilesFn: (files: UploadableFileDto[]) => Promise<UploadedFileDto[]>,
   rollbackFn: (keys: string[]) => Promise<void>,
   options?: CreateTrackOptions,
-): Promise<TrackSummary> {
+): Promise<TrackResponse> {
   const { signal } = options || {};
   const { audio, coverImage, authorsIds, ...dto } = data;
 
   if (!audio) throw new Error("Audio file is required");
 
-  const filesToUpload: UploadableFile[] = [
+  const filesToUpload: UploadableFileDto[] = [
     { field: "audio", file: audio, folder: StorageFolder.TRACK_AUDIO },
-    ...(coverImage ? [{ field: "cover", file: coverImage, folder: StorageFolder.TRACK_COVER } as UploadableFile] : []),
+    ...(coverImage ? [{ field: "cover", file: coverImage, folder: StorageFolder.TRACK_COVER } as UploadableFileDto] : []),
   ];
 
-  let uploadedFiles: UploadedFileInfo[] = [];
+  let uploadedFiles: UploadedFileDto[] = [];
 
   // ========================================================
   // 1️⃣ y 2️⃣: Firmas y Subida delegada al Hook inyectado
@@ -51,7 +51,7 @@ export async function createTrackRequest(
   // ========================================================
   // 3️⃣ Construir el Payload
   // ========================================================
-  const payload: CreateTrackDTO = {
+  const payload: CreateTrackInput = {
     ...dto,
     authorsIds,
     audioKey: audioInfo.key,
@@ -64,7 +64,7 @@ export async function createTrackRequest(
   // 4️⃣ Guardar metadatos (Con Rollback inyectado)
   // ========================================================
   try {
-    const response = await apiClient.post<TrackSummary>(apiURLs.tracks.base, payload, {
+    const response = await apiClient.post<TrackResponse>(apiURLs.tracks.base, payload, {
       signal,
     });
     return response.data;
@@ -93,9 +93,9 @@ export const tracksService = {
   },
 
   // ✅ Obtener canciones del usuario
-  async getMyTracks(): Promise<TrackSummary[]> {
+  async getMyTracks(): Promise<TrackResponse[]> {
     try {
-      const { data } = await apiClient.get<TrackSummary[]>(
+      const { data } = await apiClient.get<TrackResponse[]>(
         `${apiURLs.tracks.base}/me`
       );
       return data;
@@ -119,9 +119,9 @@ export const tracksService = {
 
 
   // ✅ Featured (con fallback inteligente)
-  async getFeaturedTracks(): Promise<TrackSummary[]> {
+  async getFeaturedTracks(): Promise<TrackResponse[]> {
     try {
-      const { data } = await apiClient.get<TrackSummary[]>(
+      const { data } = await apiClient.get<TrackResponse[]>(
         apiURLs.tracks.base,
         { params: { limit: 20 } }
       );
@@ -134,7 +134,7 @@ export const tracksService = {
       );
 
       try {
-        const { data } = await apiClient.get<TrackSummary[]>(
+        const { data } = await apiClient.get<TrackResponse[]>(
           apiURLs.tracks.base
         );
         return Array.isArray(data) ? data : [];
@@ -145,9 +145,9 @@ export const tracksService = {
   },
 
   // ✅ Detalle de canción
-  async getById(id: string): Promise<TrackDetails> {
+  async getById(id: string): Promise<TrackDetailResponse> {
     try {
-      const { data } = await apiClient.get<TrackDetails>(
+      const { data } = await apiClient.get<TrackDetailResponse>(
         apiURLs.tracks.byId(id)
       );
       return data;

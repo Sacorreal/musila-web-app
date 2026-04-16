@@ -7,8 +7,8 @@ import { loginRequest, registerUserRequest } from '../services/auth.actions';
 
 
 
-import type { LoginDTO } from '../types/auth.types';
-import type { CreateUserDTO } from '@/src/domains/users/types/user.types';
+import type { LoginInput } from '../types/auth.types';
+import type { CreateUserInput } from '@/src/domains/users/types/user.types';
 import {  deleteCookie } from '../utils/auth.utils';
 
 // Utilidad nativa para leer cookies en el cliente sin librerías extra
@@ -44,12 +44,12 @@ export function useAuth() {
         });
     }, [setSession]);
 
-    const login = async (dto: LoginDTO) => {
+    const login = async (dto: LoginInput) => {
         const newToken = await loginRequest(dto);        
         processToken(newToken);
     };
 
-    const registerUser = async (dto: CreateUserDTO) => {
+    const registerUser = async (dto: CreateUserInput) => {
 
         try {
             // 1. Petición al Backend

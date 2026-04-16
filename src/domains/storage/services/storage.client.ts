@@ -1,6 +1,6 @@
 import {apiClient } from '@shared/libs/axios/axios-client'
 import type {
-  UploadableFile,
+  UploadableFileDto,
   PresignedUrlResponse,
   // PresignedUrlRequest ya no lo necesitaremos con esta estructura
 } from "../types/storage.types"
@@ -8,7 +8,7 @@ import type {
 import { apiURLs } from "@/src/shared/constants/urls"
 
 export async function requestPresignedUrls(
-  files: UploadableFile[],
+  files: UploadableFileDto[],
 ): Promise<PresignedUrlResponse> {
   
   // 1. Mapeamos cada archivo a una Promesa (una petición HTTP independiente)

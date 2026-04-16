@@ -1,14 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { Music2, User2 } from 'lucide-react';
-import { TrackSummary } from '@/src/domains/tracks/types/track.types';
-import { MusicalGenre } from '@/src/domains/musical-genre/types/musical-genre.types';
+import { TrackDetailResponse } from '@/src/domains/tracks/types/track.types';
+import { MusicalGenreDto } from '@/src/domains/musical-genre/types/musical-genre.types';
 
 interface TrackDetailHeroProps {
-  track: TrackSummary;
+  track: TrackDetailResponse;
 }
 
-function resolveGenreName(genre?: MusicalGenre | string): string {
+function resolveGenreName(genre?: MusicalGenreDto | string): string {
   if (!genre) return '';
   if (typeof genre === 'string') return genre;
   return genre.genre ?? '';

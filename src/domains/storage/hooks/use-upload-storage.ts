@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { requestPresignedUrls, uploadFileToSpaces, rollbackUploads } from '@/src/domains/storage/services/storage.client';
-import type { UploadableFile, UploadedFileInfo } from '@/src/domains/storage/types/storage.types';
+import type { UploadableFileDto, UploadedFileDto } from '@/src/domains/storage/types/storage.types';
 
 export function useUploadStorage() {
   // Estado para rastrear el progreso independiente de cada archivo
   const [progresses, setProgresses] = useState<Record<string, number>>({});
 
   const mutation = useMutation({
-    mutationFn: async (files: UploadableFile[]): Promise<UploadedFileInfo[]> => {
+    mutationFn: async (files: UploadableFileDto[]): Promise<UploadedFileDto[]> => {
       setProgresses({});
       
       const { urls } = await requestPresignedUrls(files);
@@ -20,7 +20,7 @@ export function useUploadStorage() {
           throw new Error(`No se recibió la firma del servidor para el archivo: ${fileItem.field}`);
         }
 
-        // Subimos y, al terminar, mapeamos el resultado a la estructura UploadedFileInfo
+        // Subimos y, al terminar, mapeamos el resultado a la estructura UploadedFileDto
         return uploadFileToSpaces(urlInfo.uploadUrl, fileItem.file, (percent) => {
           setProgresses((prev) => ({ ...prev, [fileItem.field]: percent }));
         }).then(() => ({

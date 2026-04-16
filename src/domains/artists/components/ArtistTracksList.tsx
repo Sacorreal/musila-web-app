@@ -1,7 +1,8 @@
 'use client'
 
 import React from 'react';
-import { TrackSummary } from '@/src/domains/tracks/types/track.types';
+import { TrackResponse } from '@/src/domains/tracks/types/track.types';
+import { AuthorTrackDetailDto } from '@/src/domains/artists/types/artist.types';
 import { ArtistNoTracks } from './ArtistNoTracks';
 import { Button } from '@/src/shared/components/UI/button';
 import { Play, MoreHorizontal } from 'lucide-react';
@@ -15,13 +16,13 @@ import {
 import { useArtistTracksFilter, resolveGenreName } from '../hooks/use-artist-tracks-filter.hook';
 
 interface ArtistTracksListProps {
-  tracks: TrackSummary[] | string[];
+  tracks: TrackResponse[] | AuthorTrackDetailDto[] | string[];
 }
 
 export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
-  // Filter out plain string IDs — keep only populated TrackSummary objects
-  const populatedTracks = (tracks as Array<TrackSummary | string>).filter(
-    (t): t is TrackSummary => typeof t === 'object' && t !== null,
+  // Filter out plain string IDs — keep only populated track objects
+  const populatedTracks = (tracks as Array<TrackResponse | AuthorTrackDetailDto | string>).filter(
+    (t): t is TrackResponse => typeof t === 'object' && t !== null,
   );
 
   const {

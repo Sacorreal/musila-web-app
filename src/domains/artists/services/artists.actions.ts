@@ -2,8 +2,8 @@
 
 import { getServerApiClient } from '@/src/shared/libs/axios/axios-server';
 import { apiURLs } from '@/src/shared/constants/urls';
-import {AuthorDetails } from '../types/artist.types'
-import {AuthorsResponse } from '../types/artist.types'
+import { AuthorDetailResponse } from '../types/artist.types'
+import { AuthorsResponse } from '../types/artist.types'
 
 export async function fetchFeaturedArtists(): Promise<AuthorsResponse> {
   const client = await getServerApiClient();
@@ -15,9 +15,9 @@ export async function fetchFeaturedArtists(): Promise<AuthorsResponse> {
   return response.data;
 }
 
-export async function fetchArtistById(id: string): Promise<AuthorDetails> {
+export async function fetchArtistById(id: string): Promise<AuthorDetailResponse> {
   const client = await getServerApiClient();
-  const response = await client.get<AuthorDetails>(apiURLs.users.userById(id));
+  const response = await client.get<AuthorDetailResponse>(apiURLs.users.userById(id));
   return response.data;
 }
 

@@ -1,14 +1,14 @@
-import {PaginatedResponse } from  '@shared/types/shared.types'
-import { AuthorsTracks} from '@domains/artists/types/artist.types'
-import { PaginationDTO} from '@shared/types/shared.types'
+import { PaginatedResponse } from '@shared/types/shared.types'
+import { AuthorTrackDto } from '@domains/artists/types/artist.types'
+import { PaginationInput } from '@shared/types/shared.types'
 
 
-export interface Language {
+export interface LanguageDto {
     code: string; // ej: 'es', 'en'
     label: string; // ej: 'Español', 'Inglés'
   }
 
-export interface CreateTrackDTO {
+export interface CreateTrackInput {
   title: string;
   genreId: string;
   subGenre?: string;
@@ -23,7 +23,7 @@ export interface CreateTrackDTO {
   coverUrl?: string; 
 }
 
-export interface TrackSummary  {
+export interface TrackResponse  {
   id: string
   title: string
   genre: string
@@ -42,7 +42,7 @@ export interface TrackSummary  {
   updatedAt: string
 }
 
-export interface TrackDetails {
+export interface TrackDetailResponse {
   id: string;
   title: string;
   genre: string;
@@ -57,7 +57,7 @@ export interface TrackDetails {
   isAvailable: boolean;
   isGospel: boolean;
   coverKey: string;
-  authors: AuthorsTracks[];
+  authors: AuthorTrackDto[];
   intellectualProperties: any[];
   playlists: Record<string, any>;
   requestedTrack: Record<string, any>;
@@ -65,11 +65,11 @@ export interface TrackDetails {
   updatedAt: string;
 }
 
-export type TracksResponse = PaginatedResponse<TrackSummary>;
+export type TracksResponse = PaginatedResponse<TrackResponse>;
 
-export type UpdateTrackDTO = Partial<CreateTrackDTO>
+export type UpdateTrackInput = Partial<CreateTrackInput>
 
-export interface FilterTrackDto extends PaginationDTO {
+export interface FilterTrackInput extends PaginationInput {
  isGospel?: boolean;
  genreId?: string;
  subGenre?: string;

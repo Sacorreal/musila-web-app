@@ -1,6 +1,6 @@
-import { TrackSummary } from '@/src/domains/tracks/types/track.types';
+import { TrackResponse } from '@/src/domains/tracks/types/track.types';
 
-export interface User {
+export interface UserDto {
 
     id: string
     name: string
@@ -18,7 +18,7 @@ export interface User {
     isVerified: boolean;
     biography: string;
     socialNetworks: Record<string, string>;
-    tracks: TrackSummary[] | string[]
+    tracks: TrackResponse[] | string[]
     preferredGenres: string[]
     guests: string[]
     playlists: string[]
@@ -48,7 +48,7 @@ export enum UserRoleRegister {
 
 
 type BaseUser = Pick<
-  User,
+  UserDto,
   | 'email'
   | 'name'
   | 'lastName'
@@ -62,15 +62,15 @@ type BaseUser = Pick<
 >
 
 type OptionalUser = Partial<
-  Pick<User, 'secondName' | 'secondLastName'>
+  Pick<UserDto, 'secondName' | 'secondLastName'>
 >
 
-export type CreateUserDTO = BaseUser & OptionalUser
+export type CreateUserInput = BaseUser & OptionalUser
 
 
 
-export type UpdateUserDTO = Partial<CreateUserDTO>
+export type UpdateUserInput = Partial<CreateUserInput>
 
-export type UserResponse = Omit<User, ''>
+export type UserResponse = Omit<UserDto, ''>
 
 

@@ -1,28 +1,28 @@
-import { AuthorSummary} from '@domains/artists/types/artist.types'; 
-import { PaginatedResponse} from '@shared/types/shared.types'
+import { AuthorResponse } from '@domains/artists/types/artist.types'; 
+import { PaginatedResponse } from '@shared/types/shared.types'
 
-export type PlaylistOwner = AuthorSummary; 
+export type PlaylistOwnerDto = AuthorResponse; 
 
-export interface PlaylistSummary {
+export interface PlaylistResponse {
   id: string;
   title: string;
-  owner: PlaylistOwner;
+  owner: PlaylistOwnerDto;
   cover?: string | null;
 
   guests: any[]; 
-  tracks: PlaylistTrack[];
+  tracks: PlaylistTrackDto[];
 
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
 }
 
-export interface CreatePlaylistDTO{ title:string}
+export interface CreatePlaylistInput { title: string }
 
-export interface PlaylistTrack {
+export interface PlaylistTrackDto {
   id: string;
   title: string;
-  genre: GenreLite;
+  genre: GenreLiteDto;
   subGenre: string;
   coverUrl?: string | null;
   audioUrl?: string | null;
@@ -39,11 +39,11 @@ export interface PlaylistTrack {
   deletedAt: string | null;
 }
 
-export type UpdatePlaylistDTO = Partial<PlaylistSummary>
+export type UpdatePlaylistInput = Partial<PlaylistResponse>
 
-export type AuthorsResponse = PaginatedResponse<PlaylistSummary>;
+export type PlaylistsResponse = PaginatedResponse<PlaylistResponse>;
 
-export interface GenreLite {
+export interface GenreLiteDto {
   id: string;
   genre: string;
   slug: string;

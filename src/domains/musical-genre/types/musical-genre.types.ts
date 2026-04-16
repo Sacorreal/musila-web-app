@@ -1,4 +1,4 @@
-export interface MusicalGenre {
+export interface MusicalGenreDto {
   id: string;
   genre: string;
   slug: string;

@@ -34,12 +34,12 @@ export function ArtistsCarousel() {
     );
   }
 
-  if (isError || !artists || artists.length === 0) {
+  if (isError || !artists || !artists.data || artists.data.length === 0) {
     return null;
   }
 
   // Show exactly 10 artists total as requested (6 main + 4 scrollable)
-  const featuredArtists = artists.slice(0, 10);
+  const featuredArtists = artists.data.slice(0, 10);
 
   return (
     <div className="py-8 w-full group/carousel relative">

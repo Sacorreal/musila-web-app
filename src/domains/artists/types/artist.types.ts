@@ -1,8 +1,8 @@
-import { UserRole} from '@domains/users/types/user.types'
-import {MusicalGenre } from '@domains/musical-genre/types/musical-genre.types'
-import { PaginatedResponse} from '@shared/types/shared.types'
+import { UserRole } from '@domains/users/types/user.types'
+import { MusicalGenreDto } from '@domains/musical-genre/types/musical-genre.types'
+import { PaginatedResponse } from '@shared/types/shared.types'
 
-export interface AuthorSummary {
+export interface AuthorResponse {
   id: string;
   name: string;
   secondName?: string | null;
@@ -25,15 +25,15 @@ export interface AuthorSummary {
  
 } 
 
-export type AuthorsTracks = Pick<
-  AuthorSummary,
-  | 'email' | 'id'|'name'|'role'
+export type AuthorTrackDto = Pick<
+  AuthorResponse,
+  | 'email' | 'id' | 'name' | 'lastName' | 'role'
 >
 
-export interface AuthorTrack {
+export interface AuthorTrackDetailDto {
   id: string;
   title: string;
-  genre: MusicalGenre,
+  genre: MusicalGenreDto,
   subGenre: string;
   coverUrl?: string | null;
   audioUrl?: string | null;
@@ -50,7 +50,7 @@ export interface AuthorTrack {
   deletedAt: string | null;
 }
 
-export interface AuthorPlaylist {
+export interface AuthorPlaylistDto {
   id: string;
   title: string;
   cover: string;
@@ -60,7 +60,7 @@ export interface AuthorPlaylist {
 }
 
 
-export interface AuthorDetails {
+export interface AuthorDetailResponse {
   id: string;
   name: string;
   secondName?: string | null;
@@ -76,7 +76,7 @@ export interface AuthorDetails {
   isVerified: boolean;
   biography?: string | null;
   socialNetworks?: any;
-  tracks: AuthorTrack[];
+  tracks: AuthorTrackDetailDto[];
 
   preferredGenres: any[];
   guests: any[];
@@ -88,7 +88,7 @@ export interface AuthorDetails {
   updatedAt: string;
   deletedAt: string | null;
 
-  playlists: AuthorPlaylist[];
+  playlists: AuthorPlaylistDto[];
 }
 
-export type AuthorsResponse = PaginatedResponse<AuthorSummary>;
+export type AuthorsResponse = PaginatedResponse<AuthorResponse>;

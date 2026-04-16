@@ -1,12 +1,12 @@
 'use server'
-import type { CreateUserDTO } from '@/src/domains/users/types/user.types';
+import type { CreateUserInput } from '@/src/domains/users/types/user.types';
 import { cookies } from 'next/headers';
 
-import { LoginDTO, loginResponse } from '../types/auth.types';
+import { LoginInput, LoginResponse } from '../types/auth.types';
 import { apiURLs } from '@/src/shared/constants/urls';
 import { getServerApiClient} from '@shared/libs/axios/axios-server'
 
-export async function loginRequest(loginDto: LoginDTO): Promise<string> {
+export async function loginRequest(loginDto: LoginInput): Promise<string> {
 
   const cookieStore = await cookies()
 
@@ -21,7 +21,7 @@ export async function loginRequest(loginDto: LoginDTO): Promise<string> {
   }
 
 
-  const data: loginResponse = await response.json() 
+  const data: LoginResponse = await response.json() 
 
   cookieStore.set('access_token', data.token, {
     httpOnly: true,
@@ -34,13 +34,13 @@ export async function loginRequest(loginDto: LoginDTO): Promise<string> {
 
 }
 
-export async function registerUserRequest(createUserDto: CreateUserDTO): Promise<string> {
+export async function registerUserRequest(createUserDto: CreateUserInput): Promise<string> {
   try {    
     const serverClient = await getServerApiClient();
 
     // 2. Ejecutamos la petición. 
     // Axios serializa automáticamente el JSON y maneja los estados HTTP.
-    const { data } = await serverClient.post<loginResponse>(
+    const { data } = await serverClient.post<LoginResponse>(
       apiURLs.auth.register, 
       createUserDto
     );

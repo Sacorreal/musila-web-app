@@ -16,7 +16,7 @@ export interface PaginatedResponse<T> {
   total: number;
 }
 
-export interface PaginationDTO { 
+export interface PaginationInput { 
   limit?: number;
   offset?: number
 }

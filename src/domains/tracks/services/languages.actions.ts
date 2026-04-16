@@ -1,13 +1,13 @@
 'use server'
 
 import { apiURLs } from "@/src/shared/constants/urls";
-import { Language } from "../types/track.types";
+import { LanguageDto } from "../types/track.types";
 import { getServerApiClient } from "@/src/shared/libs/axios/axios-server";
 
-export async function fetchLanguages(): Promise<Language[]> {
+export async function fetchLanguages(): Promise<LanguageDto[]> {
   try {
     const client = await getServerApiClient();
-    const response = await client.get<Language[]>(apiURLs.languages.base);
+    const response = await client.get<LanguageDto[]>(apiURLs.languages.base);
   
     const languages = response.data;
   
