@@ -67,8 +67,10 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
           </div>
 
           {/* Autores */}
+          
           {track.authors && track.authors.length > 0 && (
             <div className="flex flex-wrap items-center gap-2 mt-1">
+              <span>Autor: </span>
               <User2 className="w-4 h-4 text-slate-400 shrink-0" />
               {track.authors.map((author, index) => (
                 <React.Fragment key={author.id}>
@@ -76,7 +78,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
                     href={`/music/artista/${author.id}`}
                     className="text-sm font-semibold text-slate-300 hover:text-white transition-colors underline-offset-4 hover:underline"
                   >
-                    {author.name} 
+                     {author.name}
                   </Link>
                   {index < track.authors!.length - 1 && (
                     <span className="text-slate-600 text-xs">·</span>
