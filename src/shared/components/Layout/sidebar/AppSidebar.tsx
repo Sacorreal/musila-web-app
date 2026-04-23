@@ -32,7 +32,7 @@ export function AppSidebar() {
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 w-64 bg-[#1a2332] border-r border-[#2a3444] flex flex-col transition-transform duration-200',
+          'fixed inset-y-0 left-0 z-40 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-200',
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >

@@ -30,13 +30,13 @@ export function FeaturedTracksCarousel() {
   if (isLoading) {
     return (
       <div className="py-8 w-full">
-        <h2 className="text-2xl font-bold text-white mb-6 px-4">Canciones Destacadas</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6 px-4">Canciones Destacadas</h2>
         <div className="flex gap-4 overflow-x-hidden px-4 pb-4">
           {[...Array(8)].map((_, i) => (
             <div key={i} className="shrink-0 w-[160px] sm:w-[180px]">
-              <div className="w-full aspect-square rounded-xl bg-slate-800 animate-pulse mb-3" />
-              <div className="w-3/4 h-3.5 bg-slate-800 animate-pulse rounded mb-2" />
-              <div className="w-1/2 h-3 bg-slate-800/60 animate-pulse rounded" />
+              <div className="w-full aspect-square rounded-xl bg-slate-200 dark:bg-slate-800 animate-pulse mb-3" />
+              <div className="w-3/4 h-3.5 bg-slate-200 dark:bg-slate-800 animate-pulse rounded mb-2" />
+              <div className="w-1/2 h-3 bg-slate-300 dark:bg-slate-800/60 animate-pulse rounded" />
             </div>
           ))}
         </div>
@@ -53,19 +53,19 @@ export function FeaturedTracksCarousel() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6 px-4">
         <div className="flex flex-col">
-          <h2 className="text-2xl font-bold text-white tracking-tight">Canciones Destacadas</h2>
-          <span className="text-xs text-slate-500 font-medium">
+          <h2 className="text-2xl font-bold text-foreground tracking-tight">Canciones Destacadas</h2>
+          <span className="text-xs text-muted-foreground font-medium">
             {featuredTracks.length} canciones seleccionadas para ti
           </span>
         </div>
-        <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-700/50 to-transparent ml-6 hidden md:block" />
+        <div className="h-[1px] flex-1 bg-gradient-to-r from-border to-transparent ml-6 hidden md:block" />
       </div>
 
       <div className="relative overflow-hidden">
         {/* Chevron izquierdo */}
         <button
           onClick={() => scroll('left')}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white items-center justify-center backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-black/60 hidden md:flex"
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/40 border border-slate-300 dark:border-white/10 text-foreground items-center justify-center backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-slate-100 dark:hover:bg-black/60 hidden md:flex"
           aria-label="Anterior"
         >
           <ChevronLeft className="w-6 h-6" />
@@ -74,7 +74,7 @@ export function FeaturedTracksCarousel() {
         {/* Chevron derecho */}
         <button
           onClick={() => scroll('right')}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white items-center justify-center backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-black/60 hidden md:flex"
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/80 dark:bg-black/40 border border-slate-300 dark:border-white/10 text-foreground items-center justify-center backdrop-blur-md opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-slate-100 dark:hover:bg-black/60 hidden md:flex"
           aria-label="Siguiente"
         >
           <ChevronRight className="w-6 h-6" />
@@ -104,8 +104,8 @@ export function FeaturedTracksCarousel() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                      <Music2 className="w-10 h-10 text-slate-600" />
+                    <div className="w-full h-full bg-gradient-to-br from-slate-300 to-slate-400 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center">
+                      <Music2 className="w-10 h-10 text-slate-500 dark:text-slate-600" />
                     </div>
                   )}
                   {/* Hover overlay */}
@@ -125,12 +125,12 @@ export function FeaturedTracksCarousel() {
                 </div>
 
                 {/* Title */}
-                <span className="text-sm font-bold text-white group-hover/track:text-blue-400 transition-colors line-clamp-2 leading-snug mb-1">
+                <span className="text-sm font-bold text-foreground group-hover/track:text-primary transition-colors line-clamp-2 leading-snug mb-1">
                   {track.title}
                 </span>
 
                 {/* Authors — not available in list response */}
-                <span className="text-xs text-slate-500 line-clamp-1">—</span>
+                <span className="text-xs text-muted-foreground line-clamp-1">—</span>
               </Link>
             );
           })}
