@@ -99,12 +99,16 @@ export interface FilterTrackInput extends PaginationInput {
   isAvailable?: boolean;
 }
 
-export enum LicenseTypeDto {
-  LICENCIA_DE_PRIMER_USO = 'licencia_de_primer_uso'
 
-}
 
 export interface CreateRequestedTrackInput {
   trackId: string;
-  licenseType: LicenseTypeDto;
+  licenseType: LicenseType;
+}
+
+export enum LicenseType {
+  LICENCIA_DE_PRIMER_USO = 'licencia de primer uso',
+  LICENCIA_TRADUCCION = 'licencia traduccion',
+  LICENCIA_REPRODUCCION = 'licencia reproduccion',
+  LICENCIA_SINCRONIZACION = 'licencia sincronizacion'
 }
