@@ -106,7 +106,7 @@ export default function GenreDetailPage({ params }: { params: Promise<{ slug: st
               <SelectValue placeholder="Subgénero" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los subgéneros</SelectItem>
+              <SelectItem value="all">Subgéneros</SelectItem>
               {uniqueSubGenres.map(sg => (
                 <SelectItem key={sg as string} value={sg as string}>{sg as string}</SelectItem>
               ))}
@@ -118,7 +118,7 @@ export default function GenreDetailPage({ params }: { params: Promise<{ slug: st
               <SelectValue placeholder="Idioma" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos los idiomas</SelectItem>
+              <SelectItem value="all">Idioma</SelectItem>
               {uniqueLanguages.map(lang => (
                 <SelectItem key={lang as string} value={lang as string}>
                   {LANGUAGE_LABELS[(lang as string).toLowerCase()] || (lang as string).toUpperCase()}
@@ -255,7 +255,11 @@ export default function GenreDetailPage({ params }: { params: Promise<{ slug: st
             { name: "Amelia Carter", img: "https://i.pravatar.cc/150?u=5" },
             { name: "Theodore Morgan", img: "https://i.pravatar.cc/150?u=6" },
           ]).map((author, i) => (
-            <div key={i} className="flex flex-col items-center gap-5 group cursor-pointer">
+            <Link 
+              key={i} 
+              href={`/music/artista/${author.id || i}`}
+              className="flex flex-col items-center gap-5 group cursor-pointer"
+            >
               <div className="relative p-1.5 rounded-full bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 group-hover:border-primary/50 group-hover:scale-105 transition-all duration-500 shadow-xl">
                 <Avatar className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 shadow-inner">
                   <AvatarImage src={(author as any).avatar || (author as any).img} alt={author.name} className="object-cover" />
@@ -268,7 +272,7 @@ export default function GenreDetailPage({ params }: { params: Promise<{ slug: st
               <span className="text-sm font-black text-foreground text-center group-hover:text-primary transition-colors uppercase tracking-tight">
                 {author.name} { (author as any).lastName || "" }
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

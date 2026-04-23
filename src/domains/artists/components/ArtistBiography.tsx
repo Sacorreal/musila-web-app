@@ -9,8 +9,8 @@ export function ArtistBiography({ biography }: ArtistBiographyProps) {
 
   return (
     <div className="mt-8 px-2">
-      <h2 className="text-2xl font-bold text-white mb-4">Biografía</h2>
-      <p className="text-slate-300 leading-relaxed text-base max-w-5xl">
+      <h2 className="text-2xl font-bold text-foreground mb-4">Biografía</h2>
+      <p className="text-muted-foreground leading-relaxed text-base max-w-5xl">
         {biography}
       </p>
     </div>
