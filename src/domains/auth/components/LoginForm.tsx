@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type { LoginDTO } from "../types/auth.types";
+import type { LoginInput } from "../types/auth.types";
 import { useAuth } from "../hooks/use-auth";
 
 export function LoginForm() {
@@ -21,9 +21,9 @@ export function LoginForm() {
     handleSubmit,
     formState: { isSubmitting },
     reset,
-  } = useForm<LoginDTO>();
+  } = useForm<LoginInput>();
 
-  const onSubmit = async (data: LoginDTO) => {
+  const onSubmit = async (data: LoginInput) => {
     try {      
       data.citizenID = data.citizenID.trim(); 
       console.log('envio estos datos:',data)

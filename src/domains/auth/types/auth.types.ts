@@ -1,11 +1,11 @@
 import { UserRole } from "@/src/domains/users/types/user.types";
 
-export interface LoginDTO {
+export interface LoginInput {
     citizenID: string;
     password: string;
 }
 
-export interface TokenPayload {
+export interface TokenPayloadDto {
     id: string;
     email: string;
     role: UserRole;
@@ -31,7 +31,7 @@ export type AuthState = {
     clearSession: () => void
 }
 
-export interface loginResponse {
+export interface LoginResponse {
     token: string
 }
 

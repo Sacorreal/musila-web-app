@@ -2,8 +2,8 @@
 
 import { useForm } from 'react-hook-form';
 import { useMemo } from 'react';
-import { TrackSummary } from '@/src/domains/tracks/types/track.type';
-import { MusicalGenre } from '@/src/domains/musical-genre/types/musical-genre.types';
+import { TrackResponse } from '@/src/domains/tracks/types/track.types';
+import { MusicalGenreDto } from '@/src/domains/musical-genre/types/musical-genre.types';
 
 interface FilterForm {
   genre: string;
@@ -11,13 +11,13 @@ interface FilterForm {
 }
 
 // Helper: extract genre name string from either a populated object or a plain string
-export function resolveGenreName(genre: MusicalGenre | string | undefined): string {
+export function resolveGenreName(genre: MusicalGenreDto | string | undefined): string {
   if (!genre) return '';
   if (typeof genre === 'object') return genre.genre;
   return genre;
 }
 
-export function useArtistTracksFilter(tracks: TrackSummary[]) {
+export function useArtistTracksFilter(tracks: TrackResponse[]) {
   const { watch, setValue } = useForm<FilterForm>({
     defaultValues: { genre: 'all', subGenre: 'all' },
   });

@@ -1,37 +1,37 @@
-import {apiClient } from '@shared/libs/axios/axios-client'
+import { apiClient } from '@shared/libs/axios/axios-client'
 import type { CreateTrackFormValues } from "../validations/track.schema";
 import { apiURLs } from "@/src/shared/constants/urls";
-import { StorageFolder, type UploadableFile } from "@/src/domains/storage/types/storage.types";
-import type { CreateTrackPayload, TrackSummary } from "@domains/tracks/types/track.type";
-import type { UploadedFileInfo } from "@domains/storage/types/storage.types";
+import { StorageFolder, type UploadableFileDto } from "@/src/domains/storage/types/storage.types";
+import type { CreateTrackInput, TrackResponse, TracksResponseDto } from "@/src/domains/tracks/types/track.types";
+import type { UploadedFileDto } from "@domains/storage/types/storage.types";
+import { handleApiError } from '@shared/libs/handle-api-error'
+import { TracksResponse } from '../types/track.types'
 
-type ServiceResult<T> = {
-  data?: T;
-  error?: string;
-};
 
 interface CreateTrackOptions {
   signal?: AbortSignal;
 }
 
+
+
 export async function createTrackRequest(
   data: CreateTrackFormValues,
   // Recibimos las funciones inyectadas desde el Hook
-  uploadFilesFn: (files: UploadableFile[]) => Promise<UploadedFileInfo[]>,
+  uploadFilesFn: (files: UploadableFileDto[]) => Promise<UploadedFileDto[]>,
   rollbackFn: (keys: string[]) => Promise<void>,
   options?: CreateTrackOptions,
-): Promise<TrackSummary> {
+): Promise<TrackResponse> {
   const { signal } = options || {};
   const { audio, coverImage, authorsIds, ...dto } = data;
 
   if (!audio) throw new Error("Audio file is required");
 
-  const filesToUpload: UploadableFile[] = [
+  const filesToUpload: UploadableFileDto[] = [
     { field: "audio", file: audio, folder: StorageFolder.TRACK_AUDIO },
-    ...(coverImage ? [{ field: "cover", file: coverImage, folder: StorageFolder.TRACK_COVER } as UploadableFile] : []),
+    ...(coverImage ? [{ field: "cover", file: coverImage, folder: StorageFolder.TRACK_COVER } as UploadableFileDto] : []),
   ];
 
-  let uploadedFiles: UploadedFileInfo[] = [];
+  let uploadedFiles: UploadedFileDto[] = [];
 
   // ========================================================
   // 1️⃣ y 2️⃣: Firmas y Subida delegada al Hook inyectado
@@ -51,7 +51,7 @@ export async function createTrackRequest(
   // ========================================================
   // 3️⃣ Construir el Payload
   // ========================================================
-  const payload: CreateTrackPayload = {
+  const payload: CreateTrackInput = {
     ...dto,
     authorsIds,
     audioKey: audioInfo.key,
@@ -64,7 +64,7 @@ export async function createTrackRequest(
   // 4️⃣ Guardar metadatos (Con Rollback inyectado)
   // ========================================================
   try {
-    const response = await apiClient.post<TrackSummary>(apiURLs.tracks.base, payload, {
+    const response = await apiClient.post<TrackResponse>(apiURLs.tracks.base, payload, {
       signal,
     });
     return response.data;
@@ -80,53 +80,82 @@ export async function createTrackRequest(
 }
 
 export const tracksService = {
-  async getAll<T = unknown>(): Promise<ServiceResult<T>> {
+  // ✅ Obtener todas las canciones
+  async getAll(): Promise<TracksResponse> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.base);
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener las canciones";
-      return { error: message };
+      const { data } = await apiClient.get<TracksResponse>(
+        apiURLs.tracks.base
+      );
+      return data
+    } catch (error) {
+      handleApiError(error, "Error al obtener las canciones");
     }
   },
 
-  async getById<T = unknown>(id: string): Promise<ServiceResult<T>> {
+  // ✅ Obtener canciones del usuario
+  async getMyTracks(): Promise<TrackResponse[]> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.byId(id));
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener la canción";
-      return { error: message };
+      const { data } = await apiClient.get<TrackResponse[]>(
+        `${apiURLs.tracks.base}/me`
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, "Error al obtener tus canciones");
     }
   },
 
-  async search<T = unknown>(query: string): Promise<ServiceResult<T>> {
+  // ✅ Buscar canciones
+  async search(query: string): Promise<TracksResponse> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.tracks.base, { params: { q: query } });
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al buscar canciones";
-      return { error: message };
+      const { data } = await apiClient.get<TracksResponse>(
+        apiURLs.tracks.base,
+        { params: { q: query } }
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, "Error al buscar canciones");
     }
   },
 
-  async getGenres<T = unknown>(): Promise<ServiceResult<T>> {
+
+  // ✅ Featured (con fallback inteligente)
+  async getFeaturedTracks(): Promise<TracksResponseDto[]> {
     try {
-      const { data } = await apiClient.get<T>(apiURLs.genres.base);
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener géneros musicales";
-      return { error: message };
+      const { data } = await apiClient.get<TracksResponse>(
+        apiURLs.tracks.base,
+        { params: { limit: 20 } }
+      );
+
+      // El backend retorna { data: [], total: N } — extraemos el array interno
+      return Array.isArray(data.data) ? data.data : [];
+    } catch (errorWithLimit) {
+      console.warn(
+        "[FeaturedTracks] fallback sin params",
+        errorWithLimit
+      );
+
+      try {
+        const { data } = await apiClient.get<TracksResponse>(
+          apiURLs.tracks.base
+        );
+        return Array.isArray(data.data) ? data.data : [];
+      } catch (error) {
+        handleApiError(error, "Error al obtener canciones destacadas");
+      }
     }
   },
 
-  async getMyTracks<T = unknown>(): Promise<ServiceResult<T>> {
+  // ✅ Detalle de canción
+  async getById(id: string): Promise<TrackResponse> {
     try {
-      const { data } = await apiClient.get<T>(`${apiURLs.tracks.base}/me`);
-      return { data };
-    } catch (error: any) {
-      const message = error.response?.data?.message ?? "Error al obtener tus canciones";
-      return { error: message };
+      const { data } = await apiClient.get<TrackResponse>(
+        apiURLs.tracks.byId(id)
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error, "Error al obtener la canción");
     }
   },
 };
+
+

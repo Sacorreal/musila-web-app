@@ -1,11 +1,11 @@
-export interface UploadableFile {
+export interface UploadableFileDto {
     field: UploadField
     file: File
     folder: StorageFolder
   }
   
 
-  
+
   export interface PresignedUrlResponse {
     urls: {
       field: UploadField
@@ -22,7 +22,7 @@ export interface UploadableFile {
     DOCUMENTS = 'documents',
   }
 
-export interface UploadedFileInfo {
+export interface UploadedFileDto {
   field: string;
   key: string;
   publicUrl: string;

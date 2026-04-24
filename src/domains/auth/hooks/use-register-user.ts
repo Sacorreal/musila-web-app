@@ -1,4 +1,4 @@
-import { CreateUserDTO } from '@/src/domains/users/types/user.types'
+import { CreateUserInput } from '@/src/domains/users/types/user.types'
 import { useAuthStore } from '../store/use-auth-store'
 
 import { decodeToken } from '../utils/decode-token'
@@ -9,7 +9,7 @@ export function useRegisterUser() {
 
     const setSession = useAuthStore((s) => s.setSession)
 
-    const registerUser = async (dto: CreateUserDTO) => {
+    const registerUser = async (dto: CreateUserInput) => {
         const token = await registerUserRequest(dto)
 
         const decoded = decodeToken(token)
@@ -20,11 +20,12 @@ export function useRegisterUser() {
         }
 
         setSession({
+            token,
             user: {
                 email: decoded.email,
                 id: decoded.id,
                 role: decoded.role,
-                name: decoded.name
+                name: decoded.name,
             }
         })
 

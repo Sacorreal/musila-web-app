@@ -1,5 +1,5 @@
 import { loginRequest } from '@/src/domains/auth/services/auth.actions'
-import { LoginDTO } from '@domains/auth/types/auth.types'
+import { LoginInput } from '@domains/auth/types/auth.types'
 
 // Mock de next/headers
 const mockSet = jest.fn()
@@ -15,7 +15,7 @@ jest.mock('next/headers', () => ({
 global.fetch = jest.fn()
 
 describe('loginRequest', () => {
-  const mockLoginDto: LoginDTO = {
+  const mockLoginDto: LoginInput = {
     email: 'test@example.com',
     password: 'password123',
   }

@@ -10,3 +10,13 @@ export interface MenuRoute {
 }
 
 export type NavItems = MenuRoute[]
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+}
+
+export interface PaginationInput { 
+  limit?: number;
+  offset?: number
+}

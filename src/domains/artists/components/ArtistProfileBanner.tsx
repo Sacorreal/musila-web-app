@@ -1,11 +1,11 @@
 import React from 'react';
-import { User } from '@/src/domains/users/models/user.model';
+import { UserDto } from '@/src/domains/users/types/user.types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/shared/components/UI/avatar';
 import { Button } from '@/src/shared/components/UI/button';
 import { Repeat2 } from 'lucide-react'; // Simulating share/retweet icon
 
 interface ArtistProfileBannerProps {
-  artist: User;
+  artist: UserDto;
 }
 
 export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
@@ -25,10 +25,10 @@ export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
         {/* We place the avatar overlapping the bottom left if desired, or inside */}
         <div className="absolute inset-0 bg-black/10" /> {/* Subtle overlay */}
         <div className="absolute bottom-6 left-6 flex items-center gap-6">
-           <div className="p-1 rounded-full bg-slate-900/10 backdrop-blur-sm relative shadow-xl">
-             <Avatar className="w-28 h-28 sm:w-36 sm:h-36 border-4 border-[#0F172A]">
-                <AvatarImage src={artist.avatar} alt={`${artist.name} ${artist.lastName}`} className="object-cover" />
-                <AvatarFallback className="bg-slate-700 text-white font-bold text-2xl">
+           <div className="p-1 rounded-full bg-background/10 backdrop-blur-sm relative shadow-xl">
+             <Avatar className="w-24 h-24 sm:w-36 sm:h-36 border-4 border-background">
+                <AvatarImage src={artist.avatar ?? undefined} alt={`${artist.name} ${artist.lastName}`} className="object-cover" />
+                <AvatarFallback className="bg-slate-200 dark:bg-slate-700 text-foreground dark:text-white font-bold text-2xl">
                   {artist.name?.charAt(0)}{artist.lastName?.charAt(0)}
                 </AvatarFallback>
              </Avatar>
@@ -40,15 +40,15 @@ export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-3 mt-2 px-2">
-        <Button className="bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded-full px-6 font-semibold shadow-md transition-all">
+      <div className="flex flex-wrap items-center gap-3 mt-2 px-2">
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 font-semibold shadow-md transition-all">
           Seguir
         </Button>
-        <Button variant="secondary" className="bg-[#1E293B] hover:bg-[#334155] text-white rounded-full px-5 font-semibold gap-2 border-0">
+        <Button variant="secondary" className="rounded-full px-5 font-semibold gap-2">
           <Repeat2 className="w-4 h-4" />
           Compartir
         </Button>
-        <Button variant="secondary" className="bg-[#1E293B] hover:bg-[#334155] text-white rounded-full px-5 font-semibold border-0">
+        <Button variant="secondary" className="rounded-full px-5 font-semibold">
           Enviar Mensaje
         </Button>
       </div>

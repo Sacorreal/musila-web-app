@@ -1,4 +1,32 @@
-import { User } from '../models/user.model'
+import { TrackResponse } from '@/src/domains/tracks/types/track.types';
+
+export interface UserDto {
+
+    id: string
+    name: string
+    secondName: string
+    lastName: string
+    secondLastName: string
+    role: UserRoleRegister
+    email: string
+    password: string;
+    countryCode: string;
+    phone: string;
+    typeCitizenID: string;
+    citizenID: string;
+    avatar: string;
+    isVerified: boolean;
+    biography: string;
+    socialNetworks: Record<string, string>;
+    tracks: TrackResponse[] | string[]
+    preferredGenres: string[]
+    guests: string[]
+    playlists: string[]
+    requestSent: string[]
+    isUserFree: boolean;
+    repeatPassword: string
+}
+
 
 export enum UserRole {
   ADMIN = "admin",
@@ -20,7 +48,7 @@ export enum UserRoleRegister {
 
 
 type BaseUser = Pick<
-  User,
+  UserDto,
   | 'email'
   | 'name'
   | 'lastName'
@@ -34,15 +62,15 @@ type BaseUser = Pick<
 >
 
 type OptionalUser = Partial<
-  Pick<User, 'secondName' | 'secondLastName'>
+  Pick<UserDto, 'secondName' | 'secondLastName'>
 >
 
-export type CreateUserDTO = BaseUser & OptionalUser
+export type CreateUserInput = BaseUser & OptionalUser
 
 
 
-export type UpdateUserDTO = Partial<CreateUserDTO>
+export type UpdateUserInput = Partial<CreateUserInput>
 
-export type UserResponseDTO = Omit<User, ''>
+export type UserResponse = Omit<UserDto, ''>
 
 

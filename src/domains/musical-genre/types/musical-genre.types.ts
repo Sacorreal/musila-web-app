@@ -1,7 +1,13 @@
-export interface MusicalGenre {
-    id:        string;
-    genre:    string;
-    subGenre?:  string[];
-    slug:      string;    
+import { TracksResponseDto } from "../../tracks/types/track.types";
+
+export interface MusicalGenreDto {
+  id: string;
+  genre: string;
+  slug: string;
+  subGenre?: string[];
+  tracks?: TracksResponseDto[];
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;    
 }
 
