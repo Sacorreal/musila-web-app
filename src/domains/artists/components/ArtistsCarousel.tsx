@@ -87,7 +87,7 @@ export function ArtistsCarousel() {
                 <div className="relative p-1 rounded-full bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 group-hover/artist:border-primary/40 transition-all duration-300 shadow-xl">
                   <Avatar className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 shadow-inner">
                     <AvatarImage 
-                      src={artist.avatar} 
+                      src={artist.avatar ?? undefined} 
                       alt={`${artist.name || ''} ${artist.lastName || ''}`} 
                       className="object-cover" 
                     />

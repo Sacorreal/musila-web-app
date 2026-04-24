@@ -27,7 +27,7 @@ export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
         <div className="absolute bottom-6 left-6 flex items-center gap-6">
            <div className="p-1 rounded-full bg-background/10 backdrop-blur-sm relative shadow-xl">
              <Avatar className="w-24 h-24 sm:w-36 sm:h-36 border-4 border-background">
-                <AvatarImage src={artist.avatar} alt={`${artist.name} ${artist.lastName}`} className="object-cover" />
+                <AvatarImage src={artist.avatar ?? undefined} alt={`${artist.name} ${artist.lastName}`} className="object-cover" />
                 <AvatarFallback className="bg-slate-200 dark:bg-slate-700 text-foreground dark:text-white font-bold text-2xl">
                   {artist.name?.charAt(0)}{artist.lastName?.charAt(0)}
                 </AvatarFallback>
