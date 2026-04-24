@@ -20,10 +20,6 @@ export function MyTracksList() {
     return null;
   }
 
-  const filteredTracks = tracks?.filter((track) =>
-    track.title.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
-
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse">
@@ -32,6 +28,11 @@ export function MyTracksList() {
       </div>
     );
   }
+
+  // El filter se ejecuta solo cuando ya tenemos datos (post-loading)
+  const filteredTracks = (tracks ?? []).filter((track) =>
+    track.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="space-y-6 py-6">

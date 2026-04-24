@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import { Music2, User2, FileText } from 'lucide-react';
@@ -5,6 +7,7 @@ import { TrackResponse } from '@/src/domains/tracks/types/track.types';
 import { MusicalGenreDto } from '@/src/domains/musical-genre/types/musical-genre.types';
 import { RequestTrackModal } from '@/src/domains/requests/components/RequestTrackModal';
 import { Button } from '@/src/shared/components/UI/button';
+import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 
 interface TrackDetailHeroProps {
   track: TrackResponse;
@@ -18,6 +21,10 @@ function resolveGenreName(genre?: MusicalGenreDto | string): string {
 
 export function TrackDetailHero({ track }: TrackDetailHeroProps) {
   const genreName = resolveGenreName(track.genre);
+  const userId = useAuthStore((s) => s.user?.id);
+
+  // Ocultar "Solicitar Uso" si el usuario autenticado es uno de los autores del track
+  const isAuthor = track.authors?.some((a) => a.id === userId) ?? false;
 
   return (
     <section className="relative w-full">
@@ -50,13 +57,16 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
         <div className="flex flex-col gap-4 min-w-0 flex-1 pb-2">
           <div className="flex items-center justify-between gap-4">
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Canción</p>
-            
-            <RequestTrackModal trackId={track.id}>
-              <Button size="sm" variant="secondary" className="gap-2 shrink-0 rounded-full font-semibold">
-                <FileText className="w-4 h-4" />
-                Solicitar Uso
-              </Button>
-            </RequestTrackModal>
+
+            {/* Solo visible para no-autores */}
+            {!isAuthor && (
+              <RequestTrackModal trackId={track.id}>
+                <Button size="sm" variant="secondary" className="gap-2 shrink-0 rounded-full font-semibold">
+                  <FileText className="w-4 h-4" />
+                  Solicitar Uso
+                </Button>
+              </RequestTrackModal>
+            )}
           </div>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground leading-tight tracking-tight break-words">

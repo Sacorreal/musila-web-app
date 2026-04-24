@@ -5,6 +5,7 @@ import { ChevronLeft } from 'lucide-react';
 import { fetchTrackById } from '@/src/domains/tracks/services/tracks.actions';
 import { TrackDetailHero } from '@/src/domains/tracks/components/TrackDetailHero';
 import { TrackLyrics } from '@/src/domains/tracks/components/TrackLyrics';
+import { TrackRequestsTable } from '@/src/domains/requests/components/TrackRequestsTable';
 
 export default async function TrackDetailPage({
   params,
@@ -36,6 +37,9 @@ export default async function TrackDetailPage({
 
         {/* Letra */}
         <TrackLyrics lyric={track.lyric} />
+
+        {/* Tabla de solicitudes — visible solo para autores (el componente lo filtra internamente) */}
+        <TrackRequestsTable trackId={id} />
 
         {/* Spacer inferior */}
         <div className="pb-20" />

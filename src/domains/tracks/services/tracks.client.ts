@@ -95,12 +95,14 @@ export const tracksService = {
   // ✅ Obtener canciones del usuario
   async getMyTracks(): Promise<TrackResponse[]> {
     try {
-      const { data } = await apiClient.get<TrackResponse[]>(
+      const { data } = await apiClient.get<{ data: TrackResponse[]; total: number }>(
         `${apiURLs.tracks.base}/me`
       );
-      return data;
+      // El backend retorna { data: [], total: N } — extraemos el array
+      return Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
     } catch (error) {
       handleApiError(error, "Error al obtener tus canciones");
+      return [];
     }
   },
 
