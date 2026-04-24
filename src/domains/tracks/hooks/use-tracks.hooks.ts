@@ -27,9 +27,20 @@ export function useTrackById(id: string) {
   });
 }
 
+/**
+ * Obtiene las canciones del usuario logueado.
+ */
+export function useMyTracks() {
+  return useQuery<TrackResponse[]>({
+    queryKey: ['tracks', 'me'],
+    queryFn: () => tracksService.getMyTracks(),
+  });
+}
+
 export const trackHooks = {
   useFeaturedTracks,
   useTrackById,
+  useMyTracks,
 };
 
 
