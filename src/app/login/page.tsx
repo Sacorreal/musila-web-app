@@ -26,8 +26,7 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <Link href="/" className="flex items-center gap-2 mb-8">
-            <MusilaLogo className="h-10 w-10 text-primary" />
-            <span className="text-2xl font-bold text-foreground">Músila</span>
+            <MusilaLogo className="h-auto w-auto text-primary" />            
           </Link>
 
           <h1 className="text-3xl font-bold text-foreground mb-2">
