@@ -8,8 +8,7 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <MusilaLogo className="h-8 w-8 text-primary" />
-              
+              <MusilaLogo className="h-10 w-auto text-primary" />
             </Link>
             <p className="text-muted-foreground max-w-sm">
               La plataforma que conecta compositores con intérpretes. Canciones inéditas listas para ser grabadas.
