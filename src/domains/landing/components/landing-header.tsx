@@ -5,6 +5,7 @@ import { Button } from "@/src/shared/components/UI/button"
 import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { ThemeToggle } from "@/src/shared/components/Layout/theme-toggle"
 
 export function LandingHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -36,6 +37,7 @@ export function LandingHeader() {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
             <Button className="shadow-lg" variant="ghost" asChild>
               <Link href="/login">Iniciar sesión</Link>
             </Button>
@@ -75,6 +77,9 @@ export function LandingHeader() {
               Testimonios
             </Link>
             <div className="pt-4 space-y-2">
+              <div className="flex justify-center pb-2">
+                <ThemeToggle />
+              </div>
               <Button variant="ghost" className="w-full" asChild>
                 <Link href="/login">Iniciar sesión</Link>
               </Button>

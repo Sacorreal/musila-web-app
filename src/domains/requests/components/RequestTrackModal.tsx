@@ -9,22 +9,48 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useRequestTrackFlow } from "@/src/domains/requests/hooks/use-request-track-flow.hook";
 import { LicenseType } from "@/src/domains/tracks/types/track.types";
 import { ConflictRequestError } from "@/src/domains/requests/services/requested-tracks.actions";
+import { apiClient } from "@/src/shared/libs/axios/axios-client";
+import { apiURLs } from "@/src/shared/constants/urls";
+import { RequestStatus, TrackRequest } from "../types/request.types";
 import { UploadCloud, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { CheckCircle2 } from "lucide-react";
 
 interface RequestTrackModalProps {
   trackId: string;
+  genreSlug?: string;
   children: React.ReactNode;
 }
 
-export function RequestTrackModal({ trackId, children }: RequestTrackModalProps) {
+export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrackModalProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [licenseType, setLicenseType] = useState<LicenseType | "">("");
   const [file, setFile] = useState<File | null>(null);
 
   const { mutateAsync, isPending, uploadProgress, isConnectingSocket } = useRequestTrackFlow();
+  const [checkingStatus, setCheckingStatus] = useState(false);
+  const [existingRequest, setExistingRequest] = useState<TrackRequest | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Verificar si ya existe una solicitud al abrir el modal
+  React.useEffect(() => {
+    if (open) {
+      setCheckingStatus(true);
+      apiClient
+        .get<{ data: any[]; total: number }>(apiURLs.requestedTracks.base)
+        .then(({ data }) => {
+          const found = (data.data || []).find(
+            (r) => (r.track?.id === trackId || r.trackId === trackId) && r.status !== RequestStatus.RECHAZADA && r.status !== RequestStatus.CANCELADA
+          );
+          setExistingRequest(found);
+        })
+        .finally(() => setCheckingStatus(false));
+    }
+  }, [open, trackId]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -57,10 +83,14 @@ export function RequestTrackModal({ trackId, children }: RequestTrackModalProps)
         licenseType: licenseType as LicenseType,
         file: file || undefined,
       });
-      toast.success("¡Solicitud creada con éxito!", {
-        description: "Espera la autorización del autor.",
-      });
-      setOpen(false);
+      setIsSuccess(true);
+      
+      // Redirigir después de 3 segundos
+      setTimeout(() => {
+        setOpen(false);
+        setIsSuccess(false);
+        router.push("/music");
+      }, 3000);
       
       // Reset form
       setMessage("");
@@ -92,7 +122,66 @@ export function RequestTrackModal({ trackId, children }: RequestTrackModalProps)
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8">
+        {checkingStatus ? (
+          <div className="p-20 flex flex-col items-center justify-center gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-primary" />
+            <p className="text-slate-500 font-medium">Verificando estado de solicitudes...</p>
+          </div>
+        ) : isSuccess ? (
+          <div className="p-16 flex flex-col items-center text-center gap-8 animate-in fade-in zoom-in duration-500">
+            <div className="relative">
+              <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full scale-150 animate-pulse" />
+              <div className="relative w-24 h-24 rounded-full bg-emerald-500 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
+                <CheckCircle2 className="w-12 h-12 text-white animate-bounce" />
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h3 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                ¡Solicitud Exitosa!
+              </h3>
+              <p className="text-lg text-slate-500 dark:text-slate-400 max-w-sm">
+                Tu solicitud ha sido enviada correctamente. El autor ha sido notificado.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 w-full max-w-xs">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                Redirigiendo en unos segundos...
+              </p>
+              <Button 
+                className="rounded-xl h-12 bg-slate-900 dark:bg-white dark:text-slate-900 font-bold"
+                onClick={() => {
+                  setOpen(false);
+                  setIsSuccess(false);
+                  router.push("/music");
+                }}
+              >
+                Ir al Inicio
+              </Button>
+            </div>
+          </div>
+        ) : existingRequest ? (
+          <div className="p-10 flex flex-col items-center text-center gap-6">
+            <div className="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <X className="w-10 h-10 text-amber-600 dark:text-amber-500" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Solicitud ya enviada</h3>
+              <p className="text-slate-500 dark:text-slate-400 max-w-sm">
+                Ya tienes una solicitud activa para esta canción. No es necesario enviar otra, el autor pronto te responderá a través del chat.
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              className="mt-4 rounded-xl px-8"
+              onClick={() => setOpen(false)}
+            >
+              Cerrar
+            </Button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8">
           <div className="flex flex-col gap-3">
             <Textarea
               placeholder="Escribe tu mensaje aquí..."
@@ -213,6 +302,7 @@ export function RequestTrackModal({ trackId, children }: RequestTrackModalProps)
             </Button>
           </div>
         </form>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -38,8 +38,8 @@ export default async function TrackDetailPage({
         {/* Letra */}
         <TrackLyrics lyric={track.lyric} />
 
-        {/* Tabla de solicitudes — visible solo para autores (el componente lo filtra internamente) */}
-        <TrackRequestsTable trackId={id} />
+        {/* Tabla de solicitudes — visible solo para autores de la canción */}
+        <TrackRequestsTable trackId={id} authors={track.authors || []} />
 
         {/* Spacer inferior */}
         <div className="pb-20" />

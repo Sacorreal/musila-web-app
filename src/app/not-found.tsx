@@ -21,7 +21,7 @@ export default function GlobalNotFound() {
 
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Button asChild size="lg" className="w-full sm:w-auto">
-            <Link href="/">Ir al inicio</Link>
+            <Link href="/music">Ir al inicio</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="w-full sm:w-auto bg-transparent">
             <Link href="/music">Explorar canciones</Link>

@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserCircle, Image as ImageIcon, Loader2 } from "lucide-react";
+import { UserCircle, Image as ImageIcon, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 // Stores & Hooks
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
@@ -40,6 +41,7 @@ export function CreateTrackForm() {
 
   // 1️⃣ Utilizamos el hook unificado. Él se encarga de todo el flujo y estado.
   const { mutateAsync, isPending, globalProgress } = useCreateTrack();
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { control, handleSubmit, watch, setValue, reset } =
     useForm<CreateTrackFormValues>({
@@ -73,9 +75,13 @@ export function CreateTrackForm() {
 
     try {
       await mutateAsync(payload);
-      toast.success("¡Canción publicada con éxito!");
-      reset();
-      router.push("/music");
+      setIsSuccess(true);
+      
+      // Redirigir al home después de 3 segundos
+      setTimeout(() => {
+        reset();
+        router.push("/music");
+      }, 3000);
     } catch (error) {
       toast.error("Error al publicar la canción", {
         description:
@@ -83,6 +89,40 @@ export function CreateTrackForm() {
       });
     }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] p-8 text-center animate-in fade-in zoom-in duration-500">
+        <div className="relative mb-8">
+          <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full scale-150 animate-pulse" />
+          <div className="relative w-28 h-28 rounded-full bg-emerald-500 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
+            <CheckCircle2 className="w-14 h-14 text-white animate-bounce" />
+          </div>
+        </div>
+        
+        <div className="space-y-4 mb-10">
+          <h1 className="text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+            ¡Canción Publicada!
+          </h1>
+          <p className="text-xl text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
+            Tu obra de arte ya está disponible para el mundo. Hemos notificado a tus seguidores.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-4 w-full max-w-xs mx-auto">
+          <p className="text-sm font-bold text-primary animate-pulse uppercase tracking-widest">
+            Redirigiendo al home...
+          </p>
+          <Button 
+            className="rounded-2xl h-14 bg-slate-900 dark:bg-white dark:text-slate-900 font-black text-lg shadow-xl"
+            onClick={() => router.push("/music")}
+          >
+            Ir al Inicio ahora
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form

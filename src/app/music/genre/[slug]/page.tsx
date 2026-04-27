@@ -1,6 +1,7 @@
 "use client";
 
 import React, { use, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useGenreBySlug } from "@/src/domains/musical-genre/hooks/use-genres.hooks";
 import { Button } from "@/src/shared/components/UI/button";
 import { Badge } from "@/src/shared/components/UI/badge";
@@ -43,6 +44,7 @@ export default function GenreDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const router = useRouter();
   const { data: genre, isLoading, isError } = useGenreBySlug(slug);
 
   const [isGospelFilter, setIsGospelFilter] = useState(false);
@@ -205,6 +207,7 @@ export default function GenreDetailPage({
               {filteredTracks.map((track, index) => (
                 <tr
                   key={track.id}
+                  onClick={() => router.push(`/music/tracks/${track.id}`)}
                   className="group hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer"
                 >
                   <td className="px-8 py-5 text-center text-muted-foreground font-black text-sm">
@@ -250,7 +253,10 @@ export default function GenreDetailPage({
                     {track.subGenre || "-"}
                   </td>
                   <td className="px-8 py-5">
-                    <button className="text-slate-600 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10">
+                    <button 
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-slate-600 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+                    >
                       <MoreHorizontal size={24} />
                     </button>
                   </td>

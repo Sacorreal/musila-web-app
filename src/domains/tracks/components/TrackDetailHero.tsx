@@ -60,9 +60,15 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
 
             {/* Solo visible para no-autores */}
             {!isAuthor && (
-              <RequestTrackModal trackId={track.id}>
-                <Button size="sm" variant="secondary" className="gap-2 shrink-0 rounded-full font-semibold">
-                  <FileText className="w-4 h-4" />
+              <RequestTrackModal 
+                trackId={track.id} 
+                genreSlug={typeof track.genre === 'object' ? track.genre.slug : undefined}
+              >
+                <Button 
+                  size="lg" 
+                  className="gap-3 shrink-0 rounded-full font-black uppercase tracking-tight px-8 bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer border-none h-12"
+                >
+                  <FileText className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                   Solicitar Uso
                 </Button>
               </RequestTrackModal>

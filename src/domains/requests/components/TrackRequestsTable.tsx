@@ -7,13 +7,9 @@ import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
 import { UserRole } from "@/src/domains/users/types/user.types";
 import { MessageSquare, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-// Enum de estados sincronizado con el backend
-enum RequestStatus {
-  PENDIENTE = "pendiente",
-  APROBADA = "aprobada",
-  RECHAZADA = "rechazada",
-}
+import { RequestStatus, TrackRequest } from "../types/request.types";
 
 const STATUS_CONFIG: Record<RequestStatus, { label: string; color: string }> = {
   [RequestStatus.PENDIENTE]: {
@@ -28,28 +24,30 @@ const STATUS_CONFIG: Record<RequestStatus, { label: string; color: string }> = {
     label: "Rechazada",
     color: "bg-rose-500/15 text-rose-500 border-rose-500/30",
   },
+  [RequestStatus.CANCELADA]: {
+    label: "Cancelada",
+    color: "bg-slate-500/15 text-slate-500 border-slate-500/30",
+  },
 };
 
-interface TrackRequest {
-  id: string;
-  status: RequestStatus;
-  licenseType: string;
-  createdAt: string;
-  requester?: { id: string; name: string; lastName: string; email: string };
-  chat?: { id: string };
-}
+
 
 interface Props {
   trackId: string;
+  authors: { id: string }[];
 }
 
-export function TrackRequestsTable({ trackId }: Props) {
-  const role = useAuthStore((s) => s.user?.role);
+export function TrackRequestsTable({ trackId, authors }: Props) {
+  const router = useRouter();
+  const user = useAuthStore((s) => s.user);
+  const role = user?.role;
   const [requests, setRequests] = useState<TrackRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Solo visible para el rol autor o cantautor
+  // Solo visible para el rol autor o cantautor Y si es el dueño del track
   const isAutor = role === UserRole.AUTOR || role === UserRole.CANTAUTOR;
+  const isOwner = authors?.some((a) => a.id === user?.id) ?? false;
+  const canSeeTable = isAutor && isOwner;
 
   // Confirmación de cambio de estado
   const [pendingChange, setPendingChange] = useState<{
@@ -59,7 +57,7 @@ export function TrackRequestsTable({ trackId }: Props) {
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    if (!isAutor) return;
+    if (!canSeeTable) return;
     apiClient
       .get<{ data: TrackRequest[]; total: number }>(apiURLs.requestedTracks.base)
       .then(({ data }) => {
@@ -91,6 +89,11 @@ export function TrackRequestsTable({ trackId }: Props) {
             : r
         )
       );
+
+      // Si se aprueba, redirigir al home
+      if (pendingChange.newStatus === RequestStatus.APROBADA) {
+        router.push("/music");
+      }
     } catch {
       // silencioso — el usuario puede reintentar
     } finally {
@@ -99,7 +102,7 @@ export function TrackRequestsTable({ trackId }: Props) {
     }
   };
 
-  if (!isAutor) return null;
+  if (!canSeeTable) return null;
 
   if (loading) {
     return (

@@ -6,7 +6,6 @@ import {
     HomeIcon,
     PlaylistIcon,
     RequestIcon,
-    SearchIcon,
     UploadIcon
 } from "@/src/shared/components/Icons/icons"
 import type { NavItems } from "@shared/types/shared.types"
@@ -22,16 +21,9 @@ export const navItems: NavItems = [
     },
 
     {
-        href: "/music/buscar",
-        icon: SearchIcon,
-        label: "Buscar",
-        rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE, UserRole.INVITADO]
-    },
-
-    {
         href: "/music/mi-musica",
         icon: PlaylistIcon,
-        label: "Mi Música",
+        label: "Mis Playlists",
         rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE, UserRole.INVITADO]
 
     },
@@ -44,13 +36,6 @@ export const navItems: NavItems = [
     },
 
     {
-        href: "/music/solicitudes",
-        icon: RequestIcon,
-        label: "Solicitudes",
-        rolAccess: [UserRole.AUTOR, UserRole.EDITOR],
-    },
-
-    {
         href: '/music/chat',
         icon: ChatIcon,
         label: "Chat",
@@ -58,9 +43,9 @@ export const navItems: NavItems = [
 
     },
     {
-        href: "/music/dashboard",
-        icon: DashboardIcon,
-        label: "Dashboard",
+        href: "/music/solicitudes",
+        icon: RequestIcon,
+        label: "Solicitudes",
         rolAccess: ALL_ROLES
     },
     {
