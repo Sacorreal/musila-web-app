@@ -12,7 +12,7 @@ import { ConflictRequestError } from "@/src/domains/requests/services/requested-
 import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { RequestStatus, TrackRequest } from "../types/request.types";
-import { UploadCloud, X, Loader2 } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
@@ -29,12 +29,9 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [licenseType, setLicenseType] = useState<LicenseType | "">("");
-  const [file, setFile] = useState<File | null>(null);
-
   const { mutateAsync, isPending, uploadProgress, isConnectingSocket } = useRequestTrackFlow();
   const [checkingStatus, setCheckingStatus] = useState(false);
   const [existingRequest, setExistingRequest] = useState<TrackRequest | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Verificar si ya existe una solicitud al abrir el modal
   React.useEffect(() => {
@@ -52,22 +49,7 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
     }
   }, [open, trackId]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +63,6 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
         trackId,
         message,
         licenseType: licenseType as LicenseType,
-        file: file || undefined,
       });
       setIsSuccess(true);
       
@@ -95,7 +76,6 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
       // Reset form
       setMessage("");
       setLicenseType("");
-      setFile(null);
     } catch (error: unknown) {
       if (error instanceof ConflictRequestError) {
         toast.error("Ya tienes una solicitud activa para esta canción.", {
@@ -205,75 +185,6 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              Adjuntar documento (Opcional)
-            </Label>
-            
-            {!file ? (
-              <div
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onClick={() => fileInputRef.current?.click()}
-                className="relative border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-10 flex flex-col items-center justify-center gap-4 bg-slate-50/50 dark:bg-slate-800/20 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors cursor-pointer group"
-              >
-                <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <UploadCloud className="w-8 h-8 text-blue-500 dark:text-blue-400" />
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-medium text-blue-600 dark:text-blue-400">
-                    Sube un archivo <span className="text-slate-500 dark:text-slate-400 font-normal">o arrástralo y suéltalo</span>
-                  </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">PNG, JPG, GIF, PDF hasta 10MB</p>
-                </div>
-                <input
-                  type="file"
-                  className="hidden"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/png, image/jpeg, image/gif, application/pdf"
-                  disabled={isPending}
-                />
-              </div>
-            ) : (
-              <div className="flex items-center justify-between p-4 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-900/20">
-                <div className="flex items-center gap-4 overflow-hidden">
-                  <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center shrink-0">
-                    <UploadCloud className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="shrink-0 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  onClick={() => setFile(null)}
-                  disabled={isPending}
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-            )}
-            
-            {/* Progreso de subida */}
-            {isPending && uploadProgress > 0 && uploadProgress < 100 && (
-              <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-2">
-                <div 
-                  className="h-full bg-blue-500 transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                />
-              </div>
-            )}
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
