@@ -1,14 +1,18 @@
 import { UserDto } from "../../users/types/user.types";
 
+export type MessageType = "TEXT" | "FILE" | "IMAGE";
+
 export interface Message {
   id: string;
   chatId: string;
   sender: UserDto;
   content: string;
-  type: "TEXT" | "FILE";
+  type: MessageType;
   fileUrl?: string;
   fileKey?: string;
   fileName?: string;
+  fileSize?: number;
+  mimeType?: string;
   createdAt: string;
 }
 
