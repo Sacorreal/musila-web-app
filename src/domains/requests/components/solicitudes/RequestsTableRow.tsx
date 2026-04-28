@@ -27,6 +27,7 @@ interface Props {
   onReject: (id: string) => void;
   onCancel: (id: string) => void;
   onDownload: (track: any) => void;
+  onClick: () => void;
 }
 
 export function RequestsTableRow({
@@ -40,6 +41,7 @@ export function RequestsTableRow({
   onReject,
   onCancel,
   onDownload,
+  onClick,
 }: Props) {
   const authorsArr = (request.track as any)?.authors as any[] | undefined;
   const authorName = Array.isArray(authorsArr) && authorsArr.length > 0
@@ -55,7 +57,8 @@ export function RequestsTableRow({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
-      className="group hover:bg-muted/30 transition-all duration-300"
+      onClick={onClick}
+      className="group hover:bg-muted/30 transition-all duration-300 cursor-pointer"
     >
       {/* Canción */}
       <td className="px-8 py-5">
@@ -81,12 +84,14 @@ export function RequestsTableRow({
       </td>
 
       {/* Autor */}
-      <td className="px-8 py-5">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <User2 size={13} className="shrink-0 opacity-60" />
-          <span className="font-semibold truncate max-w-[130px]">{authorName}</span>
-        </div>
-      </td>
+      {activeTab === "enviadas" && (
+        <td className="px-8 py-5">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User2 size={13} className="shrink-0 opacity-60" />
+            <span className="font-semibold truncate max-w-[130px]">{authorName}</span>
+          </div>
+        </td>
+      )}
 
       {/* Solicitante */}
       {activeTab === "recibidas" && (
@@ -117,7 +122,7 @@ export function RequestsTableRow({
       </td>
 
       {/* Acciones */}
-      <td className="px-8 py-5">
+      <td className="px-8 py-5" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-end gap-2 flex-wrap">
           {request.chat?.id && (
             <Button asChild size="sm" variant="ghost" className="rounded-xl h-9 hover:bg-primary/10 hover:text-primary gap-1.5">

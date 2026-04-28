@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/src/shared/components/UI/button";
 import { TrackRequest, RequestStatus } from "../../types/request.types";
 import { RequestsTableRow } from "./RequestsTableRow";
+import { TrackRequestDetailsDialog } from "../TrackRequestDetailsDialog";
+import { useState } from "react";
 
 interface Props {
   requests: TrackRequest[];
@@ -31,6 +33,11 @@ export function RequestsTable({
   onDownload,
   isInitialListEmpty,
 }: Props) {
+  const [selectedRequest, setSelectedRequest] = useState<{ request: TrackRequest; isOwner: boolean } | null>(null);
+
+  const handleRowClick = (req: TrackRequest, canChangeStatus: boolean) => {
+    setSelectedRequest({ request: req, isOwner: canChangeStatus });
+  };
   return (
     <div className="bg-card/50 backdrop-blur-xl rounded-[2rem] border border-border overflow-hidden shadow-2xl">
       <div className="overflow-x-auto">
@@ -38,7 +45,7 @@ export function RequestsTable({
           <thead>
             <tr className="bg-muted/50 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
               <th className="px-8 py-6">Canción</th>
-              <th className="px-8 py-6">Autor</th>
+              {activeTab === "enviadas" && <th className="px-8 py-6">Autor</th>}
               {activeTab === "recibidas" && <th className="px-8 py-6">Solicitante</th>}
               <th className="px-8 py-6">Fecha</th>
               <th className="px-8 py-6 text-center">Estado</th>
@@ -49,7 +56,7 @@ export function RequestsTable({
             <AnimatePresence mode="popLayout">
               {requests.length === 0 ? (
                 <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <td colSpan={activeTab === "recibidas" ? 6 : 5} className="px-8 py-24 text-center">
+                  <td colSpan={5} className="px-8 py-24 text-center">
                     <div className="flex flex-col items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                         <Music className="text-muted-foreground" size={32} />
@@ -88,6 +95,7 @@ export function RequestsTable({
                       onReject={onReject}
                       onCancel={onCancel}
                       onDownload={onDownload}
+                      onClick={() => handleRowClick(req, canChangeStatus)}
                     />
                   );
                 })
@@ -96,6 +104,13 @@ export function RequestsTable({
           </tbody>
         </table>
       </div>
+
+      <TrackRequestDetailsDialog 
+        request={selectedRequest?.request || null}
+        isOwner={selectedRequest?.isOwner || false}
+        isOpen={!!selectedRequest}
+        onClose={() => setSelectedRequest(null)}
+      />
     </div>
   );
 }

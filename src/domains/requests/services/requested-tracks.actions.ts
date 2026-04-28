@@ -1,6 +1,7 @@
 import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { apiURLs } from "@/src/shared/constants/urls";
 import type { CreateRequestedTrackInput } from "@/src/domains/tracks/types/track.types";
+import { TrackRequest } from "../types/request.types";
 import axios from "axios";
 
 export interface RequestedTrackResponse {
@@ -46,6 +47,18 @@ export async function createRequestedTrack(input: CreateRequestedTrackInput): Pr
       };
       throw new ConflictRequestError(body.message, body.details);
     }
+    throw error;
+  }
+}
+
+export async function updateRequestedTrack(id: string, input: Partial<TrackRequest>): Promise<RequestedTrackResponse> {
+  try {
+    const { data } = await apiClient.put<RequestedTrackResponse>(
+      apiURLs.requestedTracks.byId(id),
+      input
+    );
+    return data;
+  } catch (error) {
     throw error;
   }
 }

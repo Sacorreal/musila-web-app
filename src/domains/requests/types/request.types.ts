@@ -22,7 +22,10 @@ export interface TrackRequest {
     name: string;
     lastName: string;
     email: string;
+    avatarUrl?: string;
   };
+  licenseUrl?: string;
+  licenseKey?: string;
   chat?: {
     id: string;
   };

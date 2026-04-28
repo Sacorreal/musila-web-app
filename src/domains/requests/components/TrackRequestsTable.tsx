@@ -5,30 +5,15 @@ import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
 import { UserRole } from "@/src/domains/users/types/user.types";
-import { MessageSquare, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { ChevronRight, Loader2, MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { TrackRequestDetailsDialog } from "./TrackRequestDetailsDialog";
+import { StatusBadge } from "./solicitudes/StatusBadge";
 
 import { RequestStatus, TrackRequest } from "../types/request.types";
 
-const STATUS_CONFIG: Record<RequestStatus, { label: string; color: string }> = {
-  [RequestStatus.PENDIENTE]: {
-    label: "Pendiente",
-    color: "bg-amber-500/15 text-amber-500 border-amber-500/30",
-  },
-  [RequestStatus.APROBADA]: {
-    label: "Aprobada",
-    color: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-  },
-  [RequestStatus.RECHAZADA]: {
-    label: "Rechazada",
-    color: "bg-rose-500/15 text-rose-500 border-rose-500/30",
-  },
-  [RequestStatus.CANCELADA]: {
-    label: "Cancelada",
-    color: "bg-slate-500/15 text-slate-500 border-slate-500/30",
-  },
-};
+
 
 
 
@@ -49,12 +34,8 @@ export function TrackRequestsTable({ trackId, authors }: Props) {
   const isOwner = authors?.some((a) => a.id === user?.id) ?? false;
   const canSeeTable = isAutor && isOwner;
 
-  // Confirmación de cambio de estado
-  const [pendingChange, setPendingChange] = useState<{
-    requestId: string;
-    newStatus: RequestStatus;
-  } | null>(null);
-  const [updating, setUpdating] = useState(false);
+  // Estado para el modal de detalles
+  const [selectedRequest, setSelectedRequest] = useState<TrackRequest | null>(null);
 
   useEffect(() => {
     if (!canSeeTable) return;
@@ -71,35 +52,8 @@ export function TrackRequestsTable({ trackId, authors }: Props) {
       .finally(() => setLoading(false));
   }, [trackId]);
 
-  const handleStatusSelect = (requestId: string, newStatus: string) => {
-    setPendingChange({ requestId, newStatus: newStatus as RequestStatus });
-  };
-
-  const confirmChange = async () => {
-    if (!pendingChange) return;
-    setUpdating(true);
-    try {
-      await apiClient.put(apiURLs.requestedTracks.byId(pendingChange.requestId), {
-        status: pendingChange.newStatus,
-      });
-      setRequests((prev) =>
-        prev.map((r) =>
-          r.id === pendingChange.requestId
-            ? { ...r, status: pendingChange.newStatus }
-            : r
-        )
-      );
-
-      // Si se aprueba, redirigir al home
-      if (pendingChange.newStatus === RequestStatus.APROBADA) {
-        router.push("/music");
-      }
-    } catch {
-      // silencioso — el usuario puede reintentar
-    } finally {
-      setUpdating(false);
-      setPendingChange(null);
-    }
+  const handleRowClick = (req: TrackRequest) => {
+    setSelectedRequest(req);
   };
 
   if (!canSeeTable) return null;
@@ -140,7 +94,6 @@ export function TrackRequestsTable({ trackId, authors }: Props) {
                 )}
 
                 {requests.map((req) => {
-                  const statusCfg = STATUS_CONFIG[req.status] ?? STATUS_CONFIG[RequestStatus.PENDIENTE];
                   const requesterName = req.requester
                     ? `${req.requester.name} ${req.requester.lastName}`
                     : "—";
@@ -155,56 +108,44 @@ export function TrackRequestsTable({ trackId, authors }: Props) {
                   return (
                     <tr
                       key={req.id}
-                      className="group hover:bg-muted/30 transition-colors"
+                      onClick={() => handleRowClick(req)}
+                      className="group hover:bg-muted/30 transition-colors cursor-pointer border-b border-border last:border-0"
                     >
                       {/* Artista */}
-                      <td className="px-6 py-4 text-sm font-semibold text-foreground">
+                      <td className="px-6 py-5 text-sm font-semibold text-foreground">
                         {requesterName}
                       </td>
 
                       {/* Fecha */}
-                      <td className="px-6 py-4 text-sm text-primary/80 font-medium">
+                      <td className="px-6 py-5 text-sm text-primary/80 font-medium">
                         {date}
                       </td>
 
                       {/* Tipo de licencia */}
-                      <td className="px-6 py-4 text-sm text-muted-foreground capitalize">
+                      <td className="px-6 py-5 text-sm text-muted-foreground capitalize">
                         {req.licenseType?.replace(/_/g, " ") ?? "—"}
                       </td>
 
-                      {/* Estado — Select con confirmación */}
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusCfg.color}`}
-                        >
-                          {statusCfg.label}
-                        </span>
-                        <select
-                          value={req.status}
-                          onChange={(e) => handleStatusSelect(req.id, e.target.value)}
-                          className="mt-1 block w-full text-xs bg-muted border border-border rounded-lg px-2 py-1 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
-                        >
-                          {Object.values(RequestStatus).map((s) => (
-                            <option key={s} value={s}>
-                              {STATUS_CONFIG[s].label}
-                            </option>
-                          ))}
-                        </select>
+                      {/* Estado */}
+                      <td className="px-6 py-5">
+                        <StatusBadge status={req.status} />
                       </td>
 
-                      {/* Acción — link al chat */}
-                      <td className="px-6 py-4">
-                        {req.chat?.id ? (
-                          <Link
-                            href={`/music/chat?conversationId=${req.chat.id}`}
-                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-                          >
-                            <MessageSquare className="w-4 h-4" />
-                            Ver Chat
-                          </Link>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">Sin chat</span>
-                        )}
+                      {/* Acción */}
+                      <td className="px-6 py-5" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-2 pr-4">
+                           {req.chat?.id && (
+                             <Link
+                               href={`/music/chat?conversationId=${req.chat.id}`}
+                               className="p-2 hover:bg-primary/10 text-primary rounded-xl transition-colors flex items-center gap-2 group/chat"
+                               title="Ir al chat"
+                             >
+                               <MessageSquare size={18} className="group-hover/chat:scale-110 transition-transform" />
+                               <span className="text-xs font-bold hidden sm:inline">Chat</span>
+                             </Link>
+                           )}
+                           <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0" />
+                        </div>
                       </td>
                     </tr>
                   );
@@ -215,40 +156,12 @@ export function TrackRequestsTable({ trackId, authors }: Props) {
         </div>
       </section>
 
-      {/* Alert de Confirmación de Cambio de Estado */}
-      {pendingChange && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-card border border-border rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4">
-            <h3 className="text-base font-bold text-foreground mb-2">
-              ¿Cambiar estado?
-            </h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Estás a punto de cambiar el estado de esta solicitud a{" "}
-              <strong className="text-foreground">
-                {STATUS_CONFIG[pendingChange.newStatus].label}
-              </strong>
-              . Esta acción notificará al artista.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setPendingChange(null)}
-                disabled={updating}
-                className="flex-1 px-4 py-2 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={confirmChange}
-                disabled={updating}
-                className="flex-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-              >
-                {updating && <Loader2 className="w-4 h-4 animate-spin" />}
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <TrackRequestDetailsDialog
+        request={selectedRequest}
+        isOpen={!!selectedRequest}
+        isOwner={isOwner}
+        onClose={() => setSelectedRequest(null)}
+      />
     </>
   );
 }

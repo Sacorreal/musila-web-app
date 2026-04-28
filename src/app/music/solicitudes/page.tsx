@@ -62,10 +62,19 @@ export default function RequestsPage() {
   );
 
   const received = useMemo(() => {
+    // Si es admin, ve todas las que no envió él mismo
     if (role === UserRole.ADMIN) return requests.filter((r) => r.requester?.id !== user?.id);
+
+    // Si es Autor o Cantautor, ve las solicitudes de sus canciones
     return requests.filter((r) => {
       const authors = (r.track as any)?.authors as any[] | undefined;
-      return Array.isArray(authors) && authors.some((a) => a.id === user?.id);
+      if (!Array.isArray(authors)) return false;
+
+      // Comprobar si el usuario actual es uno de los autores del track
+      return authors.some((a) => {
+        const authorId = typeof a === "string" ? a : a.id;
+        return authorId === user?.id;
+      });
     });
   }, [requests, user, role]);
 
