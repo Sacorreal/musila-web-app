@@ -4,6 +4,7 @@ import React from "react";
 import { useConversations } from "../hooks/use-chat.hooks";
 import { cn } from "@/src/shared/libs/cn";
 import { Music2 } from "lucide-react";
+import { RequestStatus } from "../../requests/types/request.types";
 
 interface Props {
   selectedChatId?: string;
@@ -60,9 +61,10 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
                 {/* Status indicator */}
                 <div className={cn(
                   "absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background shadow-sm",
-                  conv.status === 'pendiente' && "bg-amber-400",
-                  conv.status === 'aprobada' && "bg-emerald-500",
-                  conv.status === 'rechazada' && "bg-red-500"
+                  conv.status === RequestStatus.PENDIENTE && "bg-amber-400",
+                  conv.status === RequestStatus.APROBADA && "bg-emerald-500",
+                  conv.status === RequestStatus.RECHAZADA && "bg-red-500",
+                  conv.status === RequestStatus.CANCELADA && "bg-slate-400"
                 )} />
               </div>
 
@@ -77,9 +79,10 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
                   </h3>
                 </div>
                 <p className="text-xs text-muted-foreground truncate font-medium">
-                  {conv.status === 'pendiente' && 'Solicitud pendiente'}
-                  {conv.status === 'aprobada' && 'Solicitud aprobada'}
-                  {conv.status === 'rechazada' && 'Solicitud rechazada'}
+                  {conv.status === RequestStatus.PENDIENTE && 'Solicitud pendiente'}
+                  {conv.status === RequestStatus.APROBADA && 'Solicitud aprobada'}
+                  {conv.status === RequestStatus.RECHAZADA && 'Solicitud rechazada'}
+                  {conv.status === RequestStatus.CANCELADA && 'Solicitud cancelada'}
                 </p>
               </div>
             </button>

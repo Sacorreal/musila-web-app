@@ -17,7 +17,7 @@ export function AppHeader() {
         <div className="w-12 md:hidden flex-shrink-0" />
 
         {/* Search Box — oculto para autores */}
-        <div className="flex-1 flex justify-start">
+        <div className="flex-1 flex justify-center">
           {showSearch && <SearchBox />}
         </div>
 

@@ -19,9 +19,16 @@ interface AuthorResult {
   email: string
 }
 
+interface GenreResult {
+  id: string
+  genre: string
+  subGenre?: string[]
+}
+
 interface SearchResults {
   tracks: TrackResult[]
   authors: AuthorResult[]
+  musicalGenres: GenreResult[]
 }
 
 function useDebounce<T>(value: T, delay: number): T {
@@ -50,13 +57,17 @@ export function SearchBox() {
       return
     }
     setLoading(true)
+    setOpen(true)
     apiClient
       .get<SearchResults>(`/search?q=${encodeURIComponent(debouncedQuery)}`)
       .then((res) => {
+        console.log("[SearchBox] Results:", res.data)
         setResults(res.data)
-        setOpen(true)
       })
-      .catch(() => setResults(null))
+      .catch((err) => {
+        console.error("[SearchBox] Search error:", err)
+        setResults(null)
+      })
       .finally(() => setLoading(false))
   }, [debouncedQuery])
 
@@ -78,17 +89,22 @@ export function SearchBox() {
   }, [])
 
   const handleSelect = useCallback(
-    (type: "track" | "author", id: string) => {
+    (type: "track" | "author" | "genre", id: string) => {
       setOpen(false)
       setQuery("")
       if (type === "track") router.push(`/music/tracks/${id}`)
-      else router.push(`/music/authors/${id}`)
+      else if (type === "author") router.push(`/music/artista/${id}`)
+      else router.push(`/music/genre/${id}`)
     },
     [router]
   )
 
   const hasResults =
-    results && (results.tracks.length > 0 || results.authors.length > 0)
+    results && (
+      (results.tracks?.length ?? 0) > 0 || 
+      (results.authors?.length ?? 0) > 0 || 
+      (results.musicalGenres?.length ?? 0) > 0
+    )
 
   return (
     <div ref={containerRef} className="relative w-full max-w-md">
@@ -99,8 +115,8 @@ export function SearchBox() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => hasResults && setOpen(true)}
-          placeholder="Buscar tracks o autores..."
+          onFocus={() => query.trim() && setOpen(true)}
+          placeholder="Buscar tracks, autores o géneros..."
           className={cn(
             "w-full h-10 pl-9 pr-9 rounded-xl border border-border bg-muted/50",
             "text-sm text-foreground placeholder:text-muted-foreground",
@@ -136,7 +152,7 @@ export function SearchBox() {
           {!loading && hasResults && (
             <div className="max-h-80 overflow-y-auto">
               {/* Tracks */}
-              {results!.tracks.length > 0 && (
+              {results?.tracks && results.tracks.length > 0 && (
                 <div>
                   <p className="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                     Tracks
@@ -169,7 +185,7 @@ export function SearchBox() {
               )}
 
               {/* Authors */}
-              {results!.authors.length > 0 && (
+              {results?.authors && results.authors.length > 0 && (
                 <div>
                   <p className="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                     Autores
@@ -193,6 +209,39 @@ export function SearchBox() {
                       </div>
                       <span className="flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-500">
                         Autor
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Genres */}
+              {results?.musicalGenres && results.musicalGenres.length > 0 && (
+                <div className="border-t border-border mt-1">
+                  <p className="px-3 pt-2 pb-1 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                    Géneros
+                  </p>
+                  {results!.musicalGenres.map((genre) => (
+                    <button
+                      key={genre.id}
+                      onClick={() => handleSelect("genre", genre.id)}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-accent transition-colors text-left"
+                    >
+                      <span className="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-500">
+                        <Music className="h-3.5 w-3.5" />
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {genre.genre}
+                        </p>
+                        {genre.subGenre && genre.subGenre.length > 0 && (
+                          <p className="text-xs text-muted-foreground truncate">
+                            {genre.subGenre.join(", ")}
+                          </p>
+                        )}
+                      </div>
+                      <span className="flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
+                        Género
                       </span>
                     </button>
                   ))}

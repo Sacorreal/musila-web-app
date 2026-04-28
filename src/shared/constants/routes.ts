@@ -46,13 +46,13 @@ export const navItems: NavItems = [
         href: "/music/solicitudes",
         icon: RequestIcon,
         label: "Solicitudes",
-        rolAccess: ALL_ROLES
+        rolAccess: [UserRole.AUTOR, UserRole.CANTAUTOR, UserRole.ADMIN, UserRole.INTERPRETE]
     },
     {
         href: "/music/invitar-usuario",
         icon: GuestUserIcon,
         label: "Invitar Usuario",
         rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE],
-    },
+    }
 ]
 
