@@ -23,10 +23,20 @@ export const usersService = {
 
   async update(id: string, input: UpdateUserServiceInput): Promise<ServiceResult<null>> {
     try {
-      await apiClient.patch(`/users/${id}`, input);
+      await apiClient.put(`/users/${id}`, input);
       return {};
     } catch (error: any) {
       const message = error.response?.data?.message ?? "Error al actualizar el usuario";
+      return { error: message };
+    }
+  },
+
+  async updateMe(input: UpdateUserServiceInput): Promise<ServiceResult<UserDto>> {
+    try {
+      const { data } = await apiClient.put<UserDto>("/users/me", input);
+      return { data };
+    } catch (error: any) {
+      const message = error.response?.data?.message ?? "Error al actualizar tu perfil";
       return { error: message };
     }
   },
