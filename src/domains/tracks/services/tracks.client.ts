@@ -158,6 +158,19 @@ export const tracksService = {
       handleApiError(error, "Error al obtener la canción");
     }
   },
+
+  // ✅ Actualizar canción
+  async update(id: string, data: Partial<CreateTrackInput>): Promise<TrackResponse> {
+    try {
+      const response = await apiClient.put<TrackResponse>(
+        apiURLs.tracks.byId(id),
+        data
+      );
+      return response.data;
+    } catch (error) {
+      handleApiError(error, "Error al actualizar la canción");
+    }
+  },
 };
 
 
