@@ -107,8 +107,13 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
                 )}>
                   {displayTitle}
                 </h3>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between">
                    <StatusBadge status={conv.status} />
+                   {conv.unreadCount > 0 && (
+                     <div className="bg-primary text-primary-foreground text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 animate-in zoom-in duration-300">
+                       {conv.unreadCount > 9 ? '+9' : conv.unreadCount}
+                     </div>
+                   )}
                 </div>
               </div>
             </motion.button>

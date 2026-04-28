@@ -26,6 +26,7 @@ export interface TrackRequest {
   };
   licenseUrl?: string;
   licenseKey?: string;
+  unreadCount?: number;
   chat?: {
     id: string;
   };
