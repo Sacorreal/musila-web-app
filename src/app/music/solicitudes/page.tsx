@@ -168,7 +168,12 @@ export default function RequestsPage() {
         userRole={role}
         userId={user?.id}
         isInitialListEmpty={sourceList.length === 0}
-        onApprove={(id) => handleApprove(id, updateStatus)}
+        onApprove={() => { /* opened via ApproveRequestDialog in RequestsTable */ }}
+        onApproveSuccess={(id) =>
+          setRequests((prev) =>
+            prev.map((r) => (r.id === id ? { ...r, status: RequestStatus.APROBADA } : r))
+          )
+        }
         onReject={(id) => handleReject(id, updateStatus)}
         onCancel={(id) => handleCancel(id, updateStatus)}
         onDownload={(track) => handleDownload(track)}
@@ -180,9 +185,6 @@ export default function RequestsPage() {
 // Handlers auxiliares para limpiar el componente principal
 const handleCancel = (id: string, updateFn: any) => {
   if (confirm("¿Cancelar esta solicitud?")) updateFn(id, RequestStatus.CANCELADA);
-};
-const handleApprove = (id: string, updateFn: any) => {
-  if (confirm("¿Aprobar esta solicitud? El solicitante podrá descargar el track.")) updateFn(id, RequestStatus.APROBADA);
 };
 const handleReject = (id: string, updateFn: any) => {
   if (confirm("¿Rechazar esta solicitud?")) updateFn(id, RequestStatus.RECHAZADA);

@@ -51,8 +51,7 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      let licenseUrl = request.licenseUrl;
-      let licenseKey = request.licenseKey;
+      let documentUrl = request.documentUrl;
 
       // 1. Si hay archivo y el estado es APROBADA, subirlo
       if (file && status === RequestStatus.APROBADA) {
@@ -61,23 +60,21 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
         }
 
         const uploadResult = await uploadStorage([{
-          field: "license" as UploadField,
+          field: "document" as UploadField,
           file: file,
           folder: `chat/${request.chat.id}/documents` as any,
         }]);
 
-        const licenseUpload = uploadResult.find((r) => r.field === "license");
+        const licenseUpload = uploadResult.find((r) => r.field === "document");
         if (licenseUpload) {
-          licenseUrl = licenseUpload.publicUrl;
-          licenseKey = licenseUpload.key;
+          documentUrl = licenseUpload.publicUrl;
         }
       }
 
       // 2. Actualizar la solicitud
       await updateRequestedTrack(request.id, {
         status: status,
-        licenseUrl,
-        licenseKey,
+        ...(documentUrl ? { documentUrl } : {}),
       } as any);
 
       toast.success("Solicitud actualizada correctamente");

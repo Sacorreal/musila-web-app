@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Music } from "lucide-react";
 import Link from "next/link";
@@ -6,7 +6,7 @@ import { Button } from "@/src/shared/components/UI/button";
 import { TrackRequest, RequestStatus } from "../../types/request.types";
 import { RequestsTableRow } from "./RequestsTableRow";
 import { TrackRequestDetailsDialog } from "../TrackRequestDetailsDialog";
-import { useState } from "react";
+import { ApproveRequestDialog } from "./ApproveRequestDialog";
 
 interface Props {
   requests: TrackRequest[];
@@ -15,6 +15,7 @@ interface Props {
   userRole: any;
   userId: string | undefined;
   onApprove: (id: string) => void;
+  onApproveSuccess: (id: string) => void;
   onReject: (id: string) => void;
   onCancel: (id: string) => void;
   onDownload: (track: any) => void;
@@ -28,12 +29,14 @@ export function RequestsTable({
   userRole,
   userId,
   onApprove,
+  onApproveSuccess,
   onReject,
   onCancel,
   onDownload,
   isInitialListEmpty,
 }: Props) {
   const [selectedRequest, setSelectedRequest] = useState<{ request: TrackRequest; isOwner: boolean } | null>(null);
+  const [approveTarget, setApproveTarget] = useState<TrackRequest | null>(null);
 
   const handleRowClick = (req: TrackRequest, canChangeStatus: boolean) => {
     setSelectedRequest({ request: req, isOwner: canChangeStatus });
@@ -91,7 +94,10 @@ export function RequestsTable({
                       isProcessing={processingId === req.id}
                       canChangeStatus={canChangeStatus}
                       canCancel={canCancel}
-                      onApprove={onApprove}
+                      onApprove={(id) => {
+                        const target = requests.find((r) => r.id === id) ?? null;
+                        setApproveTarget(target);
+                      }}
                       onReject={onReject}
                       onCancel={onCancel}
                       onDownload={onDownload}
@@ -110,6 +116,16 @@ export function RequestsTable({
         isOwner={selectedRequest?.isOwner || false}
         isOpen={!!selectedRequest}
         onClose={() => setSelectedRequest(null)}
+      />
+
+      <ApproveRequestDialog
+        isOpen={!!approveTarget}
+        request={approveTarget}
+        onClose={() => setApproveTarget(null)}
+        onSuccess={(id) => {
+          onApproveSuccess(id);
+          setApproveTarget(null);
+        }}
       />
     </div>
   );

@@ -24,8 +24,7 @@ export interface TrackRequest {
     email: string;
     avatarUrl?: string;
   };
-  licenseUrl?: string;
-  licenseKey?: string;
+  documentUrl?: string;
   unreadCount?: number;
   chat?: {
     id: string;
