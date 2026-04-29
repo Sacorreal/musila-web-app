@@ -15,7 +15,11 @@ export function SidebarNav({ items, pathname, onNavigate, unreadChatCount }: Pro
         <SidebarNavItem
           key={item.href}
           item={item}
-          isActive={pathname === item.href || pathname.startsWith(item.href + '/')}
+          isActive={
+            item.href === '/music' || item.href === '/'
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(item.href + '/')
+          }
           onClick={onNavigate}
           badge={item.href === '/music/chat' ? unreadChatCount : undefined}
         />

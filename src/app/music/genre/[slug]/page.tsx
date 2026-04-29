@@ -12,7 +12,11 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  FileText,
 } from "lucide-react";
+import { PlaylistIcon } from "@/src/shared/components/Icons/icons";
+import { RequestTrackModal } from "@/src/domains/requests/components/RequestTrackModal";
+import { AddToPlaylistModal } from "@/src/domains/playlists/components/AddToPlaylistModal";
 import {
   Avatar,
   AvatarFallback,
@@ -253,12 +257,31 @@ export default function GenreDetailPage({
                     {track.subGenre || "-"}
                   </td>
                   <td className="px-8 py-5">
-                    <button 
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-slate-600 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
-                    >
-                      <MoreHorizontal size={24} />
-                    </button>
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <AddToPlaylistModal trackId={track.id} trackTitle={track.title}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-slate-500 hover:text-primary hover:bg-primary/10 rounded-full"
+                          title="Agregar a Playlist"
+                        >
+                          <PlaylistIcon className="w-5 h-5" />
+                        </Button>
+                      </AddToPlaylistModal>
+                      
+                      <RequestTrackModal trackId={track.id} genreSlug={genre.slug}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-slate-500 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full"
+                          title="Solicitar Uso"
+                        >
+                          <FileText size={20} />
+                        </Button>
+                      </RequestTrackModal>
+                    </div>
                   </td>
                 </tr>
               ))}
