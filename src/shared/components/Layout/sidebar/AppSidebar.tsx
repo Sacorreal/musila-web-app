@@ -14,6 +14,7 @@ import { SidebarLogo } from './SidebarLogo'
 import { SidebarNav } from './SidebarNav'
 import { SidebarToggle } from './SidebarToggle'
 import { SidebarUser } from './SidebarUser'
+import { useTotalUnreadCount } from '@/src/domains/chat/hooks/use-unread-count.hook'
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -27,6 +28,8 @@ export function AppSidebar() {
     () => navItems.filter((item: MenuRoute) => hasMenuAccess(user?.role, item.rolAccess)),
     [user?.role]
   )
+
+  const unreadChatCount = useTotalUnreadCount()
 
   return (
     <>
@@ -44,6 +47,7 @@ export function AppSidebar() {
           pathname={pathname}
           items={allowedNavItems}
           onNavigate={() => setIsOpen(false)}
+          unreadChatCount={unreadChatCount}
         />
 
         {/* Logout Button */}

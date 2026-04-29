@@ -76,6 +76,14 @@ class ChatSocketService {
     }
   }
 
+  markAsRead(chatId: string, messageId: string): boolean {
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('chat.read', { chatId, messageId });
+      return true;
+    }
+    return false;
+  }
+
   disconnect() {
     if (this.socket) {
       this.socket.disconnect();

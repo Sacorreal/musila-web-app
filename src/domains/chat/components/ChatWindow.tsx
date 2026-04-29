@@ -5,6 +5,7 @@ import { useChatMessages } from "../hooks/use-chat.hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { chatSocketService } from "../services/chat-socket.service";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { requestPresignedUrls, uploadFileToSpaces } from "@/src/domains/storage/services/storage.client";
 import {
   Send,
@@ -69,6 +70,8 @@ export function ChatWindow({ chatId }: Props) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Ref para evitar llamadas duplicadas al marcar como leído
+  const lastMarkedChatRef = useRef<string | null>(null);
 
   // Limpiar mensajes en vivo al cambiar de conversación
   useEffect(() => {
@@ -143,6 +146,43 @@ export function ChatWindow({ chatId }: Props) {
       };
     }
   }, [chatId, token, user?.id, queryClient]);
+
+  // ─── Marcar mensajes como leídos (HTTP directo, sin depender del socket) ───────
+  // Se llama vía REST para garantizar que siempre funcione, incluso si
+  // el WebSocket aún no está conectado cuando se carga el historial.
+  const markConversationAsRead = React.useCallback(async () => {
+    if (!user?.id) return;
+    // Evitar llamadas duplicadas para el mismo chat
+    if (lastMarkedChatRef.current === chatId) return;
+    lastMarkedChatRef.current = chatId;
+    try {
+      await apiClient.patch(`/chats/${chatId}/read`);
+      // Refrescar unreadCount en la lista lateral y ConversationList
+      queryClient.invalidateQueries({ queryKey: ['chat', 'conversations'] });
+    } catch (err) {
+      // No mostrar error al usuario — no bloquea el flujo
+      console.warn('[ChatWindow] No se pudo marcar como leído:', err);
+    }
+  }, [chatId, user?.id, queryClient]);
+
+  // Marcar al abrir el chat (cuando llega el historial de la BD)
+  useEffect(() => {
+    if (history.length > 0) {
+      lastMarkedChatRef.current = null; // reset para permitir nueva llamada al cambiar chat
+      markConversationAsRead();
+    }
+  }, [chatId, history.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Marcar cuando llegan mensajes nuevos del otro participante en tiempo real
+  useEffect(() => {
+    const hasNewFromOther = liveMessages.some(
+      (m) => m.sender?.id !== user?.id && !m.id?.startsWith('optimistic-')
+    );
+    if (hasNewFromOther) {
+      lastMarkedChatRef.current = null; // permitir re-marcar
+      markConversationAsRead();
+    }
+  }, [liveMessages.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-scroll al fondo
   useEffect(() => {
