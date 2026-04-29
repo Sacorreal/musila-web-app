@@ -10,6 +10,8 @@ import { AddToPlaylistModal } from '@/src/domains/playlists/components/AddToPlay
 import { Button } from '@/src/shared/components/UI/button';
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 import { PlaylistIcon } from '@/src/shared/components/Icons/icons';
+import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
+import { Play } from 'lucide-react';
 
 interface TrackDetailHeroProps {
   track: TrackResponse;
@@ -61,6 +63,15 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Canción</p>
 
             <div className="flex items-center gap-3">
+              <Button 
+                size="lg" 
+                onClick={() => usePlayerStore.getState().play(track)}
+                className="gap-2 shrink-0 rounded-full font-black uppercase tracking-tight px-8 bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 h-12"
+              >
+                <Play className="w-5 h-5 fill-current" />
+                Reproducir
+              </Button>
+
               <AddToPlaylistModal trackId={track.id} trackTitle={track.title}>
                 <Button 
                   size="lg" 
@@ -120,7 +131,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
                     href={`/music/artista/${author.id}`}
                     className="text-sm font-semibold text-foreground/80 hover:text-foreground transition-colors underline-offset-4 hover:underline"
                   >
-                     {author.name}
+                     {author.name} {author.lastName || ''}
                   </Link>
                   {index < track.authors!.length - 1 && (
                     <span className="text-muted-foreground/50 text-xs">·</span>

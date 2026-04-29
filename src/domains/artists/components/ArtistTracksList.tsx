@@ -1,11 +1,18 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { TrackResponse } from "@/src/domains/tracks/types/track.types";
 import { AuthorTrackDetailDto } from "@/src/domains/artists/types/artist.types";
 import { ArtistNoTracks } from "./ArtistNoTracks";
 import { Button } from "@/src/shared/components/UI/button";
-import { Play, MoreHorizontal } from "lucide-react";
+import { Play, FileText } from "lucide-react";
+import { PlaylistIcon } from "@/src/shared/components/Icons/icons";
+import { AddToPlaylistModal } from "@/src/domains/playlists/components/AddToPlaylistModal";
+import { RequestTrackModal } from "@/src/domains/requests/components/RequestTrackModal";
+import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
+import { PlayAllButton } from "@/src/domains/player/components/PlayAllButton";
+import { TrackDuration } from "@/src/shared/components/UI/TrackDuration";
 import {
   Select,
   SelectContent,
@@ -20,13 +27,27 @@ import {
 
 interface ArtistTracksListProps {
   tracks: TrackResponse[] | AuthorTrackDetailDto[] | string[];
+  artistId: string;
+  artistName: string;
+  artistLastName?: string;
 }
 
-export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
-  // Filter out plain string IDs — keep only populated track objects
+export function ArtistTracksList({ tracks, artistId, artistName, artistLastName }: ArtistTracksListProps) {
+  // Filter out plain string IDs and inject artist data
   const populatedTracks = (
     tracks as Array<TrackResponse | AuthorTrackDetailDto | string>
-  ).filter((t): t is TrackResponse => typeof t === "object" && t !== null);
+  )
+    .filter((t): t is TrackResponse => typeof t === "object" && t !== null)
+    .map((t) => ({
+      ...t,
+      authors: t.authors?.length ? t.authors : [{
+        id: artistId,
+        name: artistName,
+        lastName: artistLastName || "",
+      }]
+    } as unknown as TrackResponse));
+
+  const router = useRouter();
 
   const {
     filteredTracks,
@@ -44,12 +65,7 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
 
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <Button className="w-14 h-14 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 p-0 flex items-center justify-center align-middle shadow-lg border-0 shrink-0">
-          <Play
-            className="w-6 h-6 text-foreground dark:text-slate-300 ml-1"
-            fill="currentColor"
-          />
-        </Button>
+        <PlayAllButton tracks={filteredTracks} iconOnly />
 
         <div className="flex gap-3">
           {/* Genre select — populated from track.genre string */}
@@ -109,7 +125,12 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
           filteredTracks.map((track, index) => (
             <div
               key={track.id}
-              className="group flex flex-col sm:flex-row items-start sm:items-center py-2 px-3 hover:bg-accent/5 rounded-lg transition-colors gap-4 sm:gap-6 w-full cursor-pointer"
+              onClick={() => {
+                usePlayerStore.getState().setQueue(filteredTracks.slice(index + 1) as unknown as TrackResponse[]);
+                usePlayerStore.getState().play(track as unknown as TrackResponse);
+                router.push(`/music/tracks/${track.id}`);
+              }}
+              className="group flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-800 rounded-2xl md:rounded-[2.5rem] border border-slate-200 dark:border-white/5 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl relative overflow-hidden"
             >
               <span className="text-muted-foreground font-medium w-4 shrink-0 text-center">
                 {index + 1}
@@ -133,7 +154,10 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
               </div>
 
               <div className="flex items-center gap-4 sm:gap-10 ml-10 sm:ml-0 text-sm text-muted-foreground font-medium whitespace-nowrap overflow-hidden">
-                <span className="text-emerald-500 min-w-[3rem]">{"3:12"}</span>
+                <TrackDuration 
+                  audioUrl={(track as any).audioUrl} 
+                  className="text-emerald-500 min-w-[3rem]" 
+                />
                 <span className="min-w-[6rem] hidden md:block truncate opacity-80 italic">
                   {resolveGenreName(track.genre) || "—"}
                 </span>
@@ -142,9 +166,34 @@ export function ArtistTracksList({ tracks }: ArtistTracksListProps) {
                 </span>
               </div>
 
-              <button className="text-muted-foreground hover:text-foreground p-2 self-end sm:self-auto shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                <MoreHorizontal className="w-5 h-5" />
-              </button>
+              <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
+                <AddToPlaylistModal trackId={track.id} trackTitle={track.title}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-slate-500 hover:text-primary hover:bg-primary/10 rounded-full"
+                    title="Agregar a Playlist"
+                  >
+                    <PlaylistIcon className="w-5 h-5" />
+                  </Button>
+                </AddToPlaylistModal>
+                
+                <RequestTrackModal 
+                  trackId={track.id} 
+                  genreSlug={typeof track.genre === 'object' ? (track.genre as any).slug : undefined}
+                >
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-slate-500 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full"
+                    title="Solicitar Uso"
+                  >
+                    <FileText size={20} />
+                  </Button>
+                </RequestTrackModal>
+              </div>
             </div>
           ))
         )}

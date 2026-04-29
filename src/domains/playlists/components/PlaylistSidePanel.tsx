@@ -8,6 +8,8 @@ import { Playlist } from '../types/playlist.types';
 import { cn } from '@/src/shared/libs/cn';
 import { Button } from '@/src/shared/components/UI/button';
 import { MusicNoteIcon } from '@/src/shared/components/Icons/icons';
+import { PlayAllButton } from '@/src/domains/player/components/PlayAllButton';
+import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
 
 interface PlaylistSidePanelProps {
   playlist: Playlist | null;
@@ -138,9 +140,16 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
               {playlist.tracks?.length || 0} pistas
             </p>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full flex-shrink-0 hover:bg-muted">
-            <XIcon className="w-5 h-5" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <PlayAllButton 
+              tracks={playlist.tracks || []} 
+              iconOnly 
+              className="w-10 h-10 [&>svg]:w-4 [&>svg]:h-4" 
+            />
+            <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full flex-shrink-0 hover:bg-muted">
+              <XIcon className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Content - Track List */}
@@ -158,7 +167,16 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
           ) : (
             <div className="flex flex-col gap-3">
               {playlist.tracks.map((track, idx) => (
-                <div key={track.id || idx} className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors group cursor-pointer border border-transparent hover:border-border">
+                <div 
+                  key={track.id || idx} 
+                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/50 transition-colors group cursor-pointer border border-transparent hover:border-border"
+                  onClick={() => {
+                    if (playlist.tracks) {
+                      usePlayerStore.getState().setQueue(playlist.tracks.slice(idx + 1) as any);
+                      usePlayerStore.getState().play(track as any);
+                    }
+                  }}
+                >
                   <div className="w-10 h-10 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 text-primary font-bold text-sm">
                     {idx + 1}
                   </div>

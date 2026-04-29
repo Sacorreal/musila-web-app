@@ -30,6 +30,10 @@ import {
   SelectValue,
 } from "@/src/shared/components/UI/select";
 import Link from "next/link";
+import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
+import { PlayAllButton } from "@/src/domains/player/components/PlayAllButton";
+import { TrackResponse } from "@/src/domains/tracks/types/track.types";
+import { TrackDuration } from "@/src/shared/components/UI/TrackDuration";
 
 const LANGUAGE_LABELS: Record<string, string> = {
   es: "Español",
@@ -187,9 +191,7 @@ export default function GenreDetailPage({
             )}
         </div>
 
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-10 h-14 font-black text-lg shadow-xl shadow-blue-500/30 transition-all hover:scale-105 active:scale-95">
-          <Play size={24} fill="currentColor" className="mr-3" /> PLAY
-        </Button>
+        <PlayAllButton tracks={filteredTracks} />
       </div>
 
       {/* Tracks Table */}
@@ -211,7 +213,11 @@ export default function GenreDetailPage({
               {filteredTracks.map((track, index) => (
                 <tr
                   key={track.id}
-                  onClick={() => router.push(`/music/tracks/${track.id}`)}
+                  onClick={() => {
+                    usePlayerStore.getState().setQueue(filteredTracks.slice(index + 1) as unknown as TrackResponse[]);
+                    usePlayerStore.getState().play(track as unknown as TrackResponse);
+                    router.push(`/music/tracks/${track.id}`);
+                  }}
                   className="group hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer"
                 >
                   <td className="px-8 py-5 text-center text-muted-foreground font-black text-sm">
@@ -239,8 +245,8 @@ export default function GenreDetailPage({
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-emerald-500 font-mono font-bold text-sm">
-                    3:12
+                  <td className="px-8 py-5 text-emerald-500 text-sm font-black text-center whitespace-nowrap">
+                    <TrackDuration audioUrl={(track as any).audioUrl} />
                   </td>
                   <td className="px-8 py-5 text-muted-foreground text-sm font-semibold">
                     {Array.isArray(track.authors) &&

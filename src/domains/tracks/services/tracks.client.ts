@@ -12,6 +12,26 @@ interface CreateTrackOptions {
   signal?: AbortSignal;
 }
 
+import { calculateAudioDuration } from '@/src/shared/libs/audioUtils';
+
+async function mapTrackDuration<T extends { audioUrl?: string | null }>(track: T): Promise<T> {
+  if (track.audioUrl && typeof window !== 'undefined') {
+    (track as any).duration = await calculateAudioDuration(track.audioUrl);
+  }
+  return track;
+}
+
+async function mapTracksDurations<T extends { audioUrl?: string | null }>(tracks: T[]): Promise<T[]> {
+  if (typeof window !== 'undefined') {
+    await Promise.all(tracks.map(async (t) => {
+      if (t.audioUrl) {
+        (t as any).duration = await calculateAudioDuration(t.audioUrl);
+      }
+    }));
+  }
+  return tracks;
+}
+
 
 
 export async function createTrackRequest(
@@ -86,6 +106,9 @@ export const tracksService = {
       const { data } = await apiClient.get<TracksResponse>(
         apiURLs.tracks.base
       );
+      if (data && Array.isArray(data.data)) {
+        await mapTracksDurations(data.data);
+      }
       return data
     } catch (error) {
       handleApiError(error, "Error al obtener las canciones");
@@ -99,7 +122,8 @@ export const tracksService = {
         `${apiURLs.tracks.base}/me`
       );
       // El backend retorna { data: [], total: N } — extraemos el array
-      return Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+      const tracks = Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [];
+      return await mapTracksDurations(tracks);
     } catch (error) {
       handleApiError(error, "Error al obtener tus canciones");
       return [];
@@ -113,6 +137,9 @@ export const tracksService = {
         apiURLs.tracks.base,
         { params: { q: query } }
       );
+      if (data && Array.isArray(data.data)) {
+        await mapTracksDurations(data.data);
+      }
       return data;
     } catch (error) {
       handleApiError(error, "Error al buscar canciones");
@@ -129,7 +156,8 @@ export const tracksService = {
       );
 
       // El backend retorna { data: [], total: N } — extraemos el array interno
-      return Array.isArray(data.data) ? data.data : [];
+      const tracks = Array.isArray(data.data) ? data.data : [];
+      return await mapTracksDurations(tracks);
     } catch (errorWithLimit) {
       console.warn(
         "[FeaturedTracks] fallback sin params",
@@ -140,7 +168,8 @@ export const tracksService = {
         const { data } = await apiClient.get<TracksResponse>(
           apiURLs.tracks.base
         );
-        return Array.isArray(data.data) ? data.data : [];
+        const fallbackTracks = Array.isArray(data.data) ? data.data : [];
+        return await mapTracksDurations(fallbackTracks);
       } catch (error) {
         handleApiError(error, "Error al obtener canciones destacadas");
       }
@@ -153,7 +182,7 @@ export const tracksService = {
       const { data } = await apiClient.get<TrackResponse>(
         apiURLs.tracks.byId(id)
       );
-      return data;
+      return await mapTrackDuration(data);
     } catch (error) {
       handleApiError(error, "Error al obtener la canción");
     }
