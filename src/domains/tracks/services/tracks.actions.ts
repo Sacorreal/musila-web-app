@@ -7,5 +7,11 @@ import { TrackResponse } from '../types/track.types';
 export async function fetchTrackById(id: string): Promise<TrackResponse> {
   const client = await getServerApiClient();
   const response = await client.get<TrackResponse>(apiURLs.tracks.byId(id));
-  return response.data;
+  
+  const track = response.data;
+  if (track && !track.coverUrl) {
+    track.coverUrl = '/cover-default.png';
+  }
+  
+  return track;
 }

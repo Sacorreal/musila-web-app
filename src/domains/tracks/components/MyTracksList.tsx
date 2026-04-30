@@ -59,7 +59,17 @@ export function MyTracksList() {
 
   return (
     <div className="space-y-6 py-6">
-      {/* Search and Header */}
+      {/* Header Section */}
+      <div className="flex flex-col gap-1 mb-2">
+        <h1 className="text-3xl font-black text-foreground tracking-tighter uppercase">
+          Mis Canciones
+        </h1>
+        <p className="text-muted-foreground text-sm font-medium">
+          Gestiona, edita y controla la visibilidad de tus obras musicales.
+        </p>
+      </div>
+
+      {/* Search and Metadata */}
       <div className="space-y-4">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

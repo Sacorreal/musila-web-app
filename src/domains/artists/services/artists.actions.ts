@@ -18,6 +18,15 @@ export async function fetchFeaturedArtists(): Promise<AuthorsResponse> {
 export async function fetchArtistById(id: string): Promise<AuthorResponse> {
   const client = await getServerApiClient();
   const response = await client.get<AuthorResponse>(apiURLs.users.userById(id));
+  
+  if (response.data && Array.isArray(response.data.tracks)) {
+    response.data.tracks.forEach((track) => {
+      if (!track.coverUrl) {
+        track.coverUrl = '/cover-default.png';
+      }
+    });
+  }
+  
   return response.data;
 }
 

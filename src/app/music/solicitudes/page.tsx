@@ -47,7 +47,15 @@ export default function RequestsPage() {
       const { data } = await apiClient.get<{ data: TrackRequest[]; total: number }>(
         apiURLs.requestedTracks.base
       );
-      setRequests(data.data || []);
+      
+      const fetchedRequests = data.data || [];
+      fetchedRequests.forEach((req) => {
+        if (req.track && !req.track.coverUrl) {
+          req.track.coverUrl = '/cover-default.png';
+        }
+      });
+      
+      setRequests(fetchedRequests);
     } catch {
       toast.error("Error al cargar las solicitudes");
     } finally {

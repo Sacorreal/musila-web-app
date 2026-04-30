@@ -14,14 +14,23 @@ interface CreateTrackOptions {
 
 import { calculateAudioDuration } from '@/src/shared/libs/audioUtils';
 
-async function mapTrackDuration<T extends { audioUrl?: string | null }>(track: T): Promise<T> {
+async function mapTrackDuration<T extends { audioUrl?: string | null; coverUrl?: string | null }>(track: T): Promise<T> {
+  if (!track.coverUrl) {
+    track.coverUrl = '/cover-default.png';
+  }
   if (track.audioUrl && typeof window !== 'undefined') {
     (track as any).duration = await calculateAudioDuration(track.audioUrl);
   }
   return track;
 }
 
-async function mapTracksDurations<T extends { audioUrl?: string | null }>(tracks: T[]): Promise<T[]> {
+async function mapTracksDurations<T extends { audioUrl?: string | null; coverUrl?: string | null }>(tracks: T[]): Promise<T[]> {
+  tracks.forEach((track) => {
+    if (!track.coverUrl) {
+      track.coverUrl = '/cover-default.png';
+    }
+  });
+
   if (typeof window !== 'undefined') {
     await Promise.all(tracks.map(async (t) => {
       if (t.audioUrl) {

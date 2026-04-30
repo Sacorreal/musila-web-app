@@ -10,7 +10,7 @@ export interface LanguageDto {
 
 export type AuthorTrackDto = Pick<
   AuthorsResponseDto,
-  | 'email' | 'id' | 'name' | 'role'
+  | 'email' | 'id' | 'name' | 'role' | 'lastName'
 >
 
 

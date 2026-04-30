@@ -19,6 +19,15 @@ export async function fetchGenreBySlugRequest(slug: string): Promise<MusicalGenr
   try {
     const client = await getServerApiClient();
     const { data } = await client.get<MusicalGenreDto>(apiURLs.genres.byId(slug));
+    
+    if (data && Array.isArray(data.tracks)) {
+      data.tracks.forEach((track) => {
+        if (!track.coverUrl) {
+          track.coverUrl = '/cover-default.png';
+        }
+      });
+    }
+    
     return data;
   } catch (error) {
     console.error(`Error en fetchGenreBySlugRequest para slug ${slug}:`, error);

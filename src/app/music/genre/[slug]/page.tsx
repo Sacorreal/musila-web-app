@@ -34,6 +34,7 @@ import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
 import { PlayAllButton } from "@/src/domains/player/components/PlayAllButton";
 import { TrackResponse } from "@/src/domains/tracks/types/track.types";
 import { TrackDuration } from "@/src/shared/components/UI/TrackDuration";
+import { BackButton } from "@/src/shared/components/UI/BackButton";
 
 const LANGUAGE_LABELS: Record<string, string> = {
   es: "Español",
@@ -103,12 +104,10 @@ export default function GenreDetailPage({
         <h1 className="text-2xl font-bold text-foreground">
           Género no encontrado
         </h1>
-        <Link
-          href="/music"
-          className="text-primary hover:underline mt-4 inline-block"
-        >
-          Volver a la música
-        </Link>
+        <BackButton 
+          label="Volver a la música"
+          className="text-primary hover:underline mt-4 inline-flex" 
+        />
       </div>
     );
   }

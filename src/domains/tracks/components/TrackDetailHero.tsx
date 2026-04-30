@@ -33,28 +33,20 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
   return (
     <section className="relative w-full">
       {/* Background blur based on cover */}
-      {track.coverUrl && (
-        <div
-          className="absolute inset-0 -z-10 opacity-20 blur-3xl scale-110"
-          style={{ backgroundImage: `url(${track.coverUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-          aria-hidden="true"
-        />
-      )}
+      <div
+        className="absolute inset-0 -z-10 opacity-20 blur-3xl scale-110"
+        style={{ backgroundImage: `url(${track.coverUrl || '/cover-default.png'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        aria-hidden="true"
+      />
 
       <div className="flex flex-col sm:flex-row gap-8 items-start sm:items-end">
         {/* Cover Art */}
         <div className="shrink-0">
-          {track.coverUrl ? (
-            <img
-              src={track.coverUrl}
-              alt={`Portada de ${track.title}`}
-              className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl object-cover shadow-2xl border border-white/10"
-            />
-          ) : (
-            <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 border border-slate-300 dark:border-white/10 flex items-center justify-center shadow-2xl">
-              <Music2 className="w-20 h-20 text-slate-400 dark:text-slate-600" />
-            </div>
-          )}
+          <img
+            src={track.coverUrl || '/cover-default.png'}
+            alt={`Portada de ${track.title}`}
+            className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl object-cover shadow-2xl border border-white/10"
+          />
         </div>
 
         {/* Info */}

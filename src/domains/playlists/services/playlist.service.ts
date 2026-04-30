@@ -10,6 +10,13 @@ class PlaylistService {
 
   async getPlaylistById(id: string): Promise<Playlist> {
     const { data } = await apiClient.get<Playlist>(apiURLs.playlists.byId(id));
+    if (data && Array.isArray(data.tracks)) {
+      data.tracks.forEach((track: any) => {
+        if (!track.coverUrl) {
+          track.coverUrl = '/cover-default.png';
+        }
+      });
+    }
     return data;
   }
 
