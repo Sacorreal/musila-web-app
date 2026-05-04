@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   // Verificamos si la ruta actual es bajo /music y no es pública
   if (pathname.startsWith('/music') && !isPublicMusicRoute) {
     if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.rewrite(new URL('/auth-required', request.url))
     }
 
     try {
@@ -26,14 +26,14 @@ export function middleware(request: NextRequest) {
       const now = Math.floor(Date.now() / 1000)
 
       if (payload.exp && payload.exp < now) {
-        // Token expirado, borramos la cookie y redirigimos
-        const response = NextResponse.redirect(new URL('/login', request.url))
+        // Token expirado, mostramos pantalla de auth required
+        const response = NextResponse.rewrite(new URL('/auth-required', request.url))
         response.cookies.delete('access_token')
         return response
       }
     } catch (error) {
-      // Si el token es corrupto o no se puede parsear, redirigimos
-      const response = NextResponse.redirect(new URL('/login', request.url))
+      // Si el token es corrupto o no se puede parsear, mostramos pantalla de auth required
+      const response = NextResponse.rewrite(new URL('/auth-required', request.url))
       response.cookies.delete('access_token')
       return response
     }
