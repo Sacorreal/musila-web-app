@@ -1,6 +1,7 @@
 "use client";
 
 import React, { use, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useGenreBySlug } from "@/src/domains/musical-genre/hooks/use-genres.hooks";
 import { Button } from "@/src/shared/components/UI/button";
 import { Badge } from "@/src/shared/components/UI/badge";
@@ -11,7 +12,11 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  FileText,
 } from "lucide-react";
+import { PlaylistIcon } from "@/src/shared/components/Icons/icons";
+import { RequestTrackModal } from "@/src/domains/requests/components/RequestTrackModal";
+import { AddToPlaylistModal } from "@/src/domains/playlists/components/AddToPlaylistModal";
 import {
   Avatar,
   AvatarFallback,
@@ -25,6 +30,11 @@ import {
   SelectValue,
 } from "@/src/shared/components/UI/select";
 import Link from "next/link";
+import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
+import { PlayAllButton } from "@/src/domains/player/components/PlayAllButton";
+import { TrackResponse } from "@/src/domains/tracks/types/track.types";
+import { TrackDuration } from "@/src/shared/components/UI/TrackDuration";
+import { BackButton } from "@/src/shared/components/UI/BackButton";
 
 const LANGUAGE_LABELS: Record<string, string> = {
   es: "Español",
@@ -43,6 +53,7 @@ export default function GenreDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const router = useRouter();
   const { data: genre, isLoading, isError } = useGenreBySlug(slug);
 
   const [isGospelFilter, setIsGospelFilter] = useState(false);
@@ -93,12 +104,10 @@ export default function GenreDetailPage({
         <h1 className="text-2xl font-bold text-foreground">
           Género no encontrado
         </h1>
-        <Link
-          href="/music"
-          className="text-primary hover:underline mt-4 inline-block"
-        >
-          Volver a la música
-        </Link>
+        <BackButton 
+          label="Volver a la música"
+          className="text-primary hover:underline mt-4 inline-flex" 
+        />
       </div>
     );
   }
@@ -181,9 +190,7 @@ export default function GenreDetailPage({
             )}
         </div>
 
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-10 h-14 font-black text-lg shadow-xl shadow-blue-500/30 transition-all hover:scale-105 active:scale-95">
-          <Play size={24} fill="currentColor" className="mr-3" /> PLAY
-        </Button>
+        <PlayAllButton tracks={filteredTracks} />
       </div>
 
       {/* Tracks Table */}
@@ -205,6 +212,11 @@ export default function GenreDetailPage({
               {filteredTracks.map((track, index) => (
                 <tr
                   key={track.id}
+                  onClick={() => {
+                    usePlayerStore.getState().setQueue(filteredTracks.slice(index + 1) as unknown as TrackResponse[]);
+                    usePlayerStore.getState().play(track as unknown as TrackResponse);
+                    router.push(`/music/tracks/${track.id}`);
+                  }}
                   className="group hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer"
                 >
                   <td className="px-8 py-5 text-center text-muted-foreground font-black text-sm">
@@ -232,8 +244,8 @@ export default function GenreDetailPage({
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-5 text-emerald-500 font-mono font-bold text-sm">
-                    3:12
+                  <td className="px-8 py-5 text-emerald-500 text-sm font-black text-center whitespace-nowrap">
+                    <TrackDuration audioUrl={(track as any).audioUrl} />
                   </td>
                   <td className="px-8 py-5 text-muted-foreground text-sm font-semibold">
                     {Array.isArray(track.authors) &&
@@ -250,9 +262,31 @@ export default function GenreDetailPage({
                     {track.subGenre || "-"}
                   </td>
                   <td className="px-8 py-5">
-                    <button className="text-slate-600 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10">
-                      <MoreHorizontal size={24} />
-                    </button>
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <AddToPlaylistModal trackId={track.id} trackTitle={track.title}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-slate-500 hover:text-primary hover:bg-primary/10 rounded-full"
+                          title="Agregar a Playlist"
+                        >
+                          <PlaylistIcon className="w-5 h-5" />
+                        </Button>
+                      </AddToPlaylistModal>
+                      
+                      <RequestTrackModal trackId={track.id} genreSlug={genre.slug}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-slate-500 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-full"
+                          title="Solicitar Uso"
+                        >
+                          <FileText size={20} />
+                        </Button>
+                      </RequestTrackModal>
+                    </div>
                   </td>
                 </tr>
               ))}

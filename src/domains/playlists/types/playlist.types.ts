@@ -1,50 +1,32 @@
-import { AuthorResponse } from '@domains/artists/types/artist.types'; 
-import { PaginatedResponse } from '@shared/types/shared.types'
+import type { TrackResponse } from "@/src/domains/tracks/types/track.types";
 
-export type PlaylistOwnerDto = AuthorResponse; 
-
-export interface PlaylistResponse {
+export interface Playlist {
   id: string;
   title: string;
-  owner: PlaylistOwnerDto;
-  cover?: string | null;
-
-  guests: any[]; 
-  tracks: PlaylistTrackDto[];
-
+  cover?: string;
+  tracks?: TrackResponse[];
   createdAt: string;
   updatedAt: string;
-  deletedAt: string | null;
 }
 
-export interface CreatePlaylistInput { title: string }
-
-export interface PlaylistTrackDto {
-  id: string;
+export interface CreatePlaylistInput {
   title: string;
-  genre: GenreLiteDto;
-  subGenre: string;
-  coverUrl?: string | null;
-  audioUrl?: string | null;
-  year: number;
-  audioKey: string;
-  language: string;
-  lyric: string;
-  externalsIds: any;
-  isAvailable: boolean;
-  isGospel: boolean;
-  coverKey: any;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
 }
 
-export type UpdatePlaylistInput = Partial<PlaylistResponse>
+export interface UpdatePlaylistInput {
+  title?: string;
+  cover?: string;
+  trackIds?: string[];
+}
 
-export type PlaylistsResponse = PaginatedResponse<PlaylistResponse>;
-
-export interface GenreLiteDto {
-  id: string;
-  genre: string;
-  slug: string;
+export interface PaginatedPlaylistsResponse {
+  data: Playlist[];
+  meta: {
+    page: number;
+    take: number;
+    itemCount: number;
+    pageCount: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  };
 }

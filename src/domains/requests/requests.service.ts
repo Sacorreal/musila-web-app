@@ -13,7 +13,7 @@ export interface CreateRequestInput {
 }
 
 export interface UpdateRequestInput {
-  status: "PENDING" | "APPROVED" | "REJECTED";
+  status: "PENDIENTE" | "APROBADA" | "RECHAZADA" | "CANCELADA";
   response?: string;
 }
 

@@ -19,6 +19,9 @@ export type UserJWTResponse = {
     email: string
     role: UserRole
     name: string
+    lastName?: string
+    avatarUrl?: string
+    biography?: string
 }
 
 export type AuthState = {
@@ -28,6 +31,7 @@ export type AuthState = {
     isAuthenticated: boolean
 
     setSession: (data: { user: UserJWTResponse; token: string }) => void
+    setUser: (user: UserJWTResponse) => void
     clearSession: () => void
 }
 

@@ -1,11 +1,11 @@
 import React from 'react';
-import { UserDto } from '@/src/domains/users/types/user.types';
+import { AuthorResponse } from '@/src/domains/artists/types/artist.types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/shared/components/UI/avatar';
 import { Button } from '@/src/shared/components/UI/button';
 import { Repeat2 } from 'lucide-react'; // Simulating share/retweet icon
 
 interface ArtistProfileBannerProps {
-  artist: UserDto;
+  artist: AuthorResponse;
 }
 
 export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {

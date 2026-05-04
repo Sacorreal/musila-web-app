@@ -9,39 +9,47 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useRequestTrackFlow } from "@/src/domains/requests/hooks/use-request-track-flow.hook";
 import { LicenseType } from "@/src/domains/tracks/types/track.types";
 import { ConflictRequestError } from "@/src/domains/requests/services/requested-tracks.actions";
-import { UploadCloud, X, Loader2 } from "lucide-react";
+import { apiClient } from "@/src/shared/libs/axios/axios-client";
+import { apiURLs } from "@/src/shared/constants/urls";
+import { RequestStatus, TrackRequest } from "../types/request.types";
+import { X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { CheckCircle2 } from "lucide-react";
 
 interface RequestTrackModalProps {
   trackId: string;
+  genreSlug?: string;
   children: React.ReactNode;
 }
 
-export function RequestTrackModal({ trackId, children }: RequestTrackModalProps) {
+export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrackModalProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [licenseType, setLicenseType] = useState<LicenseType | "">("");
-  const [file, setFile] = useState<File | null>(null);
-
   const { mutateAsync, isPending, uploadProgress, isConnectingSocket } = useRequestTrackFlow();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [checkingStatus, setCheckingStatus] = useState(false);
+  const [existingRequest, setExistingRequest] = useState<TrackRequest | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  // Verificar si ya existe una solicitud al abrir el modal
+  React.useEffect(() => {
+    if (open) {
+      setCheckingStatus(true);
+      apiClient
+        .get<{ data: any[]; total: number }>(apiURLs.requestedTracks.base)
+        .then(({ data }) => {
+          const found = (data.data || []).find(
+            (r) => (r.track?.id === trackId || r.trackId === trackId) && r.status !== RequestStatus.RECHAZADA && r.status !== RequestStatus.CANCELADA
+          );
+          setExistingRequest(found);
+        })
+        .finally(() => setCheckingStatus(false));
     }
-  };
+  }, [open, trackId]);
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-    }
-  };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,17 +63,19 @@ export function RequestTrackModal({ trackId, children }: RequestTrackModalProps)
         trackId,
         message,
         licenseType: licenseType as LicenseType,
-        file: file || undefined,
       });
-      toast.success("¡Solicitud creada con éxito!", {
-        description: "Espera la autorización del autor.",
-      });
-      setOpen(false);
+      setIsSuccess(true);
+      
+      // Redirigir después de 3 segundos
+      setTimeout(() => {
+        setOpen(false);
+        setIsSuccess(false);
+        router.push("/music");
+      }, 3000);
       
       // Reset form
       setMessage("");
       setLicenseType("");
-      setFile(null);
     } catch (error: unknown) {
       if (error instanceof ConflictRequestError) {
         toast.error("Ya tienes una solicitud activa para esta canción.", {
@@ -92,7 +102,66 @@ export function RequestTrackModal({ trackId, children }: RequestTrackModalProps)
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8">
+        {checkingStatus ? (
+          <div className="p-20 flex flex-col items-center justify-center gap-4">
+            <Loader2 className="w-10 h-10 animate-spin text-primary" />
+            <p className="text-slate-500 font-medium">Verificando estado de solicitudes...</p>
+          </div>
+        ) : isSuccess ? (
+          <div className="p-16 flex flex-col items-center text-center gap-8 animate-in fade-in zoom-in duration-500">
+            <div className="relative">
+              <div className="absolute inset-0 bg-emerald-500/20 blur-3xl rounded-full scale-150 animate-pulse" />
+              <div className="relative w-24 h-24 rounded-full bg-emerald-500 flex items-center justify-center shadow-2xl shadow-emerald-500/40">
+                <CheckCircle2 className="w-12 h-12 text-white animate-bounce" />
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h3 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                ¡Solicitud Exitosa!
+              </h3>
+              <p className="text-lg text-slate-500 dark:text-slate-400 max-w-sm">
+                Tu solicitud ha sido enviada correctamente. El autor ha sido notificado.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 w-full max-w-xs">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                Redirigiendo en unos segundos...
+              </p>
+              <Button 
+                className="rounded-xl h-12 bg-slate-900 dark:bg-white dark:text-slate-900 font-bold"
+                onClick={() => {
+                  setOpen(false);
+                  setIsSuccess(false);
+                  router.push("/music");
+                }}
+              >
+                Ir al Inicio
+              </Button>
+            </div>
+          </div>
+        ) : existingRequest ? (
+          <div className="p-10 flex flex-col items-center text-center gap-6">
+            <div className="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <X className="w-10 h-10 text-amber-600 dark:text-amber-500" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white">Solicitud ya enviada</h3>
+              <p className="text-slate-500 dark:text-slate-400 max-w-sm">
+                Ya tienes una solicitud activa para esta canción. No es necesario enviar otra, el autor pronto te responderá a través del chat.
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              className="mt-4 rounded-xl px-8"
+              onClick={() => setOpen(false)}
+            >
+              Cerrar
+            </Button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8">
           <div className="flex flex-col gap-3">
             <Textarea
               placeholder="Escribe tu mensaje aquí..."
@@ -116,75 +185,6 @@ export function RequestTrackModal({ trackId, children }: RequestTrackModalProps)
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              Adjuntar documento (Opcional)
-            </Label>
-            
-            {!file ? (
-              <div
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onClick={() => fileInputRef.current?.click()}
-                className="relative border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-10 flex flex-col items-center justify-center gap-4 bg-slate-50/50 dark:bg-slate-800/20 hover:bg-slate-100 dark:hover:bg-slate-800/40 transition-colors cursor-pointer group"
-              >
-                <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <UploadCloud className="w-8 h-8 text-blue-500 dark:text-blue-400" />
-                </div>
-                <div className="text-center">
-                  <p className="text-base font-medium text-blue-600 dark:text-blue-400">
-                    Sube un archivo <span className="text-slate-500 dark:text-slate-400 font-normal">o arrástralo y suéltalo</span>
-                  </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">PNG, JPG, GIF, PDF hasta 10MB</p>
-                </div>
-                <input
-                  type="file"
-                  className="hidden"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  accept="image/png, image/jpeg, image/gif, application/pdf"
-                  disabled={isPending}
-                />
-              </div>
-            ) : (
-              <div className="flex items-center justify-between p-4 rounded-xl border border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-900/20">
-                <div className="flex items-center gap-4 overflow-hidden">
-                  <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center shrink-0">
-                    <UploadCloud className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="shrink-0 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                  onClick={() => setFile(null)}
-                  disabled={isPending}
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-            )}
-            
-            {/* Progreso de subida */}
-            {isPending && uploadProgress > 0 && uploadProgress < 100 && (
-              <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-2">
-                <div 
-                  className="h-full bg-blue-500 transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                />
-              </div>
-            )}
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
@@ -213,6 +213,7 @@ export function RequestTrackModal({ trackId, children }: RequestTrackModalProps)
             </Button>
           </div>
         </form>
+        )}
       </DialogContent>
     </Dialog>
   );

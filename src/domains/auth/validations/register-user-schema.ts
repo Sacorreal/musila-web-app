@@ -28,7 +28,7 @@ export const registerSchema = z
         email: z
             .string()
             .min(1, "El email es obligatorio")
-            .email("Debe proporcionar un email válido"),
+            .regex(/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-ñÑ]+\.[a-zA-Z]{2,}$/, "Debe proporcionar un email válido"),
 
         password: z
             .string()

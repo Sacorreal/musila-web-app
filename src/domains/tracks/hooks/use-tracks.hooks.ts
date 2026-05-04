@@ -1,8 +1,9 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { tracksService } from '../services/tracks.client';
-import { TrackResponse, TracksResponseDto } from '@/src/domains/tracks/types/track.types';
+import { TrackResponse, TracksResponseDto, UpdateTrackInput } from '@/src/domains/tracks/types/track.types';
+import { toast } from 'sonner';
 
 /**
  * Obtiene canciones destacadas desde el cliente (axios con token Zustand).
@@ -37,10 +38,30 @@ export function useMyTracks() {
   });
 }
 
+/**
+ * Hook para actualizar una canción.
+ */
+export function useUpdateTrack() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateTrackInput }) => 
+      tracksService.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tracks'] });
+      toast.success("Canción actualizada correctamente");
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Error al actualizar la canción");
+    }
+  });
+}
+
 export const trackHooks = {
   useFeaturedTracks,
   useTrackById,
   useMyTracks,
+  useUpdateTrack,
 };
 
 

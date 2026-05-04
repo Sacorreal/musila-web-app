@@ -1,9 +1,13 @@
+import { cn } from "@/src/shared/libs/cn"
+
 export function MusilaLogo({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-      <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="2" />
-      <path d="M16 12v16l12-8-12-8z" fill="currentColor" />
-    </svg>
+    <img 
+      src="/logo.png" 
+      alt="Musila Logo" 
+      className={cn("block max-w-full h-auto", className)}
+      style={{ display: 'block' }}
+    />
   )
 }
 

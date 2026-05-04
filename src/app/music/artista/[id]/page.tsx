@@ -18,8 +18,13 @@ export default async function ArtistDetailServerPage({ params }: { params: Promi
     return (
       <main className="container mx-auto p-4 md:p-8">
         <ArtistProfileBanner artist={artist} />
-        <ArtistBiography biography={artist.biography} />
-        <ArtistTracksList tracks={artist.tracks} />
+        <ArtistBiography biography={artist.biography ?? undefined} />
+        <ArtistTracksList 
+          tracks={artist.tracks} 
+          artistId={artist.id}
+          artistName={artist.name}
+          artistLastName={(artist as any).lastName}
+        />
       </main>
     );
   } catch (error) {

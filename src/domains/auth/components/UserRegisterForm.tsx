@@ -240,7 +240,7 @@ export function UserRegisterForm() {
               <FieldLabel>Email</FieldLabel>
               <Input
                 {...field}
-                type="email"
+                type="text"
                 placeholder="tu@email.com"
                 autoComplete="email"
               />

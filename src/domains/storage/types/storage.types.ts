@@ -1,7 +1,7 @@
 export interface UploadableFileDto {
     field: UploadField
     file: File
-    folder: StorageFolder
+    folder: StorageFolder | string
   }
   
 
@@ -20,6 +20,7 @@ export interface UploadableFileDto {
     TRACK_COVER = 'tracks/covers',
     USER_AVATAR = 'users/avatars',
     DOCUMENTS = 'documents',
+    CHAT_DOCUMENTS = 'chat',
   }
 
 export interface UploadedFileDto {
@@ -29,4 +30,4 @@ export interface UploadedFileDto {
 }
 
 
-  export type UploadField = "audio" | "cover" | "avatar" | "document";
+  export type UploadField = "audio" | "cover" | "avatar" | "document" | "chatFile";

@@ -1,22 +1,26 @@
 import { io, Socket } from "socket.io-client";
 import { BASE_API_URL } from "@/src/shared/constants/env";
+import type { MessageType } from "../types/chat.types";
 
 export interface SendMessagePayload {
   userId: string;
   chatId: string;
   content: string;
-  type: "TEXT" | "FILE";
+  type: MessageType;
   fileUrl?: string;
   filekey?: string;
   fileName?: string;
+  fileSize?: number;
+  mimeType?: string;
 }
 
 class ChatSocketService {
   private socket: Socket | null = null;
+  private currentToken: string | null = null;
 
   connect(token: string) {
     // Si el socket existe pero el token es diferente, desconectar para usar el nuevo
-    if (this.socket && this.socket.connected && this.socket.io.opts.auth?.token !== `Bearer ${token}`) {
+    if (this.socket && this.socket.connected && this.currentToken !== token) {
       console.log("[ChatSocket] Token actualizado, reconectando...");
       this.disconnect();
     }
@@ -36,6 +40,7 @@ class ChatSocketService {
         reconnection: true,
         reconnectionAttempts: 5,
       });
+      this.currentToken = token;
 
       this.socket.on("connect", () => {
         console.log("[ChatSocket] Conectado exitosamente con ID:", this.socket?.id);
@@ -71,10 +76,19 @@ class ChatSocketService {
     }
   }
 
+  markAsRead(chatId: string, messageId: string): boolean {
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('chat.read', { chatId, messageId });
+      return true;
+    }
+    return false;
+  }
+
   disconnect() {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
+      this.currentToken = null;
     }
   }
 }
