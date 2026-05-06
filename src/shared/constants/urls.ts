@@ -52,6 +52,10 @@ export const apiURLs = {
     base: '/guests' as const, // POST, GET
     byId: (id: string) => `/guests/${id}` as const, // GET, PUT, DELETE
   },
+  invites: {
+    base: '/invites' as const,
+    byToken: (token: string) => `/invites/${token}` as const,
+  },
   app: {
     health: `${BASE_API_URL}` as const,
   }

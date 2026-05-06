@@ -1,8 +1,15 @@
+'use client'
+
 import React from 'react';
 import { CreatePlaylistDialog } from '@/src/domains/playlists/components/CreatePlaylistDialog';
 import { PlaylistGrid } from '@/src/domains/playlists/components/PlaylistGrid';
+import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
+import { UserRole } from '@/src/domains/users/types/user.types';
 
 export default function MyMusicPage() {
+  const user = useAuthStore((s) => s.user);
+  const isGuest = user?.role === UserRole.INVITADO;
+
   return (
     <div className="flex flex-col w-full min-h-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
       {/* Header section */}
@@ -15,9 +22,11 @@ export default function MyMusicPage() {
         </div>
         
         {/* Action Button */}
-        <div className="flex items-center gap-3">
-          <CreatePlaylistDialog />
-        </div>
+        {!isGuest && (
+          <div className="flex items-center gap-3">
+            <CreatePlaylistDialog />
+          </div>
+        )}
       </div>
       
       {/* Divider */}

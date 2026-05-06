@@ -14,6 +14,9 @@ import { Button } from '@/src/shared/components/UI/button';
 import { PlaylistIcon, PlusIcon, MusicNoteIcon } from '@/src/shared/components/Icons/icons';
 import { CheckIcon } from 'lucide-react';
 
+import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
+import { UserRole } from '@/src/domains/users/types/user.types';
+
 interface AddToPlaylistModalProps {
   trackId: string;
   trackTitle: string;
@@ -24,6 +27,9 @@ export function AddToPlaylistModal({ trackId, trackTitle, children }: AddToPlayl
   const [open, setOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('');
+  
+  const user = useAuthStore((s) => s.user);
+  const isGuest = user?.role === UserRole.INVITADO;
 
   const { data, isLoading } = usePlaylists();
   const updatePlaylist = useUpdatePlaylist();
@@ -80,35 +86,37 @@ export function AddToPlaylistModal({ trackId, trackTitle, children }: AddToPlayl
           </DialogDescription>
         </DialogHeader>
 
-        {isCreating ? (
-          <form onSubmit={handleCreateAndAdd} className="flex flex-col gap-4 py-4 border-b">
-            <div className="flex flex-col gap-2">
-              <input
-                autoFocus
-                value={newPlaylistTitle}
-                onChange={(e) => setNewPlaylistTitle(e.target.value)}
-                placeholder="Nombre de la nueva playlist"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="ghost" onClick={() => setIsCreating(false)} disabled={createPlaylist.isPending}>
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={!newPlaylistTitle.trim() || createPlaylist.isPending}>
-                {createPlaylist.isPending ? 'Creando...' : 'Crear y Agregar'}
-              </Button>
-            </div>
-          </form>
-        ) : (
-          <Button 
-            variant="outline" 
-            className="w-full justify-start gap-2 mb-2 border-dashed"
-            onClick={() => setIsCreating(true)}
-          >
-            <PlusIcon className="w-5 h-5" />
-            Nueva Playlist
-          </Button>
+        {!isGuest && (
+          isCreating ? (
+            <form onSubmit={handleCreateAndAdd} className="flex flex-col gap-4 py-4 border-b">
+              <div className="flex flex-col gap-2">
+                <input
+                  autoFocus
+                  value={newPlaylistTitle}
+                  onChange={(e) => setNewPlaylistTitle(e.target.value)}
+                  placeholder="Nombre de la nueva playlist"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="ghost" onClick={() => setIsCreating(false)} disabled={createPlaylist.isPending}>
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={!newPlaylistTitle.trim() || createPlaylist.isPending}>
+                  {createPlaylist.isPending ? 'Creando...' : 'Crear y Agregar'}
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <Button 
+              variant="outline" 
+              className="w-full justify-start gap-2 mb-2 border-dashed"
+              onClick={() => setIsCreating(true)}
+            >
+              <PlusIcon className="w-5 h-5" />
+              Nueva Playlist
+            </Button>
+          )
         )}
 
         <div className="flex-1 overflow-y-auto pr-2 py-2 flex flex-col gap-2">
@@ -119,7 +127,11 @@ export function AddToPlaylistModal({ trackId, trackTitle, children }: AddToPlayl
           ) : playlists.length === 0 && !isCreating ? (
             <div className="flex flex-col items-center justify-center p-6 text-center opacity-70">
               <PlaylistIcon className="w-12 h-12 mb-3" />
-              <p className="text-sm">No tienes listas creadas aún.</p>
+              <p className="text-sm">
+                {isGuest 
+                  ? "Aún no te han invitado a ninguna playlist." 
+                  : "No tienes listas creadas aún."}
+              </p>
             </div>
           ) : (
             playlists.map((playlist) => {
