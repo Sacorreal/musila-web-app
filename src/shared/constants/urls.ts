@@ -4,6 +4,8 @@ export const apiURLs = {
   auth: {
     login: `${BASE_API_URL}/auth/login` as const,
     register: '/auth/register' as const,
+    forgotPassword: '/auth/forgot-password' as const,
+    resetPassword: '/auth/reset-password' as const,
   },
   users: {
     base: '/users' as const,

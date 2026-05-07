@@ -65,3 +65,35 @@ export async function registerUserRequest(createUserDto: CreateUserInput): Promi
     throw new Error(errorMessage);
   }
 }
+
+export async function forgotPasswordRequest(email: string): Promise<{ message: string }> {
+  try {
+    const serverClient = await getServerApiClient();
+    const { data } = await serverClient.post<{ message: string }>(
+      apiURLs.auth.forgotPassword,
+      { email }
+    );
+    return data;
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || "Error al solicitar el restablecimiento de contraseña";
+    throw new Error(errorMessage);
+  }
+}
+
+export async function resetPasswordRequest(
+  token: string,
+  newPassword: string,
+  confirmPassword: string
+): Promise<{ message: string }> {
+  try {
+    const serverClient = await getServerApiClient();
+    const { data } = await serverClient.post<{ message: string }>(
+      apiURLs.auth.resetPassword,
+      { token, newPassword, confirmPassword }
+    );
+    return data;
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || "Error al restablecer la contraseña";
+    throw new Error(errorMessage);
+  }
+}
