@@ -5,6 +5,7 @@ import { HeroSection } from "@/src/domains/landing/components/hero-section"
 import { HowItWorksSection } from "@/src/domains/landing/components/how-it-works-section"
 import { LandingHeader } from "@/src/domains/landing/components/landing-header"
 import { TestimonialsSection } from "@/src/domains/landing/components/testimonials-section"
+import { WhatsAppButton } from "@/src/shared/components/WhatsAppButton"
 
 export default function LandingPage() {
  
@@ -17,6 +18,7 @@ export default function LandingPage() {
       <TestimonialsSection />
       <CTASection />
       <Footer />
+      <WhatsAppButton />
     </main>
   )
 }
