@@ -6,6 +6,13 @@ import { HowItWorksSection } from "@/src/domains/landing/components/how-it-works
 import { LandingHeader } from "@/src/domains/landing/components/landing-header"
 import { TestimonialsSection } from "@/src/domains/landing/components/testimonials-section"
 import { WhatsAppButton } from "@/src/shared/components/WhatsAppButton"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://musila.co",
+  },
+}
 
 export default function LandingPage() {
  
