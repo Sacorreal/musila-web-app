@@ -46,7 +46,7 @@ export function NotificationMenu() {
         </Button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="end" className="w-80 md:w-96 max-h-[85vh] flex flex-col p-0 overflow-hidden border border-border shadow-2xl rounded-xl">
+      <DropdownMenuContent align="end" className="w-[min(calc(100vw-1rem),24rem)] max-h-[85vh] flex flex-col p-0 overflow-hidden border border-border shadow-2xl rounded-xl">
         <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b">
           <DropdownMenuLabel className="font-bold text-base p-0">Notificaciones</DropdownMenuLabel>
           {unreadCount > 0 && (
