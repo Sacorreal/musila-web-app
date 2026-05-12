@@ -8,6 +8,7 @@ import { UserRole } from "@/src/domains/users/types/user.types"
 import Link from "next/link"
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/src/shared/components/UI/avatar"
+import { NotificationMenu } from "@/src/domains/notifications/components/NotificationMenu"
 
 export function AppHeader() {
   const user = useAuthStore((s) => s.user)
@@ -27,6 +28,7 @@ export function AppHeader() {
 
         {/* Right actions */}
         <div className="flex items-center gap-4 flex-shrink-0">
+          <NotificationMenu />
           <ThemeToggle />
           <Link
             href="/music/perfil"
