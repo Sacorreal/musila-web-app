@@ -15,6 +15,7 @@ import { SidebarNav } from './SidebarNav'
 import { SidebarToggle } from './SidebarToggle'
 import { SidebarUser } from './SidebarUser'
 import { useTotalUnreadCount } from '@/src/domains/chat/hooks/use-unread-count.hook'
+import { usePlayerStore } from '@/src/domains/player/store/use-player-store'
 
 export function AppSidebar() {
   const pathname = usePathname()
@@ -23,6 +24,7 @@ export function AppSidebar() {
 
   const { user } = useAuthStore()
   const { logout } = useAuth()
+  const currentTrack = usePlayerStore(state => state.currentTrack)
 
   const allowedNavItems = useMemo(
     () => navItems.filter((item: MenuRoute) => hasMenuAccess(user?.role, item.rolAccess)),
@@ -37,8 +39,9 @@ export function AppSidebar() {
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-200',
-          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          'fixed inset-y-0 left-0 z-40 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-all duration-200',
+          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+          currentTrack && 'pb-24'
         )}
       >
         <SidebarLogo />

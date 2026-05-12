@@ -7,6 +7,52 @@ import { fetchTrackById } from '@/src/domains/tracks/services/tracks.actions';
 import { TrackDetailHero } from '@/src/domains/tracks/components/TrackDetailHero';
 import { TrackLyrics } from '@/src/domains/tracks/components/TrackLyrics';
 import { TrackRequestsTable } from '@/src/domains/requests/components/TrackRequestsTable';
+import { Metadata } from 'next';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  
+  try {
+    const track = await fetchTrackById(id);
+    if (!track) return { title: 'Músila - Canción no encontrada' };
+
+    const authorsNames = track.authors?.map(a => `${a.name} ${a.lastName || ''}`).join(', ') || 'Varios autores';
+    const description = `Escucha "${track.title}" de ${authorsNames} en Músila. La plataforma que conecta compositores con intérpretes.`;
+    
+    return {
+      title: `${track.title} - ${authorsNames} | Músila`,
+      description,
+      openGraph: {
+        title: track.title,
+        description,
+        images: [
+          {
+            url: track.coverUrl,
+            width: 1200,
+            height: 630,
+            alt: `Carátula de ${track.title}`,
+          },
+        ],
+        type: 'music.song',
+        siteName: 'Músila',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: track.title,
+        description,
+        images: [track.coverUrl],
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'Músila - Detalle de Canción',
+    };
+  }
+}
 
 export default async function TrackDetailPage({
   params,

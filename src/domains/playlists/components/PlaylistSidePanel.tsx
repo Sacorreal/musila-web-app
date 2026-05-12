@@ -10,6 +10,7 @@ import { Button } from '@/src/shared/components/UI/button';
 import { MusicNoteIcon } from '@/src/shared/components/Icons/icons';
 import { PlayAllButton } from '@/src/domains/player/components/PlayAllButton';
 import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
+import { PlaylistCollaboratorsManager } from './PlaylistCollaboratorsManager';
 
 interface PlaylistSidePanelProps {
   playlist: Playlist | null;
@@ -152,9 +153,19 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
           </div>
         </div>
 
-        {/* Content - Track List */}
-        <div className="flex-1 overflow-y-auto p-6">
-          {(!playlist.tracks || playlist.tracks.length === 0) ? (
+        {/* Content - Collaborators and Track List */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+          
+          {/* Collaborators Manager */}
+          <PlaylistCollaboratorsManager playlistId={playlist.id} />
+
+          {/* Track List */}
+          <div>
+            <h3 className="text-sm font-bold text-foreground tracking-tight mb-4 flex items-center gap-2">
+              <MusicNoteIcon className="w-4 h-4 text-primary" />
+              Canciones
+            </h3>
+            {(!playlist.tracks || playlist.tracks.length === 0) ? (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-4 opacity-70">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                 <MusicNoteIcon className="w-8 h-8 text-muted-foreground" />
@@ -220,6 +231,7 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
               ))}
             </div>
           )}
+          </div>
         </div>
       </div>
     </>

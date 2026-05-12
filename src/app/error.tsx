@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { AlertCircle, ArrowLeft, RefreshCcw } from "lucide-react";
@@ -23,11 +22,10 @@ export default function GlobalError({
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-6 bg-background relative overflow-hidden">
       {/* Background decoration - Abstract Waves */}
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none">
-        <Image 
+        <img 
           src="/abstract-music-waves-pattern.jpg" 
           alt="" 
-          fill 
-          className="object-cover grayscale"
+          className="absolute inset-0 w-full h-full object-cover grayscale"
         />
       </div>
 
@@ -47,7 +45,7 @@ export default function GlobalError({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <Image 
+          <img 
             src="/logo.png" 
             alt="Musila Logo" 
             width={200} 

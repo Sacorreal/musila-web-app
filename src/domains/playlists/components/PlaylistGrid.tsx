@@ -8,10 +8,15 @@ import { Playlist } from '../types/playlist.types';
 import { MusicNoteIcon } from '@/src/shared/components/Icons/icons';
 import { CreatePlaylistDialog } from './CreatePlaylistDialog';
 
+import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
+import { UserRole } from '@/src/domains/users/types/user.types';
+
 export function PlaylistGrid() {
   const { data, isLoading, isError, error } = usePlaylists();
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const isGuest = user?.role === UserRole.INVITADO;
 
   const playlists = data?.data || [];
   const selectedPlaylist = playlists.find(p => p.id === selectedPlaylistId) || null;
@@ -55,9 +60,11 @@ export function PlaylistGrid() {
           </div>
           <h3 className="text-xl font-bold mb-2">Aún no tienes playlists</h3>
           <p className="text-muted-foreground mb-8">
-            Crea tu primera lista de reproducción para empezar a organizar tu música y compartirla con otros colaboradores.
+            {isGuest 
+              ? "Aún no te han invitado a una playlist, espera a que tu anfitrión te invite a colaborar." 
+              : "Crea tu primera lista de reproducción para empezar a organizar tu música y compartirla con otros colaboradores."}
           </p>
-          <CreatePlaylistDialog />
+          {!isGuest && <CreatePlaylistDialog />}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-8">

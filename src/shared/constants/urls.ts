@@ -4,6 +4,8 @@ export const apiURLs = {
   auth: {
     login: `${BASE_API_URL}/auth/login` as const,
     register: '/auth/register' as const,
+    forgotPassword: '/auth/forgot-password' as const,
+    resetPassword: '/auth/reset-password' as const,
   },
   users: {
     base: '/users' as const,
@@ -51,6 +53,10 @@ export const apiURLs = {
   guests: {
     base: '/guests' as const, // POST, GET
     byId: (id: string) => `/guests/${id}` as const, // GET, PUT, DELETE
+  },
+  invites: {
+    base: '/invites' as const,
+    byToken: (token: string) => `/invites/${token}` as const,
   },
   app: {
     health: `${BASE_API_URL}` as const,

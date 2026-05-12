@@ -6,8 +6,8 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value
 
   // Definimos las rutas que deben ser públicas bajo /music
-  const isPublicMusicRoute = 
-    pathname.startsWith('/music/tracks') || 
+  const isPublicMusicRoute =
+    pathname.startsWith('/music/tracks') ||
     pathname.startsWith('/music/artista')
 
   // Verificamos si la ruta actual es bajo /music y no es pública
@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
       // Decodificamos el payload del JWT (segunda parte del string)
       const payloadBase64 = token.split('.')[1]
       if (!payloadBase64) throw new Error('Token inválido')
-      
+
       const payload = JSON.parse(atob(payloadBase64))
       const now = Math.floor(Date.now() / 1000)
 
