@@ -37,6 +37,15 @@ export interface CreateTrackInput {
   intellectualProperties?: IntellectualPropertyInput[];
 }
 
+export interface IntellectualPropertyDto {
+  id: string;
+  type: "copyrightOffice" | "cmo";
+  key: string;
+  documentKey: string;
+  documentUrl: string;
+  createdAt: string;
+}
+
 export interface TracksResponseDto {
   id: string;
   title: string;
@@ -53,7 +62,7 @@ export interface TracksResponseDto {
   isGospel: boolean;
   coverKey: string | null;
   authors: string[];
-  intellectualProperties: string[];
+  intellectualProperties: IntellectualPropertyDto[];
 
   playlists: string[]
   requestedTrack: string[]
@@ -77,12 +86,13 @@ export interface TrackResponse {
   isAvailable: boolean;
   isGospel: boolean;
   coverKey: string | null;
-  intellectualProperties: string[];
+  intellectualProperties: IntellectualPropertyDto[];
   playlists: PlaylistTrackDto[];
   requestedTrack: string[];
   createdAt: string;
   updatedAt: string;
   authors: AuthorTrackDto[];
+
 
 }
 
