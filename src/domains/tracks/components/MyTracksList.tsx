@@ -98,6 +98,7 @@ export function MyTracksList() {
                 <th className="px-6 py-4 text-center">Visible</th>
                 <th className="px-6 py-4">Género</th>
                 <th className="px-6 py-4">Subgénero</th>
+                <th className="px-6 py-4 text-center">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -163,6 +164,15 @@ export function MyTracksList() {
                   </td>
                   <td className="px-6 py-4 text-sm text-muted-foreground font-medium">
                     {track.subGenre || "-"}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
+                      <Link href={`/music/tracks/editar/${track.id}`}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-muted text-[10px] font-bold uppercase">
+                          Editar
+                        </Badge>
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}

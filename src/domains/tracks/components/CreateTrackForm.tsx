@@ -208,6 +208,25 @@ export function CreateTrackForm() {
                 />
 
                 <Controller
+                  name="iswc"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <div className="flex items-center justify-between">
+                        <FieldLabel>ISWC (Opcional)</FieldLabel>
+                      </div>
+                      <Input placeholder="Ej: T-034.524.680-1" {...field} value={field.value || ""} />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        International Standard Musical Work Code
+                      </p>
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
                   name="genreId"
                   control={control}
                   render={({ field, fieldState }) => (

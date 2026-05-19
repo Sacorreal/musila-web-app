@@ -2,7 +2,7 @@
 
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
 import { TrackResponse } from "@/src/domains/tracks/types/track.types";
-import { ShieldCheck, FileText, Download, Building2, Globe } from "lucide-react";
+import { ShieldCheck, FileText, Download, Building2, Globe, Users } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -37,11 +37,16 @@ export function TrackIntellectualProperty({ track }: TrackIntellectualPropertyPr
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {track.intellectualProperties.map((ip) => {
           const isCopyrightOffice = ip.type === "copyrightOffice";
+          const isSplitSheet = ip.type === "splitSheet";
+
           const badgeColor = isCopyrightOffice
             ? "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-500/30"
+            : isSplitSheet
+            ? "bg-emerald-500/10 text-emerald-600 border-emerald-200 dark:border-emerald-500/30"
             : "bg-violet-500/10 text-violet-600 border-violet-200 dark:border-violet-500/30";
 
-          const Icon = isCopyrightOffice ? Globe : Building2;
+          const Icon = isCopyrightOffice ? Globe : isSplitSheet ? Users : Building2;
+          const badgeLabel = isCopyrightOffice ? "Copyright Office" : isSplitSheet ? "Split Sheet" : "CMO";
 
           return (
             <div
@@ -54,7 +59,7 @@ export function TrackIntellectualProperty({ track }: TrackIntellectualPropertyPr
                     className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold ${badgeColor}`}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                    {isCopyrightOffice ? "Copyright Office" : "CMO"}
+                    {badgeLabel}
                   </span>
                   <h3 className="font-semibold text-foreground text-lg leading-none mt-2">
                     {ip.key}

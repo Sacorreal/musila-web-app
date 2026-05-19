@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Building2,
   Globe,
+  Users,
 } from "lucide-react";
 
 import { Button } from "@shared/components/UI/button";
@@ -52,10 +53,12 @@ export function IntellectualPropertySection() {
     }
   };
 
-  const addEntry = (type: "copyrightOffice" | "cmo") => {
+  const hasSplitSheet = fields.some((field) => field.type === "splitSheet");
+
+  const addEntry = (type: "copyrightOffice" | "cmo" | "splitSheet") => {
     append({
       type,
-      key: "",
+      key: type === "splitSheet" ? "Split Sheet" : "",
       file: undefined as unknown as File,
     });
   };
@@ -117,6 +120,17 @@ export function IntellectualPropertySection() {
               <Building2 className="h-4 w-4" />
               Agregar CMO
             </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={hasSplitSheet}
+              className="gap-2 rounded-xl border-dashed hover:border-solid hover:bg-emerald-500/5 hover:text-emerald-600 hover:border-emerald-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => addEntry("splitSheet")}
+            >
+              <Users className="h-4 w-4" />
+              Agregar Split Sheet
+            </Button>
           </div>
 
           {/* Info */}
@@ -141,7 +155,7 @@ export function IntellectualPropertySection() {
 
 interface RowProps {
   index: number;
-  type: "copyrightOffice" | "cmo";
+  type: "copyrightOffice" | "cmo" | "splitSheet";
   onRemove: () => void;
 }
 
@@ -152,18 +166,23 @@ function IntellectualPropertyRow({ index, type, onRemove }: RowProps) {
 
   const currentFile = watch(`intellectualProperties.${index}.file`);
   const isCopyrightOffice = type === "copyrightOffice";
+  const isSplitSheet = type === "splitSheet";
 
   const badgeColor = isCopyrightOffice
     ? "bg-blue-500/10 text-blue-600 border-blue-200"
+    : isSplitSheet
+    ? "bg-emerald-500/10 text-emerald-600 border-emerald-200"
     : "bg-violet-500/10 text-violet-600 border-violet-200";
 
   const badgeIcon = isCopyrightOffice ? (
     <Globe className="h-3.5 w-3.5" />
+  ) : isSplitSheet ? (
+    <Users className="h-3.5 w-3.5" />
   ) : (
     <Building2 className="h-3.5 w-3.5" />
   );
 
-  const badgeLabel = isCopyrightOffice ? "Copyright Office" : "CMO";
+  const badgeLabel = isCopyrightOffice ? "Copyright Office" : isSplitSheet ? "Split Sheet" : "CMO";
 
   return (
     <div className="group relative rounded-xl border bg-muted/20 p-5 space-y-4 transition-colors hover:bg-muted/30">
@@ -186,43 +205,45 @@ function IntellectualPropertyRow({ index, type, onRemove }: RowProps) {
       </div>
 
       {/* Selector */}
-      <Controller
-        name={`intellectualProperties.${index}.key`}
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel>
-              {isCopyrightOffice
-                ? "País / Copyright Office"
-                : "Sociedad de Gestión Colectiva (CMO)"}
-            </FieldLabel>
-            <select
-              {...field}
-              className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">
+      {!isSplitSheet && (
+        <Controller
+          name={`intellectualProperties.${index}.key`}
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>
                 {isCopyrightOffice
-                  ? "Seleccionar país..."
-                  : "Seleccionar CMO..."}
-              </option>
-              {isCopyrightOffice
-                ? copyrightOfficeOptions.map((opt) => (
-                    <option key={opt.countryCode} value={opt.countryCode}>
-                      {opt.countryName} — {opt.officeName}
-                    </option>
-                  ))
-                : cmoOptions.map((opt) => (
-                    <option key={opt.acronym} value={opt.acronym}>
-                      {opt.acronym} — {opt.originalName}
-                    </option>
-                  ))}
-            </select>
-            {fieldState.error && (
-              <FieldError errors={[fieldState.error]} />
-            )}
-          </Field>
-        )}
-      />
+                  ? "País / Copyright Office"
+                  : "Sociedad de Gestión Colectiva (CMO)"}
+              </FieldLabel>
+              <select
+                {...field}
+                className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="">
+                  {isCopyrightOffice
+                    ? "Seleccionar país..."
+                    : "Seleccionar CMO..."}
+                </option>
+                {isCopyrightOffice
+                  ? copyrightOfficeOptions.map((opt) => (
+                      <option key={opt.countryCode} value={opt.countryCode}>
+                        {opt.countryName} — {opt.officeName}
+                      </option>
+                    ))
+                  : cmoOptions.map((opt) => (
+                      <option key={opt.acronym} value={opt.acronym}>
+                        {opt.acronym} — {opt.originalName}
+                      </option>
+                    ))}
+              </select>
+              {fieldState.error && (
+                <FieldError errors={[fieldState.error]} />
+              )}
+            </Field>
+          )}
+        />
+      )}
 
       {/* File input */}
       <Controller

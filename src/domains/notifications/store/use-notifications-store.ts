@@ -22,28 +22,56 @@ interface NotificationsState {
   addNotification: (notification: Notification) => void;
 }
 
-export const useNotificationsStore = create<NotificationsState>((set, get) => ({
+// AbortController externo para cancelar peticiones en vuelo si se llama de nuevo
+let fetchNotificationsController: AbortController | null = null;
+let isFetchingNotifications = false;
+let isFetchingUnreadCount = false;
+
+export const useNotificationsStore = create<NotificationsState>((set) => ({
   notifications: [],
   unreadCount: 0,
   isLoading: false,
 
   fetchNotifications: async () => {
+    // Evitar llamadas simultáneas
+    if (isFetchingNotifications) return;
+    isFetchingNotifications = true;
+
+    // Cancelar petición previa si aún está en vuelo
+    if (fetchNotificationsController) {
+      fetchNotificationsController.abort();
+    }
+    fetchNotificationsController = new AbortController();
+
     set({ isLoading: true });
     try {
-      const response = await apiClient.get('/notifications?limit=20');
+      const response = await apiClient.get('/notifications?limit=20', {
+        signal: fetchNotificationsController.signal,
+      });
       set({ notifications: response.data, isLoading: false });
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
+    } catch (error: any) {
+      // Ignorar errores de cancelación (AbortError) — son esperados
+      if (error?.name !== 'AbortError' && error?.code !== 'ERR_CANCELED') {
+        console.error('Error fetching notifications:', error);
+      }
       set({ isLoading: false });
+    } finally {
+      isFetchingNotifications = false;
     }
   },
 
   fetchUnreadCount: async () => {
+    // Evitar llamadas simultáneas
+    if (isFetchingUnreadCount) return;
+    isFetchingUnreadCount = true;
+
     try {
       const response = await apiClient.get('/notifications/unread-count');
       set({ unreadCount: response.data.count });
     } catch (error) {
       console.error('Error fetching unread count:', error);
+    } finally {
+      isFetchingUnreadCount = false;
     }
   },
 
@@ -82,3 +110,4 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
     }));
   },
 }));
+

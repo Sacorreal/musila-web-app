@@ -1,29 +1,34 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 import { notificationsSocketService } from '../services/notifications-socket.service';
 import { useNotificationsStore } from '../store/use-notifications-store';
 
 export function useNotificationsSocket() {
   const token = useAuthStore((state) => state.token);
+
+  // Usamos refs estables para no incluir las funciones del store en las dependencias del effect,
+  // evitando un bucle de re-renders que dispara peticiones ECONNRESET al backend.
   const fetchNotifications = useNotificationsStore((state) => state.fetchNotifications);
   const fetchUnreadCount = useNotificationsStore((state) => state.fetchUnreadCount);
 
+  const fetchNotificationsRef = useRef(fetchNotifications);
+  const fetchUnreadCountRef = useRef(fetchUnreadCount);
+
+  // Mantenemos las refs actualizadas sin relanzar el effect
+  fetchNotificationsRef.current = fetchNotifications;
+  fetchUnreadCountRef.current = fetchUnreadCount;
+
   useEffect(() => {
     if (token) {
-      // Connect to websocket
       notificationsSocketService.connect(token);
-      
-      // Fetch initial state
-      fetchNotifications();
-      fetchUnreadCount();
+
+      // Llamamos por las refs estables → el effect solo depende de `token`
+      fetchNotificationsRef.current();
+      fetchUnreadCountRef.current();
     } else {
       notificationsSocketService.disconnect();
     }
 
-    return () => {
-      // We don't necessarily disconnect on unmount of a specific component
-      // if we want notifications to keep working globally, 
-      // but if the token changes or logs out, it will disconnect.
-    };
-  }, [token, fetchNotifications, fetchUnreadCount]);
+    // Solo el token determina cuándo reconectar/desconectar
+  }, [token]);
 }

@@ -15,7 +15,7 @@ export type AuthorTrackDto = Pick<
 
 
 export interface IntellectualPropertyInput {
-  type: "copyrightOffice" | "cmo";
+  type: "copyrightOffice" | "cmo" | "splitSheet";
   key: string;
   documentKey: string;
   documentUrl: string;
@@ -34,12 +34,13 @@ export interface CreateTrackInput {
   audioUrl: string;
   coverKey?: string;
   coverUrl?: string;
+  iswc?: string;
   intellectualProperties?: IntellectualPropertyInput[];
 }
 
 export interface IntellectualPropertyDto {
   id: string;
-  type: "copyrightOffice" | "cmo";
+  type: "copyrightOffice" | "cmo" | "splitSheet";
   key: string;
   documentKey: string;
   documentUrl: string;
@@ -58,6 +59,7 @@ export interface TracksResponseDto {
   language: string;
   lyric: string;
   externalsIds: Record<string, unknown> | null;
+  iswc?: string;
   isAvailable: boolean;
   isGospel: boolean;
   coverKey: string | null;
@@ -83,6 +85,7 @@ export interface TrackResponse {
   language: string;
   lyric: string;
   externalsIds: Record<string, unknown> | null;
+  iswc?: string;
   isAvailable: boolean;
   isGospel: boolean;
   coverKey: string | null;
