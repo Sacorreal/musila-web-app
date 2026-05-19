@@ -14,6 +14,13 @@ export type AuthorTrackDto = Pick<
 >
 
 
+export interface IntellectualPropertyInput {
+  type: "copyrightOffice" | "cmo";
+  key: string;
+  documentKey: string;
+  documentUrl: string;
+}
+
 export interface CreateTrackInput {
   title: string;
   genreId: string;
@@ -27,6 +34,7 @@ export interface CreateTrackInput {
   audioUrl: string;
   coverKey?: string;
   coverUrl?: string;
+  intellectualProperties?: IntellectualPropertyInput[];
 }
 
 export interface TracksResponseDto {

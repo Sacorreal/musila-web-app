@@ -30,6 +30,23 @@ export const createTrackSchema = z.object({
   
   audio: z.instanceof(File, { message: "Audio requerido" }),
   coverImage: z.instanceof(File).optional(),
+
+  // Propiedad intelectual (opcional)
+  intellectualProperties: z
+    .array(
+      z.object({
+        type: z.enum(["copyrightOffice", "cmo"]),
+        key: z.string().min(1, "Debes seleccionar una opción"),
+        file: z.instanceof(File, {
+          message: "El documento PDF es obligatorio",
+        }),
+      })
+    )
+    .optional()
+    .default([]),
 });
 
 export type CreateTrackFormValues = z.infer<typeof createTrackSchema>;
+
+/** Tipo individual para usar en useFieldArray */
+export type IntellectualPropertyEntry = CreateTrackFormValues["intellectualProperties"][number];

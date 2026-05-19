@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserCircle, Image as ImageIcon, Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -34,6 +34,7 @@ import {
 import { GenreSelector } from "@domains/musical-genre/components/GenreSelector";
 import { LanguageSelector } from "../components/LanguageSelector";
 import { AudioUploadField } from "../components/AudioUploadField";
+import { IntellectualPropertySection } from "./IntellectualPropertySection";
 
 export function CreateTrackForm() {
   const router = useRouter();
@@ -43,8 +44,7 @@ export function CreateTrackForm() {
   const { mutateAsync, isPending, globalProgress } = useCreateTrack();
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const { control, handleSubmit, watch, setValue, reset } =
-    useForm<CreateTrackFormValues>({
+  const methods = useForm<CreateTrackFormValues>({
       resolver: zodResolver(createTrackSchema),
       defaultValues: {
         title: "",
@@ -55,8 +55,11 @@ export function CreateTrackForm() {
         authorsIds: user?.id ? [user.id] : [],
         isAvailable: true,
         isGospel: false,
+        intellectualProperties: [],
       },
     });
+
+  const { control, handleSubmit, watch, setValue, reset } = methods;
 
   // 2️⃣ Lógica de envío limpia y unificada
   const onSubmit = async (data: CreateTrackFormValues) => {
@@ -125,11 +128,12 @@ export function CreateTrackForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit, () => {
-        toast.error("Formulario incompleto", {
-          description: "Revisa los campos obligatorios en rojo.",
-        });
+    <FormProvider {...methods}>
+      <form
+        onSubmit={handleSubmit(onSubmit, () => {
+          toast.error("Formulario incompleto", {
+            description: "Revisa los campos obligatorios en rojo.",
+          });
       })}
       className="mx-auto max-w-6xl px-6 py-12"
     >
@@ -326,6 +330,9 @@ export function CreateTrackForm() {
                   )}
                 />
               </section>
+
+              {/* PROPIEDAD INTELECTUAL */}
+              <IntellectualPropertySection />
             </div>
 
             {/* SIDEBAR STICKY (Columna Derecha) */}
@@ -399,6 +406,7 @@ export function CreateTrackForm() {
           </div>
         </div>
       </FieldGroup>
-    </form>
+      </form>
+    </FormProvider>
   );
 }

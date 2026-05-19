@@ -21,6 +21,7 @@ export interface UploadableFileDto {
     USER_AVATAR = 'users/avatars',
     DOCUMENTS = 'documents',
     CHAT_DOCUMENTS = 'chat',
+    INTELLECTUAL_PROPERTY = 'intellectual-property',
   }
 
 export interface UploadedFileDto {
@@ -30,4 +31,4 @@ export interface UploadedFileDto {
 }
 
 
-  export type UploadField = "audio" | "cover" | "avatar" | "document" | "chatFile";
+  export type UploadField = "audio" | "cover" | "avatar" | "document" | "chatFile" | `ip_doc_${number}`;
