@@ -19,9 +19,15 @@ export type UserJWTResponse = {
     email: string
     role: UserRole
     name: string
+    secondName?: string
     lastName?: string
+    secondLastName?: string
     avatarUrl?: string
     biography?: string
+    phone?: string
+    countryCode?: string
+    typeCitizenID?: string
+    citizenID?: string
 }
 
 export type AuthState = {
