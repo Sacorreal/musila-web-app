@@ -295,6 +295,17 @@ export function UserRegisterForm() {
         />
       </FieldGroup>
 
+      <p className="text-xs text-muted-foreground leading-relaxed">
+        Al hacer clic en "Crear cuenta", aceptas nuestros{" "}
+        <a href="/terms" target="_blank" className="text-primary hover:underline font-medium">
+          Términos de Uso
+        </a>{" "}
+        y nuestra{" "}
+        <a href="/privacy" target="_blank" className="text-primary hover:underline font-medium">
+          Política de Privacidad
+        </a>.
+      </p>
+
       <Button type="submit" disabled={isSubmitting} className="w-full">
         {isSubmitting ? (
           <>

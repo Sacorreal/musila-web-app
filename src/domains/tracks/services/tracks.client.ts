@@ -2,7 +2,7 @@ import { apiClient } from '@shared/libs/axios/axios-client'
 import type { CreateTrackFormValues } from "../validations/track.schema";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { StorageFolder, type UploadableFileDto } from "@/src/domains/storage/types/storage.types";
-import type { CreateTrackInput, TrackResponse, TracksResponseDto } from "@/src/domains/tracks/types/track.types";
+import type { CreateTrackInput, TrackResponse, TracksResponseDto, IntellectualPropertyInput } from "@/src/domains/tracks/types/track.types";
 import type { UploadedFileDto } from "@domains/storage/types/storage.types";
 import { handleApiError } from '@shared/libs/handle-api-error'
 import { TracksResponse } from '../types/track.types'
@@ -51,14 +51,25 @@ export async function createTrackRequest(
   options?: CreateTrackOptions,
 ): Promise<TrackResponse> {
   const { signal } = options || {};
-  const { audio, coverImage, authorsIds, ...dto } = data;
+  const { audio, coverImage, authorsIds, intellectualProperties, ...dto } = data;
 
   if (!audio) throw new Error("Audio file is required");
 
+  // ── Archivos base (audio + cover) ──
   const filesToUpload: UploadableFileDto[] = [
     { field: "audio", file: audio, folder: StorageFolder.TRACK_AUDIO },
     ...(coverImage ? [{ field: "cover", file: coverImage, folder: StorageFolder.TRACK_COVER } as UploadableFileDto] : []),
   ];
+
+  // ── Archivos de Propiedad Intelectual ──
+  const ipEntries = intellectualProperties ?? [];
+  ipEntries.forEach((ip, index) => {
+    filesToUpload.push({
+      field: `ip_doc_${index}` as UploadableFileDto["field"],
+      file: ip.file,
+      folder: StorageFolder.INTELLECTUAL_PROPERTY,
+    });
+  });
 
   let uploadedFiles: UploadedFileDto[] = [];
 
@@ -77,6 +88,18 @@ export async function createTrackRequest(
 
   if (!audioInfo) throw new Error("Error en la verificación del audio subido.");
 
+  // ── Mapear archivos IP subidos a la estructura del payload ──
+  const ipPayload: IntellectualPropertyInput[] = ipEntries.map((ip, index) => {
+    const ipFile = uploadedFiles.find((f) => f.field === `ip_doc_${index}`);
+    if (!ipFile) throw new Error(`Error en la verificación del documento IP #${index + 1}.`);
+    return {
+      type: ip.type,
+      key: ip.key,
+      documentKey: ipFile.key,
+      documentUrl: ipFile.publicUrl,
+    };
+  });
+
   // ========================================================
   // 3️⃣ Construir el Payload
   // ========================================================
@@ -87,6 +110,7 @@ export async function createTrackRequest(
     audioUrl: audioInfo.publicUrl,
     coverKey: coverInfo?.key ?? undefined,
     coverUrl: coverInfo?.publicUrl ?? undefined,
+    ...(ipPayload.length > 0 ? { intellectualProperties: ipPayload } : {}),
   };
 
   // ========================================================
@@ -101,6 +125,8 @@ export async function createTrackRequest(
     // 🚨 Compensación: Usamos la función inyectada para limpiar
     const keysToDelete = [audioInfo.key];
     if (coverInfo?.key) keysToDelete.push(coverInfo.key);
+    // También limpiar documentos IP
+    ipPayload.forEach((ip) => keysToDelete.push(ip.documentKey));
 
     rollbackFn(keysToDelete).catch(console.error);
 

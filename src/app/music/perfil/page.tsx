@@ -19,6 +19,7 @@ import {
   Globe
 } from "lucide-react";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import type { UserJWTResponse } from "@/src/domains/auth/types/auth.types";
 import { usersService } from "@/src/domains/users/services/users.service";
 import { useUploadStorage } from "@/src/domains/storage/hooks/use-upload-storage";
 import { StorageFolder, UploadField } from "@/src/domains/storage/types/storage.types";
@@ -157,7 +158,7 @@ export default function PerfilPage() {
       if (error) {
         toast.error(error);
       } else if (data) {
-        setUser(data);
+        setUser(data as unknown as UserJWTResponse);
         setAvatarFile(null); // Limpiar archivo pendiente
         toast.success("Perfil actualizado correctamente");
         setValue("password", "");

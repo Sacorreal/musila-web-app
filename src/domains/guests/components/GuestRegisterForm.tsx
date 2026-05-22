@@ -116,7 +116,7 @@ export function GuestRegisterForm({ invite }: GuestRegisterFormProps) {
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Correo electrónico inválido';
     if (!form.password || form.password.length < 6) e.password = 'Mínimo 6 caracteres';
     if (form.password !== form.repeatPassword) e.repeatPassword = 'Las contraseñas no coinciden';
-    if (!form.citizenID.trim()) e.citizenID = 'El número de documento es obligatorio';
+    if (!(form.citizenID ?? '').trim()) e.citizenID = 'El número de documento es obligatorio';
     setErrors(e);
     return Object.keys(e).length === 0;
   };

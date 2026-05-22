@@ -130,8 +130,8 @@ export function MusicPlayer() {
       />
 
       {/* Left: Track Info */}
-      <div className="flex w-1/3 min-w-[180px] items-center gap-4">
-        <div className="w-14 h-14 rounded-md bg-muted overflow-hidden flex-shrink-0 shadow-md">
+      <div className="flex items-center gap-3 flex-1 min-w-0 md:w-1/3 md:flex-none">
+        <div className="w-12 h-12 md:w-14 md:h-14 rounded-md bg-muted overflow-hidden flex-shrink-0 shadow-md">
           {currentTrack.coverUrl ? (
             <img src={currentTrack.coverUrl} alt={currentTrack.title} className="w-full h-full object-cover" />
           ) : (
@@ -140,14 +140,14 @@ export function MusicPlayer() {
             </div>
           )}
         </div>
-        <div className="flex flex-col truncate">
+        <div className="flex flex-col truncate min-w-0">
           <Link href={`/music/tracks/${currentTrack.id}`} className="font-bold text-sm text-foreground hover:underline truncate">
             {currentTrack.title}
           </Link>
           <p className="text-xs text-muted-foreground truncate">
             {currentTrack.authors && currentTrack.authors.length > 0
-              ? (currentTrack.authors.every(a => typeof a === 'string') 
-                  ? 'Varios Artistas' 
+              ? (currentTrack.authors.every(a => typeof a === 'string')
+                  ? 'Varios Artistas'
                   : currentTrack.authors.map((a, idx, arr) => {
                       if (typeof a === 'string') return null;
                       const name = `${(a as any).name || ''} ${(a as any).lastName || ''}`.trim();
@@ -168,15 +168,15 @@ export function MusicPlayer() {
       </div>
 
       {/* Center: Playback Controls & Progress */}
-      <div className="flex flex-col flex-1 max-w-2xl items-center justify-center gap-1">
-        <div className="flex items-center gap-4 md:gap-6">
+      <div className="flex flex-col items-center justify-center gap-1 md:flex-1 md:max-w-2xl">
+        <div className="flex items-center gap-3 md:gap-6">
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={playPrevious}>
             <SkipBack className="w-5 h-5 fill-current" />
           </Button>
           
-          <Button 
-            variant="default" 
-            size="icon" 
+          <Button
+            variant="default"
+            size="icon"
             className="rounded-full w-10 h-10 bg-foreground text-background hover:scale-105 hover:bg-foreground transition-all shadow-md"
             onClick={isPlaying ? pause : resume}
           >
@@ -192,7 +192,7 @@ export function MusicPlayer() {
           </Button>
         </div>
 
-        <div className="flex items-center gap-2 w-full text-xs text-muted-foreground font-medium">
+        <div className="hidden md:flex items-center gap-2 w-full text-xs text-muted-foreground font-medium">
           <span className="w-10 text-right">{formatTime(currentTime)}</span>
           <Slider
             value={[currentTime]}
@@ -205,8 +205,8 @@ export function MusicPlayer() {
         </div>
       </div>
 
-      {/* Right: Extra Controls & Volume */}
-      <div className="flex w-1/3 min-w-[180px] items-center justify-end gap-2 md:gap-4">
+      {/* Right: Extra Controls & Volume — hidden on mobile */}
+      <div className="hidden md:flex w-1/3 items-center justify-end gap-2 md:gap-4">
         {/* Modals integrated into the player */}
         <AddToPlaylistModal trackId={currentTrack.id} trackTitle={currentTrack.title}>
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary transition-colors" title="Agregar a Playlist">
@@ -214,8 +214,8 @@ export function MusicPlayer() {
           </Button>
         </AddToPlaylistModal>
 
-        <RequestTrackModal 
-          trackId={currentTrack.id} 
+        <RequestTrackModal
+          trackId={currentTrack.id}
           genreSlug={typeof currentTrack.genre === 'object' ? (currentTrack.genre as any).slug : undefined}
         >
           <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-emerald-500 transition-colors" title="Solicitar Uso">
@@ -223,9 +223,9 @@ export function MusicPlayer() {
           </Button>
         </RequestTrackModal>
 
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           className={cn(
             "transition-colors",
             currentTrack.lyric ? "text-muted-foreground hover:text-purple-500" : "text-muted-foreground/30 hover:bg-transparent cursor-not-allowed"

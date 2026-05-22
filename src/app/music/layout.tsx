@@ -1,11 +1,11 @@
 import { AppHeader } from "@/src/shared/components/Layout/app-header"
 import { AppSidebar } from '@/src/shared/components/Layout/sidebar/AppSidebar'
 import { MusicPlayer } from '@/src/domains/player/components/MusicPlayer'
-
 import type React from "react"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
+
         <div className="min-h-screen bg-background flex relative">
           {/* Sidebar lateral */}
           <AppSidebar />

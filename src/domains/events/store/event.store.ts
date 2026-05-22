@@ -21,7 +21,7 @@ export const useEventStore = create<EventStore>((set) => ({
 
   fetchEvents: async () => {
     const res = await fetch('http://localhost:3000/events/grouped');
-    const data = await res.json();
+    const data = await res.json() as Record<string, EventConsumer[]>;
 
     set({
       grouped: data,

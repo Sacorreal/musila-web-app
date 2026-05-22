@@ -44,13 +44,7 @@ export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
         <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 font-semibold shadow-md transition-all">
           Seguir
         </Button>
-        <Button variant="secondary" className="rounded-full px-5 font-semibold gap-2">
-          <Repeat2 className="w-4 h-4" />
-          Compartir
-        </Button>
-        <Button variant="secondary" className="rounded-full px-5 font-semibold">
-          Enviar Mensaje
-        </Button>
+        
       </div>
     </div>
   );

@@ -60,7 +60,11 @@ export const apiURLs = {
   },
   app: {
     health: `${BASE_API_URL}` as const,
-  }
+  },
+  admin: {
+    stats: '/users/admin/stats' as const,
+    createAdmin: '/users/admin/create' as const,
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;

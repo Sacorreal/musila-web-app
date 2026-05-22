@@ -28,8 +28,38 @@ export const createTrackSchema = z.object({
   
   isGospel: z.boolean({ required_error: 'Debes indicar si es Gospel o no' }),
   
+  iswc: z.string().optional(),
+  
   audio: z.instanceof(File, { message: "Audio requerido" }),
   coverImage: z.instanceof(File).optional(),
+
+  // Propiedad intelectual (opcional)
+  intellectualProperties: z
+    .array(
+      z.object({
+        type: z.enum(["copyrightOffice", "cmo", "splitSheet"]),
+        key: z.string().min(1, "Debes seleccionar una opción o ingresar un valor"),
+        file: z.instanceof(File, {
+          message: "El documento PDF es obligatorio",
+        }),
+      })
+    )
+    .optional()
+    .default([]),
 });
 
+export const updateTrackSchema = createTrackSchema.partial().extend({
+  // Override audio to be completely optional during update
+  audio: z.instanceof(File, { message: "Audio requerido" }).optional(),
+  title: z.string().min(1, 'El título es obligatorio').trim(),
+  genreId: z.string().min(1, 'Debes seleccionar un género musical'),
+  language: z.string().min(1, 'El idioma es obligatorio'),
+  lyric: z.string().min(1, 'La letra es obligatoria').transform((val) => val.replace(/\s+/g, " ")), 
+});
+
+export type UpdateTrackFormValues = z.infer<typeof updateTrackSchema>;
+
 export type CreateTrackFormValues = z.infer<typeof createTrackSchema>;
+
+/** Tipo individual para usar en useFieldArray */
+export type IntellectualPropertyEntry = CreateTrackFormValues["intellectualProperties"][number];

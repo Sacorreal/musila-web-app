@@ -6,6 +6,7 @@ import {
     HomeIcon,
     PlaylistIcon,
     RequestIcon,
+    ShieldIcon,
     UploadIcon
 } from "@/src/shared/components/Icons/icons"
 import type { NavItems } from "@shared/types/shared.types"
@@ -53,6 +54,12 @@ export const navItems: NavItems = [
         icon: GuestUserIcon,
         label: "Invitar Usuario",
         rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE],
+    },
+    {
+        href: "/admin",
+        icon: ShieldIcon,
+        label: "Panel Admin",
+        rolAccess: [UserRole.ADMIN],
     }
 ]
 

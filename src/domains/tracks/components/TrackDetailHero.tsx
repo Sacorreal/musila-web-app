@@ -49,49 +49,8 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
           />
         </div>
 
-        {/* Info */}
         <div className="flex flex-col gap-4 min-w-0 flex-1 pb-2">
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Canción</p>
-
-            <div className="flex items-center gap-3">
-              <Button 
-                size="lg" 
-                onClick={() => usePlayerStore.getState().play(track)}
-                className="gap-2 shrink-0 rounded-full font-black uppercase tracking-tight px-8 bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 h-12"
-              >
-                <Play className="w-5 h-5 fill-current" />
-                Reproducir
-              </Button>
-
-              <AddToPlaylistModal trackId={track.id} trackTitle={track.title}>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="gap-2 shrink-0 rounded-full font-bold px-6 border-white/20 hover:bg-white/10 h-12 transition-all duration-300 shadow-sm hover:shadow-md"
-                >
-                  <PlaylistIcon className="w-5 h-5" />
-                  Agregar a Playlist
-                </Button>
-              </AddToPlaylistModal>
-
-              {/* Solo visible para no-autores */}
-              {!isAuthor && (
-              <RequestTrackModal 
-                trackId={track.id} 
-                genreSlug={typeof track.genre === 'object' ? (track.genre as any).slug : undefined}
-              >
-                  <Button 
-                    size="lg" 
-                    className="gap-3 shrink-0 rounded-full font-black uppercase tracking-tight px-8 bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer border-none h-12"
-                  >
-                    <FileText className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                    Solicitar Uso
-                  </Button>
-                </RequestTrackModal>
-              )}
-            </div>
-          </div>
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Canción</p>
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground leading-tight tracking-tight break-words">
             {track.title}
@@ -112,7 +71,6 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
           </div>
 
           {/* Autores */}
-          
           {track.authors && track.authors.length > 0 && (
             <div className="flex flex-wrap items-center gap-2 mt-1">
               <span className="text-muted-foreground">Autor: </span>
@@ -132,6 +90,45 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
               ))}
             </div>
           )}
+
+          {/* Action Buttons — stack on mobile, row on sm+ */}
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-1">
+            <Button
+              size="lg"
+              onClick={() => usePlayerStore.getState().play(track)}
+              className="gap-2 rounded-full font-black uppercase tracking-tight px-8 bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 h-12"
+            >
+              <Play className="w-5 h-5 fill-current" />
+              Reproducir
+            </Button>
+
+            <AddToPlaylistModal trackId={track.id} trackTitle={track.title}>
+              <Button
+                size="lg"
+                variant="outline"
+                className="gap-2 rounded-full font-bold px-6 border-white/20 hover:bg-white/10 h-12 transition-all duration-300 shadow-sm hover:shadow-md"
+              >
+                <PlaylistIcon className="w-5 h-5" />
+                Agregar a Playlist
+              </Button>
+            </AddToPlaylistModal>
+
+            {/* Solo visible para no-autores */}
+            {!isAuthor && (
+              <RequestTrackModal
+                trackId={track.id}
+                genreSlug={typeof track.genre === 'object' ? (track.genre as any).slug : undefined}
+              >
+                <Button
+                  size="lg"
+                  className="gap-3 rounded-full font-black uppercase tracking-tight px-8 bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer border-none h-12"
+                >
+                  <FileText className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                  Solicitar Uso
+                </Button>
+              </RequestTrackModal>
+            )}
+          </div>
         </div>
       </div>
     </section>

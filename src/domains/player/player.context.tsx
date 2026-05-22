@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useMemo, useState, useCallback } from "react";
-import type { Track } from "@/src/shared/types/shared.types";
+import type { TrackResponse as Track } from "@/src/domains/tracks/types/track.types";
 
 type PlayerContextValue = {
   currentTrack: Track | null;

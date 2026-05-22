@@ -7,6 +7,7 @@ import { fetchTrackById } from '@/src/domains/tracks/services/tracks.actions';
 import { TrackDetailHero } from '@/src/domains/tracks/components/TrackDetailHero';
 import { TrackLyrics } from '@/src/domains/tracks/components/TrackLyrics';
 import { TrackRequestsTable } from '@/src/domains/requests/components/TrackRequestsTable';
+import { TrackIntellectualProperty } from '@/src/domains/tracks/components/TrackIntellectualProperty';
 import { Metadata } from 'next';
 
 export async function generateMetadata({
@@ -78,6 +79,9 @@ export default async function TrackDetailPage({
 
         {/* Letra */}
         <TrackLyrics lyric={track.lyric} />
+
+        {/* Documentos de Propiedad Intelectual */}
+        <TrackIntellectualProperty track={track} />
 
         {/* Tabla de solicitudes — visible solo para autores de la canción */}
         <TrackRequestsTable trackId={id} authors={track.authors || []} />
