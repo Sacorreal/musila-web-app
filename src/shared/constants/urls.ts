@@ -65,6 +65,10 @@ export const apiURLs = {
     stats: '/users/admin/stats' as const,
     createAdmin: '/users/admin/create' as const,
   },
+  payments: {
+    createPreference: `${BASE_API_URL}/payments/create-preference` as const,
+    status: (reference: string) => `${BASE_API_URL}/payments/status/${reference}` as const,
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;

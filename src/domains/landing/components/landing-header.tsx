@@ -34,6 +34,12 @@ export function LandingHeader() {
             >
               Testimonios
             </Link>
+            <Link
+              href="#pricing"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Precios
+            </Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
@@ -75,6 +81,13 @@ export function LandingHeader() {
               onClick={() => setIsMenuOpen(false)}
             >
               Testimonios
+            </Link>
+            <Link
+              href="#pricing"
+              className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Precios
             </Link>
             <div className="pt-4 space-y-2">
               <div className="flex justify-center pb-2">

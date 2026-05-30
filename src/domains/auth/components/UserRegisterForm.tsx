@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 
 import { CountryCodeSelect } from "./CountryCodeSelect";
-import { SelectRoleUser } from "./SelectRoleUser";
 
 import { Input } from "@/src/shared/components/UI/input";
 import { Button } from "@shared/components/UI/button";
@@ -33,7 +32,12 @@ import {
 } from "@/src/domains/auth/validations/register-user-schema";
 import { useAuth } from "../hooks/use-auth";
 
-export function UserRegisterForm() {
+interface UserRegisterFormProps {
+  defaultRole?: string;
+  externalReference?: string;
+}
+
+export function UserRegisterForm({ defaultRole }: UserRegisterFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { registerUser} = useAuth()
@@ -57,6 +61,7 @@ export function UserRegisterForm() {
       countryCode: "+57",
       typeCitizenID: '',
       citizenID: '',
+      role: defaultRole as RegisterUsersFormValues['role'] | undefined,
     },
   });
 
@@ -77,21 +82,6 @@ export function UserRegisterForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <FieldGroup>
-        {/* Rol */}
-        <Controller
-          name="role"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <SelectRoleUser
-                value={field.value}
-                onValueChange={field.onChange}
-              />
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
         {/* Nombres */}
         <div className="grid grid-cols-2 gap-4">
           <Controller
