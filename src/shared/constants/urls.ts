@@ -68,6 +68,18 @@ export const apiURLs = {
   payments: {
     createPreference: `${BASE_API_URL}/payments/create-preference` as const,
     status: (reference: string) => `${BASE_API_URL}/payments/status/${reference}` as const,
+    history: `${BASE_API_URL}/payments/history` as const,
+    byId: (id: string) => `${BASE_API_URL}/payments/${id}` as const,
+    receipt: (id: string) => `${BASE_API_URL}/payments/${id}/receipt` as const,
+  },
+  me: {
+    profile: `${BASE_API_URL}/users/me` as const,
+    email: `${BASE_API_URL}/users/me/email` as const,
+    password: `${BASE_API_URL}/users/me/password` as const,
+    avatar: `${BASE_API_URL}/users/me/avatar` as const,
+    plan: `${BASE_API_URL}/users/me/plan` as const,
+    billing: `${BASE_API_URL}/users/me/billing` as const,
+    paymentHistory: `${BASE_API_URL}/users/me/payments` as const,
   },
 } as const;
 

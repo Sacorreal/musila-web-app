@@ -7,7 +7,8 @@ import {
     PlaylistIcon,
     RequestIcon,
     ShieldIcon,
-    UploadIcon
+    UploadIcon,
+    UserIcon,
 } from "@/src/shared/components/Icons/icons"
 import type { NavItems } from "@shared/types/shared.types"
 
@@ -54,6 +55,12 @@ export const navItems: NavItems = [
         icon: GuestUserIcon,
         label: "Invitar Usuario",
         rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE],
+    },
+    {
+        href: "/music/mi-cuenta",
+        icon: UserIcon,
+        label: "Mi Cuenta",
+        rolAccess: [UserRole.AUTOR, UserRole.CANTAUTOR, UserRole.INTERPRETE],
     },
     {
         href: "/admin",
