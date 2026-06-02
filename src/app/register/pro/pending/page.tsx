@@ -8,38 +8,52 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 
-const POLL_INTERVAL_MS = 5000;
+const POLL_INTERVAL_MS = 3000;
 const TIMEOUT_MS = 5 * 60 * 1000;
 
 function PendingContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const reference = searchParams.get('ref') ?? '';
   const [timedOut, setTimedOut] = useState(false);
   const startedAt = useRef(Date.now());
+
+  // Ref desde URL o recuperado de sessionStorage (si MP no redirigió automáticamente)
+  const reference =
+    searchParams.get('ref') ??
+    (typeof window !== 'undefined' ? sessionStorage.getItem('mp_pending_ref') : null) ??
+    '';
+
+  const redirect = (ref: string, role: string) => {
+    sessionStorage.removeItem('mp_pending_ref');
+    sessionStorage.removeItem('mp_pending_role');
+    router.replace(`/register/pro/complete?ref=${ref}&role=${role}`);
+  };
 
   useEffect(() => {
     if (!reference) return;
 
-    const interval = setInterval(async () => {
+    const check = async () => {
       if (Date.now() - startedAt.current > TIMEOUT_MS) {
-        clearInterval(interval);
         setTimedOut(true);
         return;
       }
 
       const status = await getPaymentStatus(reference);
       if (status.status === 'approved') {
-        clearInterval(interval);
-        router.replace(`/register/pro/complete?ref=${reference}&role=${status.role ?? ''}`);
+        redirect(reference, status.role ?? '');
       } else if (status.status === 'expired' || status.status === 'not_found') {
-        clearInterval(interval);
+        sessionStorage.removeItem('mp_pending_ref');
+        sessionStorage.removeItem('mp_pending_role');
         router.replace(`/register/pro/error?ref=${reference}`);
       }
-    }, POLL_INTERVAL_MS);
+    };
 
+    // Verificación inmediata al montar + polling cada 3 s
+    check();
+    const interval = setInterval(check, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [reference, router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reference]);
 
   if (timedOut) {
     return (

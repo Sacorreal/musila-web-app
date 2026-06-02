@@ -20,8 +20,12 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote }: PlanCardPro
   function handleProCta() {
     startTransition(async () => {
       try {
-        const { initPoint } = await createPaymentPreference(plan.role, 'pro');
-        window.location.href = initPoint;
+        const { initPoint, externalReference } = await createPaymentPreference(plan.role, 'pro');
+        sessionStorage.setItem('mp_pending_ref', externalReference);
+        sessionStorage.setItem('mp_pending_role', plan.role);
+        // Abrir MP en nueva pestaña; esta ventana va directo a la pantalla de espera
+        window.open(initPoint, '_blank', 'noopener');
+        window.location.href = '/register/pro/pending';
       } catch (err) {
         toast.error('No se pudo iniciar el proceso de pago', {
           description: err instanceof Error ? err.message : 'Intenta nuevamente.',

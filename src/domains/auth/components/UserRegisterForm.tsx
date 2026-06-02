@@ -37,7 +37,7 @@ interface UserRegisterFormProps {
   externalReference?: string;
 }
 
-export function UserRegisterForm({ defaultRole }: UserRegisterFormProps) {
+export function UserRegisterForm({ defaultRole, externalReference }: UserRegisterFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { registerUser} = useAuth()
@@ -67,7 +67,7 @@ export function UserRegisterForm({ defaultRole }: UserRegisterFormProps) {
 
   const onSubmit = async (data: RegisterUsersFormValues) => {
     try {
-      await registerUser(data);
+      await registerUser({ ...data, externalReference });
       toast.success("Cuenta creada con éxito");
       reset();
       router.push("/music");
