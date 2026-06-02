@@ -9,6 +9,7 @@ import Link from "next/link"
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/src/shared/components/UI/avatar"
 import { NotificationMenu } from "@/src/domains/notifications/components/NotificationMenu"
+import { VerifiedBadge } from "@/src/shared/components/UI/verified-badge"
 
 export function AppHeader() {
   const user = useAuthStore((s) => s.user)
@@ -32,7 +33,7 @@ export function AppHeader() {
           <ThemeToggle />
           <Link
             href="/music/perfil"
-            className="transition-transform hover:scale-105 active:scale-95"
+            className="transition-transform hover:scale-105 active:scale-95 relative"
           >
             <Avatar className="h-11 w-11 border-2 border-border shadow-md ring-2 ring-background">
               <AvatarImage src={user?.avatarUrl} className="object-cover" />
@@ -40,6 +41,11 @@ export function AppHeader() {
                 {user?.name?.[0] || <UserIcon className="h-6 w-6" />}
               </AvatarFallback>
             </Avatar>
+            {user?.plan === 'pro' && (
+              <span className="absolute -bottom-1 -right-1 bg-background rounded-full p-px shadow">
+                <VerifiedBadge size={14} />
+              </span>
+            )}
           </Link>
         </div>
       </div>

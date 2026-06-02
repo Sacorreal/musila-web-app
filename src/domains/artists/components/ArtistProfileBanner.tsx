@@ -2,7 +2,8 @@ import React from 'react';
 import { AuthorResponse } from '@/src/domains/artists/types/artist.types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/shared/components/UI/avatar';
 import { Button } from '@/src/shared/components/UI/button';
-import { Repeat2 } from 'lucide-react'; // Simulating share/retweet icon
+import { VerifiedBadge } from '@/src/shared/components/UI/verified-badge';
+import { Repeat2 } from 'lucide-react';
 
 interface ArtistProfileBannerProps {
   artist: AuthorResponse;
@@ -33,9 +34,12 @@ export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
                 </AvatarFallback>
              </Avatar>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-black drop-shadow-md tracking-tight">
-            {artist.name} {artist.lastName}
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-black drop-shadow-md tracking-tight">
+              {artist.name} {artist.lastName}
+            </h1>
+            {artist.plan === 'pro' && <VerifiedBadge size={32} className="text-white drop-shadow-md" />}
+          </div>
         </div>
       </div>
 

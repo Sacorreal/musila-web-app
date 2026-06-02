@@ -70,6 +70,7 @@ export interface AuthorResponse {
   role: string;
   avatar?: string | null;
   isVerified: boolean;
+  plan?: 'free' | 'pro';
   biography?: string | null;
   socialNetworks?: any;
   tracks: AuthorTrackDetailDto[];

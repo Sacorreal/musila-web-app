@@ -48,7 +48,7 @@ export function LandingHeader() {
               <Link href="/login">Iniciar sesión</Link>
             </Button>
             <Button asChild>
-              <Link href="/register">Comenzar gratis</Link>
+              <Link href="/#pricing">Comenzar gratis</Link>
             </Button>
           </div>
 
@@ -97,7 +97,7 @@ export function LandingHeader() {
                 <Link href="/login">Iniciar sesión</Link>
               </Button>
               <Button className="w-full" asChild>
-                <Link href="/register">Comenzar gratis</Link>
+                <Link href="/#pricing">Comenzar gratis</Link>
               </Button>
             </div>
           </div>
