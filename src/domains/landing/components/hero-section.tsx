@@ -1,9 +1,14 @@
+"use client"
+
 import { PlayIcon } from "@/src/shared/components/Icons/icons"
 import { Button } from "@/src/shared/components/UI/button"
+import { useTranslation } from "@/src/shared/libs/i18n"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 export function HeroSection() {
+  const { t } = useTranslation()
+
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background" />
@@ -16,36 +21,33 @@ export function HeroSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
-              <span className="text-sm text-primary">Plataforma activa</span>
+              <span className="text-sm text-primary">{t.hero.badge}</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-balance">
-              Descubre canciones <span className="text-primary">inéditas</span>
+              {t.hero.title} <span className="text-primary">{t.hero.titleHighlight}</span>
               <br />
-              de todos los géneros musicales
+              {t.hero.titleSuffix}
             </h1>
 
             <p className="text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed">
-              Conectamos compositores con intérpretes. Publica tus canciones inéditas y permite que otros artistas las
-              lleven al siguiente nivel.
+              {t.hero.description}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" className="text-base" asChild>
                 <Link href="/#pricing">
-                  Comenzar ahora
+                  {t.hero.cta}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="text-base bg-transparent" asChild>
                 <Link href="#how-it-works">
                   <PlayIcon className="mr-2 h-4 w-4" />
-                  Ver cómo funciona
+                  {t.hero.ctaSecondary}
                 </Link>
               </Button>
             </div>
-
-            
           </div>
 
           <div className="relative">

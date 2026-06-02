@@ -1,23 +1,24 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/src/shared/components/UI/avatar"
-import { Quote } from "lucide-react"
-import { testimonials } from '../constants'
+"use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/shared/components/UI/avatar"
+import { useTranslation } from "@/src/shared/libs/i18n"
+import { Quote } from "lucide-react"
 
 export function TestimonialsSection() {
+  const { t } = useTranslation()
+
   return (
     <section id="testimonials" className="py-20 md:py-32 bg-card/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
-            Lo que dicen nuestros artistas
+            {t.testimonials.title}
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Historias de éxito de compositores e intérpretes que encontraron su match perfecto.
-          </p>
+          <p className="text-lg text-muted-foreground">{t.testimonials.subtitle}</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
+          {t.testimonials.items.map((testimonial, index) => (
             <div key={index} className="relative p-8 rounded-2xl bg-background border border-border">
               <Quote className="absolute top-6 right-6 h-8 w-8 text-primary/20" />
               <p className="text-muted-foreground mb-6 leading-relaxed">{`"${testimonial.quote}"`}</p>

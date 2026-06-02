@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { cn } from '@/src/shared/libs/cn';
+import { useTranslation } from '@/src/shared/libs/i18n';
 import type { CurrencyInfo } from '../../payments/currency.actions';
 import { convertPrice } from '../../payments/currency.utils';
 import { FREE_PLANS, PRO_PLANS } from '../constants/plans';
@@ -14,10 +15,10 @@ interface PricingCardsProps {
 
 export function PricingCards({ currencyInfo, showCurrencyNote }: PricingCardsProps) {
   const [isAnnual, setIsAnnual] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <>
-      {/* Toggle mensual / anual */}
       <div className="flex justify-center mb-10">
         <div className="relative inline-flex items-center rounded-full bg-muted p-1 text-sm font-medium shadow-inner">
           <button
@@ -30,7 +31,7 @@ export function PricingCards({ currencyInfo, showCurrencyNote }: PricingCardsPro
             )}
             aria-pressed={!isAnnual}
           >
-            Mensual
+            {t.pricing.monthly}
           </button>
           <button
             onClick={() => setIsAnnual(true)}
@@ -42,7 +43,7 @@ export function PricingCards({ currencyInfo, showCurrencyNote }: PricingCardsPro
             )}
             aria-pressed={isAnnual}
           >
-            Anual
+            {t.pricing.annual}
             <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white leading-none">
               25% OFF
             </span>
@@ -50,7 +51,6 @@ export function PricingCards({ currencyInfo, showCurrencyNote }: PricingCardsPro
         </div>
       </div>
 
-      {/* Tarjetas Pro */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {PRO_PLANS.map((plan) => (
           <PlanCard
@@ -67,11 +67,10 @@ export function PricingCards({ currencyInfo, showCurrencyNote }: PricingCardsPro
         ))}
       </div>
 
-      {/* Planes Free colapsados */}
       <details className="mt-12 group">
         <summary className="cursor-pointer list-none text-center text-sm text-muted-foreground hover:text-foreground transition-colors select-none">
           <span className="inline-flex items-center gap-1">
-            Ver planes gratuitos
+            {t.pricing.showFreePlans}
             <svg
               className="h-4 w-4 transition-transform group-open:rotate-180"
               fill="none"

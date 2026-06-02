@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
-import { FAQ_ITEMS } from '../constants/faq';
+import { useTranslation } from '@/src/shared/libs/i18n';
 
 function FaqItem({
   question,
@@ -59,6 +59,7 @@ function FaqItem({
 
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { t } = useTranslation();
 
   function toggle(index: number) {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -69,19 +70,17 @@ export function FaqSection() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
-            Preguntas frecuentes
+            {t.faq.title}
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Todo lo que necesitas saber sobre los planes de Musila.
-          </p>
+          <p className="text-lg text-muted-foreground">{t.faq.subtitle}</p>
         </div>
 
         <div
           className="rounded-2xl border border-border bg-background px-6"
           role="list"
-          aria-label="Preguntas frecuentes"
+          aria-label={t.faq.ariaLabel}
         >
-          {FAQ_ITEMS.map((item, index) => (
+          {t.faq.items.map((item, index) => (
             <FaqItem
               key={index}
               question={item.question}

@@ -1,20 +1,25 @@
 'use client';
 
-import { COMPARATOR_ROWS } from '../constants/plans';
+import { useTranslation } from '@/src/shared/libs/i18n';
 
 export function PlanComparator() {
-  const headers = ['Característica', 'Autor Free', 'Autor Pro', 'Cantautor Free', 'Cantautor Pro', 'Intérprete Free', 'Intérprete Pro'];
+  const { t } = useTranslation();
+  const { comparator } = t.pricing;
 
   return (
     <div className="mt-16">
       <h3 className="mb-6 text-center text-xl font-semibold text-foreground">
-        Comparador de planes
+        {comparator.title}
       </h3>
       <div className="overflow-x-auto rounded-xl border border-border">
-        <table className="w-full min-w-[700px] text-sm" role="table" aria-label="Comparador de planes Musila">
+        <table
+          className="w-full min-w-[700px] text-sm"
+          role="table"
+          aria-label={comparator.ariaLabel}
+        >
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              {headers.map((h) => (
+              {comparator.headers.map((h) => (
                 <th
                   key={h}
                   scope="col"
@@ -26,7 +31,7 @@ export function PlanComparator() {
             </tr>
           </thead>
           <tbody>
-            {COMPARATOR_ROWS.map((row, i) => (
+            {comparator.rows.map((row, i) => (
               <tr
                 key={row.feature}
                 className={i % 2 === 0 ? 'bg-background' : 'bg-card/50'}
