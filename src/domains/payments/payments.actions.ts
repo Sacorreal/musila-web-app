@@ -6,11 +6,12 @@ import type { PaymentPreference, PaymentRole, PaymentStatus } from './payments.t
 export async function createPaymentPreference(
   role: PaymentRole,
   plan: 'pro',
+  billingPeriod: 'monthly' | 'annual' = 'monthly',
 ): Promise<PaymentPreference> {
   const res = await fetch(apiURLs.payments.createPreference, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ role, plan }),
+    body: JSON.stringify({ role, plan, billingPeriod }),
     cache: 'no-store',
   });
 

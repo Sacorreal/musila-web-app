@@ -12,18 +12,31 @@ interface PlanCardProps {
   plan: PlanData;
   convertedPrice?: string;
   showCurrencyNote?: boolean;
+  isAnnual?: boolean;
 }
 
-export function PlanCard({ plan, convertedPrice, showCurrencyNote }: PlanCardProps) {
+function fmt(n: number) {
+  return `$${n.toLocaleString('es-CO')} COP`;
+}
+
+export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = false }: PlanCardProps) {
   const [isPending, startTransition] = useTransition();
 
+  const hasAnnual = !!plan.annualMonthlyPrice && !!plan.annualTotalPrice;
+  const showAnnual = isAnnual && hasAnnual;
+
+  const monthlyPrice  = plan.price;
+  const annualMonthly = plan.annualMonthlyPrice!;
+  const annualTotal   = plan.annualTotalPrice!;
+  const annualSaving  = monthlyPrice ? (monthlyPrice * 12) - annualTotal : 0;
+
   function handleProCta() {
+    const billingPeriod: 'monthly' | 'annual' = showAnnual ? 'annual' : 'monthly';
     startTransition(async () => {
       try {
-        const { initPoint, externalReference } = await createPaymentPreference(plan.role, 'pro');
+        const { initPoint, externalReference } = await createPaymentPreference(plan.role, 'pro', billingPeriod);
         sessionStorage.setItem('mp_pending_ref', externalReference);
         sessionStorage.setItem('mp_pending_role', plan.role);
-        // Abrir MP en nueva pestaña; esta ventana va directo a la pantalla de espera
         window.open(initPoint, '_blank', 'noopener');
         window.location.href = '/register/pro/pending';
       } catch (err) {
@@ -35,6 +48,7 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote }: PlanCardPro
   }
 
   const isPro = plan.plan === 'pro';
+  const isLifetime = plan.billing.includes('único');
 
   return (
     <div
@@ -47,33 +61,71 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote }: PlanCardPro
           : 'border-border/50 bg-card/50 hover:border-border',
       ].join(' ')}
     >
+      {/* Badge superior */}
       {plan.badge && (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary px-3 py-0.5 text-xs font-semibold text-primary-foreground">
           {plan.badge}
         </span>
       )}
 
+      {/* Nombre y beneficio */}
       <div className="mb-4">
         <h3 className="text-lg font-bold text-foreground">{plan.name}</h3>
         <p className="mt-1 text-sm text-primary font-medium">{plan.mainBenefit}</p>
       </div>
 
+      {/* Precio */}
       <div className="mb-6">
-        <div className="flex items-end gap-1">
-          <span className="text-3xl font-bold text-foreground">
-            {convertedPrice ?? plan.priceLabel}
-          </span>
-          {plan.billing && (
-            <span className="mb-1 text-sm text-muted-foreground">{plan.billing}</span>
-          )}
-        </div>
-        {showCurrencyNote && !plan.billing.includes('pago') && (
-          <p className="mt-1 text-xs text-muted-foreground">
-            Precio estimado. El cobro se realiza en COP.
-          </p>
+        {showAnnual ? (
+          <>
+            {/* Precio mensual equivalente anual */}
+            <div className="flex items-end gap-1">
+              <span className="text-3xl font-bold text-foreground">
+                {fmt(annualMonthly)}
+              </span>
+              <span className="mb-1 text-sm text-muted-foreground">/mes</span>
+            </div>
+
+            {/* Total anual y precio original tachado */}
+            <div className="mt-1.5 flex flex-wrap items-center gap-2">
+              <span className="text-sm text-muted-foreground line-through">
+                {fmt(monthlyPrice!)}/mes
+              </span>
+              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                25% OFF
+              </span>
+            </div>
+
+            <p className="mt-1 text-xs text-muted-foreground">
+              {fmt(annualTotal)}/año · <span className="font-medium text-emerald-600 dark:text-emerald-400">Ahorras {fmt(annualSaving)} al año</span>
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="flex items-end gap-1">
+              <span className="text-3xl font-bold text-foreground">
+                {convertedPrice ?? plan.priceLabel}
+              </span>
+              {plan.billing && (
+                <span className="mb-1 text-sm text-muted-foreground">{plan.billing}</span>
+              )}
+            </div>
+            {/* Hint de ahorro anual en modo mensual */}
+            {hasAnnual && !isLifetime && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Cambia a anual y ahorra <span className="font-medium text-emerald-600 dark:text-emerald-400">{fmt(annualSaving)}/año</span>
+              </p>
+            )}
+            {showCurrencyNote && !isLifetime && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Precio estimado. El cobro se realiza en COP.
+              </p>
+            )}
+          </>
         )}
       </div>
 
+      {/* Features */}
       <ul className="mb-6 flex-1 space-y-2">
         {plan.features.map((f) => (
           <li key={f.label} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -83,6 +135,7 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote }: PlanCardPro
         ))}
       </ul>
 
+      {/* CTA */}
       {isPro ? (
         <Button
           className="w-full"

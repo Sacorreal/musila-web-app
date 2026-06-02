@@ -14,6 +14,10 @@ export interface PlanData {
   price: number | null;
   priceLabel: string;
   billing: string;
+  /** Precio mensual equivalente al facturar anualmente (solo planes con suscripción) */
+  annualMonthlyPrice?: number;
+  /** Total cobrado al año */
+  annualTotalPrice?: number;
   features: PlanFeature[];
   cta: string;
   highlighted: boolean;
@@ -29,6 +33,8 @@ export const PLANS: PlanData[] = [
     price: 59900,
     priceLabel: '$59.900 COP',
     billing: 'por mes',
+    annualMonthlyPrice: 44900,
+    annualTotalPrice: 539100,
     highlighted: true,
     cta: 'Suscribirme Ahora',
     features: [
@@ -48,6 +54,8 @@ export const PLANS: PlanData[] = [
     price: 39900,
     priceLabel: '$39.900 COP',
     billing: 'por mes',
+    annualMonthlyPrice: 29900,
+    annualTotalPrice: 359100,
     highlighted: false,
     cta: 'Suscribirme Ahora',
     features: [
