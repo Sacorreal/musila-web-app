@@ -71,6 +71,8 @@ export const apiURLs = {
     history: `${BASE_API_URL}/payments/history` as const,
     byId: (id: string) => `${BASE_API_URL}/payments/${id}` as const,
     receipt: (id: string) => `${BASE_API_URL}/payments/${id}/receipt` as const,
+    pseBanks: `${BASE_API_URL}/payments/pse/banks` as const,
+    psePay: `${BASE_API_URL}/payments/pse` as const,
   },
   me: {
     profile: `${BASE_API_URL}/users/me` as const,

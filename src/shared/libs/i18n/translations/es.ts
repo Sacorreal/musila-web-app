@@ -13,7 +13,7 @@ export const es = {
     titleHighlight: 'inéditas',
     titleSuffix: 'de todos los géneros musicales',
     description:
-      'Conectamos compositores con intérpretes. Publica tus canciones inéditas y permite que otros artistas las lleven al siguiente nivel.',
+      'Conectamos compositores con intérpretes. Publica tus canciones inéditas y recibe propuestas comerciales para su uso.',
     cta: 'Comenzar ahora',
     ctaSecondary: 'Ver cómo funciona',
   },
@@ -275,7 +275,7 @@ export const es = {
     haveAccount: 'Ya tengo cuenta',
   },
   footer: {
-    description: 'La plataforma que conecta compositores con intérpretes. Canciones inéditas listas para ser grabadas.',
+    description: 'Somos una plataforma digital para el descubrimiento de canciones inéditas.',
     platform: 'Plataforma',
     explore: 'Explorar',
     uploadMusic: 'Subir música',
