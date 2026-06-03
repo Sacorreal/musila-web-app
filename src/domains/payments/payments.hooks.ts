@@ -1,12 +1,5 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
-import { createPaymentPreference } from './payments.actions';
-import type { PaymentRole } from './payments.types';
-
-export function useCreatePaymentPreference() {
-  return useMutation({
-    mutationFn: ({ role, plan }: { role: PaymentRole; plan: 'pro' }) =>
-      createPaymentPreference(role, plan),
-  });
-}
+// Hooks de pago. El flujo de checkout con Wompi vive en `wompi.hooks.ts`
+// (useWompiCheckout / usePaymentStatusPolling).
+export { useWompiCheckout, usePaymentStatusPolling } from './wompi.hooks';

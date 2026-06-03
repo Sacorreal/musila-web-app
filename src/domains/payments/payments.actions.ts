@@ -1,27 +1,7 @@
 'use server';
 
 import { apiURLs } from '@shared/constants/urls';
-import type { PaymentPreference, PaymentRole, PaymentStatus } from './payments.types';
-
-export async function createPaymentPreference(
-  role: PaymentRole,
-  plan: 'pro',
-  billingPeriod: 'monthly' | 'annual' = 'monthly',
-): Promise<PaymentPreference> {
-  const res = await fetch(apiURLs.payments.createPreference, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ role, plan, billingPeriod }),
-    cache: 'no-store',
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.message ?? 'No se pudo iniciar el proceso de pago');
-  }
-
-  return res.json() as Promise<PaymentPreference>;
-}
+import type { PaymentStatus } from './payments.types';
 
 export async function getPaymentStatus(reference: string): Promise<PaymentStatus> {
   const res = await fetch(apiURLs.payments.status(reference), {

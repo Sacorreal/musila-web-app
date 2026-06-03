@@ -4,9 +4,7 @@ import { Button } from '@/src/shared/components/UI/button';
 import { useTranslation } from '@/src/shared/libs/i18n';
 import { Check } from 'lucide-react';
 import Link from 'next/link';
-import { useTransition } from 'react';
-import { toast } from 'sonner';
-import { createPaymentPreference } from '../../payments/payments.actions';
+import { useRouter } from 'next/navigation';
 import type { PlanData } from '../constants/plans';
 
 interface PlanCardProps {
@@ -21,7 +19,7 @@ function fmt(n: number) {
 }
 
 export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = false }: PlanCardProps) {
-  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const { t } = useTranslation();
   const tp = t.pricing;
 
@@ -42,19 +40,7 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = fa
 
   function handleProCta() {
     const billingPeriod: 'monthly' | 'annual' = showAnnual ? 'annual' : 'monthly';
-    startTransition(async () => {
-      try {
-        const { initPoint, externalReference } = await createPaymentPreference(plan.role, 'pro', billingPeriod);
-        sessionStorage.setItem('mp_pending_ref', externalReference);
-        sessionStorage.setItem('mp_pending_role', plan.role);
-        window.open(initPoint, '_blank', 'noopener');
-        window.location.href = '/register/pro/pending';
-      } catch (err) {
-        toast.error(tp.paymentError, {
-          description: err instanceof Error ? err.message : tp.tryAgain,
-        });
-      }
-    });
+    router.push(`/checkout?role=${plan.role}&billing=${billingPeriod}`);
   }
 
   const isPro = plan.plan === 'pro';
@@ -143,10 +129,9 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = fa
           className="w-full"
           variant={plan.highlighted ? 'default' : 'outline'}
           onClick={handleProCta}
-          disabled={isPending}
           aria-label={`${ctaLabel} — ${plan.name}`}
         >
-          {isPending ? tp.redirecting : ctaLabel}
+          {ctaLabel}
         </Button>
       ) : (
         <Button className="w-full" variant="ghost" asChild>

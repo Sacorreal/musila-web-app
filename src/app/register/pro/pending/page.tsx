@@ -17,15 +17,14 @@ function PendingContent() {
   const [timedOut, setTimedOut] = useState(false);
   const startedAt = useRef(Date.now());
 
-  // Ref desde URL o recuperado de sessionStorage (si MP no redirigió automáticamente)
+  // Ref desde URL o recuperado de sessionStorage (si Wompi no redirigió automáticamente)
   const reference =
     searchParams.get('ref') ??
-    (typeof window !== 'undefined' ? sessionStorage.getItem('mp_pending_ref') : null) ??
+    (typeof window !== 'undefined' ? sessionStorage.getItem('wompi_pending_ref') : null) ??
     '';
 
   const redirect = (ref: string, role: string) => {
-    sessionStorage.removeItem('mp_pending_ref');
-    sessionStorage.removeItem('mp_pending_role');
+    sessionStorage.removeItem('wompi_pending_ref');
     router.replace(`/register/pro/complete?ref=${ref}&role=${role}`);
   };
 
@@ -42,8 +41,7 @@ function PendingContent() {
       if (status.status === 'approved') {
         redirect(reference, status.role ?? '');
       } else if (status.status === 'expired' || status.status === 'not_found') {
-        sessionStorage.removeItem('mp_pending_ref');
-        sessionStorage.removeItem('mp_pending_role');
+        sessionStorage.removeItem('wompi_pending_ref');
         router.replace(`/register/pro/error?ref=${reference}`);
       }
     };
@@ -75,7 +73,7 @@ function PendingContent() {
       </div>
       <h1 className="text-2xl font-bold text-foreground mb-2">Verificando tu pago</h1>
       <p className="text-muted-foreground mb-1">
-        Estamos confirmando tu pago con Mercado Pago.
+        Estamos confirmando tu pago con Wompi.
       </p>
       <p className="text-sm text-muted-foreground">Esto puede tomar unos momentos...</p>
     </div>
