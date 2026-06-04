@@ -1,0 +1,73 @@
+'use client';
+
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { apiURLs } from '@shared/constants/urls';
+import { getPaymentStatus } from './payments.actions';
+import { openWompiWidget, type WompiWidgetResult } from './wompi.client';
+import { checkoutResponseSchema, type CheckoutInput } from './wompi.schema';
+
+interface UseWompiCheckoutOptions {
+  onResult?: (reference: string, result: WompiWidgetResult) => void;
+}
+
+/**
+ * Fetch directo navegador → backend para obtener los parámetros del Widget.
+ * Se hace desde el cliente (no server action) porque `localhost:3001` solo es
+ * accesible desde el navegador, no desde el servidor de Next.js.
+ */
+async function fetchCheckoutParams(input: CheckoutInput) {
+  let res: Response;
+  try {
+    res = await fetch(apiURLs.payments.checkout, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+      signal: AbortSignal.timeout(15000),
+    });
+  } catch {
+    throw new Error('No se pudo contactar el servicio de pagos. Verifica tu conexión.');
+  }
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { message?: string })?.message ?? 'No se pudo iniciar el pago');
+  }
+
+  const data = await res.json();
+  return checkoutResponseSchema.parse(data);
+}
+
+/**
+ * Inicia el checkout: hace fetch al backend desde el navegador y abre el pago
+ * de Wompi (Widget modal si el script cargó, Web Checkout por redirección si no).
+ * La mutación resuelve en cuanto se dispara la apertura.
+ */
+export function useWompiCheckout(options: UseWompiCheckoutOptions = {}) {
+  return useMutation({
+    mutationFn: async (input: CheckoutInput) => {
+      const { widget, externalReference } = await fetchCheckoutParams(input);
+      sessionStorage.setItem('wompi_pending_ref', externalReference);
+      openWompiWidget(widget, {
+        onResult: (result) => options.onResult?.(externalReference, result),
+      });
+      return { reference: externalReference };
+    },
+  });
+}
+
+const POLL_INTERVAL_MS = 3000;
+
+export function usePaymentStatusPolling(reference: string | null) {
+  return useQuery({
+    queryKey: ['payment-status', reference],
+    enabled: Boolean(reference),
+    queryFn: () => getPaymentStatus(reference as string),
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      if (status === 'approved' || status === 'expired' || status === 'not_found') {
+        return false;
+      }
+      return POLL_INTERVAL_MS;
+    },
+  });
+}

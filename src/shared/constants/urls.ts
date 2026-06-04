@@ -66,7 +66,8 @@ export const apiURLs = {
     createAdmin: '/users/admin/create' as const,
   },
   payments: {
-    createPreference: `${BASE_API_URL}/payments/create-preference` as const,
+    checkout: `${BASE_API_URL}/payments/checkout` as const,
+    paymentSources: `${BASE_API_URL}/payments/payment-sources` as const,
     status: (reference: string) => `${BASE_API_URL}/payments/status/${reference}` as const,
     history: `${BASE_API_URL}/payments/history` as const,
     byId: (id: string) => `${BASE_API_URL}/payments/${id}` as const,
