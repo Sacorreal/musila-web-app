@@ -43,6 +43,18 @@ apiClient.interceptors.response.use(
       requestUrl.startsWith("/") || // Rutas relativas (usan baseURL)
       (baseUrl && requestUrl.startsWith(baseUrl)); // URL absoluta de nuestro backend
 
+    // HTTP 402 — límite de plan alcanzado
+    if (error.response?.status === 402 && isInternalRequest) {
+      const data = error.response?.data ?? {};
+      if (data.error === 'PLAN_LIMIT_REACHED' && typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('plan:limit-reached', {
+            detail: { resource: data.resource, limit: data.limit },
+          }),
+        );
+      }
+    }
+
     // Solo manejamos 401 para peticiones a NUESTRO backend
     if (error.response?.status === 401 && isInternalRequest) {
       console.warn("Sesión expirada o token inválido.");

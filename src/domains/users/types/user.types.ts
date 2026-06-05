@@ -65,7 +65,7 @@ type OptionalUser = Partial<
   Pick<UserDto, 'secondName' | 'secondLastName'>
 >
 
-export type CreateUserInput = BaseUser & OptionalUser
+export type CreateUserInput = BaseUser & OptionalUser & { externalReference?: string }
 
 
 

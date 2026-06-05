@@ -1,5 +1,6 @@
 import { AppHeader } from "@/src/shared/components/Layout/app-header"
 import { AppSidebar } from '@/src/shared/components/Layout/sidebar/AppSidebar'
+import { PlanLimitWatcher } from "@/src/shared/components/UI/plan-limit-watcher"
 import { MusicPlayer } from '@/src/domains/player/components/MusicPlayer'
 import type React from "react"
 
@@ -18,7 +19,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           {/* Reproductor fijo en la parte inferior */}
           <MusicPlayer />
-          
+
+          {/* Modal global de límite de plan */}
+          <PlanLimitWatcher />
+
         </div>
   )
 }

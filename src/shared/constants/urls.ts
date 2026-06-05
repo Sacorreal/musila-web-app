@@ -65,6 +65,27 @@ export const apiURLs = {
     stats: '/users/admin/stats' as const,
     createAdmin: '/users/admin/create' as const,
   },
+  payments: {
+    checkout: `${BASE_API_URL}/payments/checkout` as const,
+    paymentSources: `${BASE_API_URL}/payments/payment-sources` as const,
+    paymentSourceMe: `${BASE_API_URL}/payments/payment-sources/me` as const,
+    paymentSourceById: (id: string) => `${BASE_API_URL}/payments/payment-sources/${id}` as const,
+    status: (reference: string) => `${BASE_API_URL}/payments/status/${reference}` as const,
+    history: `${BASE_API_URL}/payments/history` as const,
+    byId: (id: string) => `${BASE_API_URL}/payments/${id}` as const,
+    receipt: (id: string) => `${BASE_API_URL}/payments/${id}/receipt` as const,
+    pseBanks: `${BASE_API_URL}/payments/pse/banks` as const,
+    psePay: `${BASE_API_URL}/payments/pse` as const,
+  },
+  me: {
+    profile: `${BASE_API_URL}/users/me` as const,
+    email: `${BASE_API_URL}/users/me/email` as const,
+    password: `${BASE_API_URL}/users/me/password` as const,
+    avatar: `${BASE_API_URL}/users/me/avatar` as const,
+    plan: `${BASE_API_URL}/users/me/plan` as const,
+    billing: `${BASE_API_URL}/users/me/billing` as const,
+    paymentHistory: `${BASE_API_URL}/users/me/payments` as const,
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;

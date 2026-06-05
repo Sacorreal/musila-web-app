@@ -2,13 +2,16 @@
 
 import { MusilaLogo } from "@/src/shared/components/Icons/icons"
 import { Button } from "@/src/shared/components/UI/button"
+import { LanguageSelector } from "@/src/shared/components/UI/language-selector"
+import { ThemeToggle } from "@/src/shared/components/Layout/theme-toggle"
+import { useTranslation } from "@/src/shared/libs/i18n"
 import { Menu, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { ThemeToggle } from "@/src/shared/components/Layout/theme-toggle"
 
 export function LandingHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { t } = useTranslation()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -20,29 +23,36 @@ export function LandingHeader() {
 
           <nav className="hidden md:flex items-center gap-8">
             <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Características
+              {t.nav.features}
             </Link>
             <Link
               href="#how-it-works"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Cómo funciona
+              {t.nav.howItWorks}
             </Link>
             <Link
               href="#testimonials"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Testimonios
+              {t.nav.testimonials}
+            </Link>
+            <Link
+              href="#pricing"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t.nav.pricing}
             </Link>
           </nav>
 
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2">
+            <LanguageSelector />
             <ThemeToggle />
             <Button className="shadow-lg" variant="ghost" asChild>
-              <Link href="/login">Iniciar sesión</Link>
+              <Link href="/login">{t.nav.login}</Link>
             </Button>
             <Button asChild>
-              <Link href="/register">Comenzar gratis</Link>
+              <Link href="/#pricing">{t.nav.getStarted}</Link>
             </Button>
           </div>
 
@@ -60,31 +70,39 @@ export function LandingHeader() {
               className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Características
+              {t.nav.features}
             </Link>
             <Link
               href="#how-it-works"
               className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Cómo funciona
+              {t.nav.howItWorks}
             </Link>
             <Link
               href="#testimonials"
               className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Testimonios
+              {t.nav.testimonials}
+            </Link>
+            <Link
+              href="#pricing"
+              className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {t.nav.pricing}
             </Link>
             <div className="pt-4 space-y-2">
-              <div className="flex justify-center pb-2">
+              <div className="flex items-center justify-center gap-2 pb-2">
+                <LanguageSelector compact />
                 <ThemeToggle />
               </div>
               <Button variant="ghost" className="w-full" asChild>
-                <Link href="/login">Iniciar sesión</Link>
+                <Link href="/login">{t.nav.login}</Link>
               </Button>
               <Button className="w-full" asChild>
-                <Link href="/register">Comenzar gratis</Link>
+                <Link href="/#pricing">{t.nav.getStarted}</Link>
               </Button>
             </div>
           </div>

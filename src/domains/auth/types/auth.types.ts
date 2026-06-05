@@ -11,7 +11,8 @@ export interface TokenPayloadDto {
     role: UserRole;
     iat: number;
     exp: number;
-    name: string
+    name: string;
+    plan?: 'free' | 'pro';
 }
 
 export type UserJWTResponse = {
@@ -19,6 +20,7 @@ export type UserJWTResponse = {
     email: string
     role: UserRole
     name: string
+    plan?: 'free' | 'pro'
     secondName?: string
     lastName?: string
     secondLastName?: string
