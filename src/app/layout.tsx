@@ -14,11 +14,11 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   metadataBase: new URL("https://musila.co"),
   title: {
-    default: "Músila - Canciones inéditas para el mundo",
+    default: "Músila - ¡Dale vida a la música!",
     template: "%s | Músila",
   },
   description:
-    "Plataforma donde compositores publican canciones inéditas e intérpretes pueden solicitar su uso para grabarlas.",
+    "Somos la plataforma digital para el descubrimiento de canciones inéditas de todos los géneros musicales.",
   keywords: [
     "música inédita",
     "compositores",
@@ -39,14 +39,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_ES",
     url: "https://musila.co",
-    title: "Músila - Canciones inéditas para el mundo",
-    description: "Plataforma donde compositores publican canciones inéditas e intérpretes pueden solicitar su uso para grabarlas.",
+    title: "Músila - ¡Dale vida a la música!",
+    description:  "Somos la plataforma digital para el descubrimiento de canciones inéditas de todos los géneros musicales.",
     siteName: "Músila",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Músila - Canciones inéditas para el mundo",
-    description: "Plataforma donde compositores publican canciones inéditas e intérpretes pueden solicitar su uso para grabarlas.",
+    title: "Músila - ¡Dale vida a la música!",
+    description:  "Somos la plataforma digital para el descubrimiento de canciones inéditas de todos los géneros musicales.",
   },
   robots: {
     index: true,

@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { getBillingInfo, updateBillingInfo } from '../../actions/account.actions';
+import { PaymentMethodSection } from '../PaymentMethodSection';
 import { Button } from '@/src/shared/components/UI/button';
 import { Input } from '@/src/shared/components/UI/input';
 import { Label } from '@/src/shared/components/UI/label';
@@ -69,17 +70,18 @@ export function BillingTab() {
         </form>
       </section>
 
-      {/* Métodos de pago — placeholder */}
+      {/* Métodos de pago */}
       <section className="rounded-xl border bg-card p-6">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-5">
           <CreditCard className="h-5 w-5 text-muted-foreground" />
-          <h2 className="text-base font-semibold">Métodos de pago</h2>
+          <div>
+            <h2 className="text-base font-semibold">Método de pago</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Tarjeta utilizada para el cobro automático de tu suscripción.
+            </p>
+          </div>
         </div>
-        <div className="rounded-lg bg-muted/50 border border-dashed p-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            La gestión de métodos de pago estará disponible próximamente.
-          </p>
-        </div>
+        <PaymentMethodSection />
       </section>
     </div>
   );

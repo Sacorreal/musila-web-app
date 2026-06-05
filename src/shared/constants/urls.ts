@@ -68,6 +68,8 @@ export const apiURLs = {
   payments: {
     checkout: `${BASE_API_URL}/payments/checkout` as const,
     paymentSources: `${BASE_API_URL}/payments/payment-sources` as const,
+    paymentSourceMe: `${BASE_API_URL}/payments/payment-sources/me` as const,
+    paymentSourceById: (id: string) => `${BASE_API_URL}/payments/payment-sources/${id}` as const,
     status: (reference: string) => `${BASE_API_URL}/payments/status/${reference}` as const,
     history: `${BASE_API_URL}/payments/history` as const,
     byId: (id: string) => `${BASE_API_URL}/payments/${id}` as const,

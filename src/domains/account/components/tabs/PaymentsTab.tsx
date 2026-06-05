@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { getPaymentHistory, getPaymentById } from '../../actions/account.actions';
-import { apiURLs } from '@shared/constants/urls';
+import { getPaymentHistory } from '../../actions/account.actions';
 import { Button } from '@/src/shared/components/UI/button';
 import { Badge } from '@/src/shared/components/UI/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/shared/components/UI/dialog';
@@ -31,7 +30,7 @@ export function PaymentsTab() {
   const [page, setPage]       = useState(1);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any>(null);
-  const [downloading, startDownload] = useTransition();
+  const [downloading, setDownloading] = useState(false);
 
   const LIMIT = 8;
   const totalPages = Math.ceil(total / LIMIT);
@@ -53,17 +52,29 @@ export function PaymentsTab() {
     setSelected(payment);
   }
 
-  function downloadReceipt(id: string) {
-    startDownload(async () => {
-      try {
-        const { cookies } = await import('next/headers');
-        // Direct browser download via anchor
-        const a = document.createElement('a');
-        a.href = apiURLs.payments.receipt(id);
-        a.download = `comprobante-musila-${id.substring(0, 8)}.pdf`;
-        a.click();
-      } catch { toast.error('No se pudo descargar el comprobante'); }
-    });
+  async function downloadReceipt(id: string) {
+    if (downloading) return;
+    setDownloading(true);
+    try {
+      const res = await fetch(`/api/payments/${id}/receipt`);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error((err as any).error ?? 'Error al obtener el comprobante');
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `comprobante-musila-${id.substring(0, 8)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      toast.error(err?.message ?? 'No se pudo descargar el comprobante');
+    } finally {
+      setDownloading(false);
+    }
   }
 
   if (loading && data.length === 0) return (
@@ -137,22 +148,27 @@ export function PaymentsTab() {
           {selected && (
             <div className="space-y-3 text-sm">
               {[
-                ['Referencia', selected.id?.substring(0, 8).toUpperCase()],
+                ['ID del pago', selected.id?.substring(0, 8).toUpperCase()],
                 ['Fecha', fmt(selected.createdAt)],
                 ['Monto', fmtMoney(selected.amount)],
                 ['Plan', `${selected.roleType} ${selected.planType}`],
                 ['Estado', STATUS_LABELS[selected.status]?.label ?? selected.status],
-                ['ID Mercado Pago', selected.mercadoPagoPaymentId ?? '—'],
+                ['ID de transacción', selected.wompiTransactionId ?? '—'],
               ].map(([l, v]) => (
-                <div key={l} className="flex justify-between">
-                  <span className="text-muted-foreground">{l}</span>
-                  <span className="font-medium">{v}</span>
+                <div key={l} className="flex justify-between gap-4">
+                  <span className="text-muted-foreground shrink-0">{l}</span>
+                  <span className="font-medium text-right truncate">{v}</span>
                 </div>
               ))}
               {selected.status === 'approved' && (
-                <Button className="w-full mt-2" onClick={() => { setSelected(null); downloadReceipt(selected.id); }}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Descargar comprobante PDF
+                <Button
+                  className="w-full mt-2"
+                  disabled={downloading}
+                  onClick={() => downloadReceipt(selected.id)}
+                >
+                  {downloading
+                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generando PDF...</>
+                    : <><Download className="mr-2 h-4 w-4" /> Descargar comprobante PDF</>}
                 </Button>
               )}
             </div>

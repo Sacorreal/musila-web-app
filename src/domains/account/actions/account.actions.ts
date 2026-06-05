@@ -97,6 +97,41 @@ export async function updateBillingInfo(data: { fiscalName?: string; taxId?: str
   return res.json();
 }
 
+// ── Fuente de pago (tarjeta) ──────────────────────────────────────────────────
+
+export async function getPaymentSource() {
+  const res = await authFetch(apiURLs.payments.paymentSourceMe);
+  if (!res.ok) throw new Error('No se pudo obtener el método de pago');
+  return res.json() as Promise<{ id: string; brand?: string; last4?: string } | null>;
+}
+
+export async function deletePaymentSource(id: string) {
+  const res = await authFetch(apiURLs.payments.paymentSourceById(id), { method: 'DELETE' });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any)?.message ?? 'No se pudo eliminar el método de pago');
+  }
+}
+
+export async function addPaymentSource(dto: {
+  number: string;
+  cvc: string;
+  expMonth: string;
+  expYear: string;
+  cardHolder: string;
+  customerEmail: string;
+}) {
+  const res = await authFetch(apiURLs.payments.paymentSources, {
+    method: 'POST',
+    body: JSON.stringify(dto),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any)?.message ?? 'No se pudo guardar la tarjeta');
+  }
+  return res.json() as Promise<{ id: string; brand?: string; last4?: string; status: string }>;
+}
+
 // ── Historial de pagos ────────────────────────────────────────────────────────
 
 export async function getPaymentHistory(
