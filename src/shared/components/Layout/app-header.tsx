@@ -6,6 +6,7 @@ import { SearchBox } from "@/src/shared/components/Layout/SearchBox"
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store"
 import { UserRole } from "@/src/domains/users/types/user.types"
 import Link from "next/link"
+import { Zap } from "lucide-react"
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/src/shared/components/UI/avatar"
 import { NotificationMenu } from "@/src/domains/notifications/components/NotificationMenu"
@@ -15,6 +16,7 @@ export function AppHeader() {
   const user = useAuthStore((s) => s.user)
   const role = user?.role
   const showSearch = role !== UserRole.AUTOR
+  const isFree = user?.plan === 'free'
   
   return (
     <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-md px-4 md:px-6 py-4 border-b">
@@ -29,6 +31,15 @@ export function AppHeader() {
 
         {/* Right actions */}
         <div className="flex items-center gap-4 flex-shrink-0">
+          {isFree && (
+            <Link
+              href="/#pricing"
+              className="flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md active:scale-95"
+            >
+              <Zap className="h-3.5 w-3.5 fill-current" />
+              <span className="hidden sm:inline">Pásate a Pro</span>
+            </Link>
+          )}
           <NotificationMenu />
           <ThemeToggle />
           <Link
