@@ -204,7 +204,7 @@ export function PlanTab() {
       </section>
 
       <Button asChild variant="outline" className="w-full sm:w-auto">
-        <Link href="/#pricing">Ver planes disponibles</Link>
+        <Link href="/#pricing" target="_blank" rel="noopener noreferrer">Ver planes disponibles</Link>
       </Button>
     </div>
   );

@@ -2,7 +2,12 @@ import { MusilaLogo } from "@/src/shared/components/Icons/icons";
 import { UserRegisterForm } from "@/src/domains/auth/components/UserRegisterForm";
 import Link from "next/link";
 
-export default function RegisterPage() {
+interface RegisterPageProps {
+  searchParams: Promise<{ role?: string }>;
+}
+
+export default async function RegisterPage({ searchParams }: RegisterPageProps) {
+  const { role } = await searchParams;
   return (
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 bg-card items-center justify-center p-12">
@@ -36,7 +41,7 @@ export default function RegisterPage() {
             Únete a la comunidad de compositores e intérpretes
           </p>
 
-          <UserRegisterForm />
+          <UserRegisterForm defaultRole={role} />
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
             ¿Ya tienes una cuenta?{" "}
