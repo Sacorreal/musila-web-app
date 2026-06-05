@@ -35,6 +35,8 @@ export async function loginRequest(loginDto: LoginInput): Promise<string> {
 }
 
 export async function registerUserRequest(createUserDto: CreateUserInput): Promise<string> {
+  const cookieStore = await cookies();
+
   const response = await fetch(`${BASE_API_URL}${apiURLs.auth.register}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -49,7 +51,6 @@ export async function registerUserRequest(createUserDto: CreateUserInput): Promi
 
   const data: LoginResponse = await response.json();
 
-  const cookieStore = await cookies();
   cookieStore.set('access_token', data.token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
