@@ -26,6 +26,7 @@ export function useRegisterUser() {
                 id: decoded.id,
                 role: decoded.role,
                 name: decoded.name,
+                plan: decoded.plan,
             }
         })
 

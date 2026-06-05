@@ -139,7 +139,7 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = fa
         </Button>
       ) : (
         <Button className="w-full" variant="ghost" asChild>
-          <Link href={`/register?role=${plan.role}`} aria-label={`${ctaLabel} — ${plan.name}`}>
+          <Link href={`/register?role=${plan.role}&plan=free`} aria-label={`${ctaLabel} — ${plan.name}`}>
             {ctaLabel}
           </Link>
         </Button>
