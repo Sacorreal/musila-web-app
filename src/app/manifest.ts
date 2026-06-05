@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Músila',
     short_name: 'Músila',
-    description: 'Plataforma donde compositores publican canciones inéditas e intérpretes pueden solicitar su uso para grabarlas.',
+    description: '¨Plataforma digital para el descubrimiento de canciones inéditas de todos los géneros musicales.',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
