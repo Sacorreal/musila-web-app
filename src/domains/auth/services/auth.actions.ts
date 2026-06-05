@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 import { LoginInput, LoginResponse } from '../types/auth.types';
 import { apiURLs } from '@/src/shared/constants/urls';
-import { getServerApiClient} from '@shared/libs/axios/axios-server'
+import { BASE_API_URL } from '@/src/shared/constants/env';
 
 export async function loginRequest(loginDto: LoginInput): Promise<string> {
 
@@ -35,65 +35,63 @@ export async function loginRequest(loginDto: LoginInput): Promise<string> {
 }
 
 export async function registerUserRequest(createUserDto: CreateUserInput): Promise<string> {
-  try {    
-    const serverClient = await getServerApiClient();
+  const response = await fetch(`${BASE_API_URL}${apiURLs.auth.register}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(createUserDto),
+  });
 
-    // 2. Ejecutamos la petición. 
-    // Axios serializa automáticamente el JSON y maneja los estados HTTP.
-    const { data } = await serverClient.post<LoginResponse>(
-      apiURLs.auth.register, 
-      createUserDto
-    );
-
-    // 3. Auto-Login: Guardamos el token recibido exactamente igual que en el loginRequest
-    const cookieStore = await cookies();
-    cookieStore.set('access_token', data.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', 
-      path: '/',
-    });
-
-    return data.token;
-
-  } catch (error: any) {
-    // 4. Manejo de errores limpio
-    // Si el status es 4xx o 5xx, Axios arroja un error que capturamos aquí.
-    const errorMessage = error.response?.data?.message || "Error al crear el usuario";
-    
-    // Lanzamos el error para que el componente (ej. React Hook Form) pueda atraparlo y mostrar el toast
-    throw new Error(errorMessage);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const msg = errorData.message ?? 'Error al crear el usuario';
+    throw new Error(Array.isArray(msg) ? msg.join(', ') : String(msg));
   }
+
+  const data: LoginResponse = await response.json();
+
+  const cookieStore = await cookies();
+  cookieStore.set('access_token', data.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
+  });
+
+  return data.token;
 }
 
 export async function forgotPasswordRequest(email: string): Promise<{ message: string }> {
-  try {
-    const serverClient = await getServerApiClient();
-    const { data } = await serverClient.post<{ message: string }>(
-      apiURLs.auth.forgotPassword,
-      { email }
-    );
-    return data;
-  } catch (error: any) {
-    const errorMessage = error.response?.data?.message || "Error al solicitar el restablecimiento de contraseña";
-    throw new Error(errorMessage);
+  const response = await fetch(`${BASE_API_URL}${apiURLs.auth.forgotPassword}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const msg = errorData.message ?? 'Error al solicitar el restablecimiento de contraseña';
+    throw new Error(Array.isArray(msg) ? msg.join(', ') : String(msg));
   }
+
+  return response.json();
 }
 
 export async function resetPasswordRequest(
   token: string,
   newPassword: string,
-  confirmPassword: string
+  confirmPassword: string,
 ): Promise<{ message: string }> {
-  try {
-    const serverClient = await getServerApiClient();
-    const { data } = await serverClient.post<{ message: string }>(
-      apiURLs.auth.resetPassword,
-      { token, newPassword, confirmPassword }
-    );
-    return data;
-  } catch (error: any) {
-    const errorMessage = error.response?.data?.message || "Error al restablecer la contraseña";
-    throw new Error(errorMessage);
+  const response = await fetch(`${BASE_API_URL}${apiURLs.auth.resetPassword}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, newPassword, confirmPassword }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const msg = errorData.message ?? 'Error al restablecer la contraseña';
+    throw new Error(Array.isArray(msg) ? msg.join(', ') : String(msg));
   }
+
+  return response.json();
 }
