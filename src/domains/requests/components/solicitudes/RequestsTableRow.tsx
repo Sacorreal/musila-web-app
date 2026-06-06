@@ -61,22 +61,22 @@ export function RequestsTableRow({
       className="group hover:bg-muted/30 transition-all duration-300 cursor-pointer"
     >
       {/* Canción */}
-      <td className="px-8 py-5">
-        <div className="flex items-center gap-4">
-          <div className="w-11 h-11 rounded-lg bg-muted overflow-hidden shrink-0 border border-border shadow-sm">
+      <td className="px-3 sm:px-5 md:px-8 py-3 sm:py-4 md:py-5">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg bg-muted overflow-hidden shrink-0 border border-border shadow-sm">
             {request.track?.coverUrl ? (
               <img src={request.track.coverUrl} alt="" className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <Music size={16} className="text-muted-foreground" />
+                <Music size={14} className="text-muted-foreground" />
               </div>
             )}
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-bold text-sm text-foreground truncate group-hover:text-primary transition-colors">
+            <span className="font-bold text-xs sm:text-sm text-foreground truncate group-hover:text-primary transition-colors">
               {request.track?.title || "Track desconocido"}
             </span>
-            <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground opacity-60">
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-muted-foreground opacity-60">
               {request.licenseType?.replace(/_/g, " ")}
             </span>
           </div>
@@ -85,8 +85,8 @@ export function RequestsTableRow({
 
       {/* Autor */}
       {activeTab === "enviadas" && (
-        <td className="px-8 py-5">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <td className="px-3 sm:px-5 md:px-8 py-3 sm:py-4 md:py-5 hidden sm:table-cell">
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
             <User2 size={13} className="shrink-0 opacity-60" />
             <span className="font-semibold truncate max-w-[130px]">{authorName}</span>
           </div>
@@ -95,8 +95,8 @@ export function RequestsTableRow({
 
       {/* Solicitante */}
       {activeTab === "recibidas" && (
-        <td className="px-8 py-5">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <td className="px-3 sm:px-5 md:px-8 py-3 sm:py-4 md:py-5 hidden sm:table-cell">
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
             <User2 size={13} className="shrink-0 opacity-60 text-primary" />
             <span className="font-semibold truncate max-w-[130px]">{requesterName}</span>
           </div>
@@ -104,8 +104,8 @@ export function RequestsTableRow({
       )}
 
       {/* Fecha */}
-      <td className="px-8 py-5">
-        <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+      <td className="px-3 sm:px-5 md:px-8 py-3 sm:py-4 md:py-5 hidden md:table-cell">
+        <span className="text-xs sm:text-sm font-medium text-muted-foreground whitespace-nowrap">
           {new Date(request.createdAt).toLocaleDateString("es-CO", {
             day: "2-digit",
             month: "short",
@@ -115,14 +115,14 @@ export function RequestsTableRow({
       </td>
 
       {/* Estado */}
-      <td className="px-8 py-5">
+      <td className="px-3 sm:px-5 md:px-8 py-3 sm:py-4 md:py-5">
         <div className="flex justify-center">
           <StatusBadge status={request.status} />
         </div>
       </td>
 
       {/* Acciones */}
-      <td className="px-8 py-5" onClick={(e) => e.stopPropagation()}>
+      <td className="px-3 sm:px-5 md:px-8 py-3 sm:py-4 md:py-5" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-end gap-2 flex-wrap">
           {request.chat?.id && (
             <Button asChild size="sm" variant="ghost" className="rounded-xl h-9 hover:bg-primary/10 hover:text-primary gap-1.5">

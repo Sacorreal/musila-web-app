@@ -13,7 +13,7 @@ export function PlanComparator() {
       </h3>
       <div className="overflow-x-auto rounded-xl border border-border">
         <table
-          className="w-full min-w-[700px] text-sm"
+          className="w-full min-w-[600px] md:min-w-[700px] text-sm"
           role="table"
           aria-label={comparator.ariaLabel}
         >
@@ -50,6 +50,9 @@ export function PlanComparator() {
           </tbody>
         </table>
       </div>
+      <p className="mt-2 text-xs text-muted-foreground text-center md:hidden">
+        ← Desliza para ver todos los planes →
+      </p>
     </div>
   );
 }

@@ -45,14 +45,14 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
           <img
             src={track.coverUrl || '/cover-default.png'}
             alt={`Portada de ${track.title}`}
-            className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl object-cover shadow-2xl border border-white/10"
+            className="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-2xl object-cover shadow-2xl border border-white/10"
           />
         </div>
 
         <div className="flex flex-col gap-4 min-w-0 flex-1 pb-2">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Canción</p>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground leading-tight tracking-tight break-words">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-foreground leading-tight tracking-tight break-words">
             {track.title}
           </h1>
 
@@ -96,7 +96,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
             <Button
               size="lg"
               onClick={() => usePlayerStore.getState().play(track)}
-              className="gap-2 rounded-full font-black uppercase tracking-tight px-8 bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 h-12"
+              className="gap-2 rounded-full font-black uppercase tracking-tight px-5 sm:px-8 bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 h-10 sm:h-12"
             >
               <Play className="w-5 h-5 fill-current" />
               Reproducir
@@ -106,7 +106,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
               <Button
                 size="lg"
                 variant="outline"
-                className="gap-2 rounded-full font-bold px-6 border-white/20 hover:bg-white/10 h-12 transition-all duration-300 shadow-sm hover:shadow-md"
+                className="gap-2 rounded-full font-bold px-4 sm:px-6 border-white/20 hover:bg-white/10 h-10 sm:h-12 transition-all duration-300 shadow-sm hover:shadow-md"
               >
                 <PlaylistIcon className="w-5 h-5" />
                 Agregar a Playlist
@@ -121,7 +121,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
               >
                 <Button
                   size="lg"
-                  className="gap-3 rounded-full font-black uppercase tracking-tight px-8 bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer border-none h-12"
+                  className="gap-2 sm:gap-3 rounded-full font-black uppercase tracking-tight px-5 sm:px-8 bg-gradient-to-r from-primary to-primary/80 shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer border-none h-10 sm:h-12"
                 >
                   <FileText className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                   Solicitar Uso

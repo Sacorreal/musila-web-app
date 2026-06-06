@@ -107,7 +107,7 @@ export function SearchBox() {
     )
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-md">
+    <div ref={containerRef} className="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
       {/* Input */}
       <div className="relative flex items-center">
         <Search className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none" />

@@ -46,20 +46,20 @@ export function RequestsTable({
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-muted/50 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
-              <th className="px-8 py-6">Canción</th>
-              {activeTab === "enviadas" && <th className="px-8 py-6">Autor</th>}
-              {activeTab === "recibidas" && <th className="px-8 py-6">Solicitante</th>}
-              <th className="px-8 py-6">Fecha</th>
-              <th className="px-8 py-6 text-center">Estado</th>
-              <th className="px-8 py-6 text-right">Acciones</th>
+            <tr className="bg-muted/50 text-[9px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
+              <th className="px-3 sm:px-5 md:px-8 py-4 sm:py-5 md:py-6">Canción</th>
+              {activeTab === "enviadas" && <th className="px-3 sm:px-5 md:px-8 py-4 sm:py-5 md:py-6 hidden sm:table-cell">Autor</th>}
+              {activeTab === "recibidas" && <th className="px-3 sm:px-5 md:px-8 py-4 sm:py-5 md:py-6 hidden sm:table-cell">Solicitante</th>}
+              <th className="px-3 sm:px-5 md:px-8 py-4 sm:py-5 md:py-6 hidden md:table-cell">Fecha</th>
+              <th className="px-3 sm:px-5 md:px-8 py-4 sm:py-5 md:py-6 text-center">Estado</th>
+              <th className="px-3 sm:px-5 md:px-8 py-4 sm:py-5 md:py-6 text-right">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             <AnimatePresence mode="popLayout">
               {requests.length === 0 ? (
                 <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <td colSpan={5} className="px-8 py-24 text-center">
+                  <td colSpan={5} className="px-4 sm:px-8 py-16 sm:py-24 text-center">
                     <div className="flex flex-col items-center gap-4">
                       <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
                         <Music className="text-muted-foreground" size={32} />

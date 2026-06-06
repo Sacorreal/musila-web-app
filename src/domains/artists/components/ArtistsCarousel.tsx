@@ -24,8 +24,8 @@ export function ArtistsCarousel() {
         <h2 className="text-2xl font-bold text-foreground mb-6 px-4">Autores Destacados</h2>
         <div className="flex gap-4 sm:gap-6 overflow-x-auto px-4 pb-4 animate-in fade-in duration-500 [&::-webkit-scrollbar]:hidden">
           {[...Array(10)].map((_, i) => (
-            <div key={i} className="flex flex-col items-center gap-4 shrink-0 w-[140px] sm:w-[160px] md:w-[180px]">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse border-2 border-slate-300 dark:border-slate-700/50" />
+            <div key={i} className="flex flex-col items-center gap-3 sm:gap-4 shrink-0 w-[110px] sm:w-[130px] md:w-[155px]">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse border-2 border-slate-300 dark:border-slate-700/50" />
               <div className="w-20 h-4 bg-slate-200 dark:bg-slate-800 animate-pulse rounded" />
             </div>
           ))}
@@ -72,20 +72,20 @@ export function ArtistsCarousel() {
         {/* Container with overflow-x-auto. The widths are calculated so that ~6 fit on md screens */}
         <div 
           ref={scrollRef}
-          className="flex gap-4 sm:gap-6 overflow-x-auto pb-6 px-4 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          className="flex gap-3 sm:gap-4 md:gap-6 overflow-x-auto pb-6 px-2 sm:px-4 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
           {featuredArtists.map((artist) => (
             <Link 
               key={artist.id} 
               href={`/music/artista/${artist.id}`} 
-              className="flex flex-col items-center gap-4 shrink-0 snap-start group/artist w-[130px] sm:w-[150px] md:w-[170px] lg:w-[180px]"
+              className="flex flex-col items-center gap-3 sm:gap-4 shrink-0 snap-start group/artist w-[110px] sm:w-[130px] md:w-[155px] lg:w-[175px]"
             >
               <div className="relative p-1 rounded-full transition-all duration-300 group-hover/artist:scale-105 group-active/artist:scale-95">
                 {/* Visual ring/glow effect on hover */}
                 <div className="absolute inset-0 rounded-full bg-primary/15 opacity-0 group-hover/artist:opacity-100 blur-lg transition-opacity" />
                 
                 <div className="relative p-1 rounded-full bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 group-hover/artist:border-primary/40 transition-all duration-300 shadow-xl">
-                  <Avatar className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 shadow-inner">
+                  <Avatar className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 shadow-inner">
                     <AvatarImage 
                       src={artist.avatar ?? undefined} 
                       alt={`${artist.name || ''} ${artist.lastName || ''}`} 

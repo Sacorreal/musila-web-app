@@ -20,7 +20,7 @@ export function AppHeader() {
   
   return (
     <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-md px-4 md:px-6 py-4 border-b">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-2 sm:gap-4">
         {/* Spacer for mobile menu toggle */}
         <div className="w-12 md:hidden flex-shrink-0" />
 
@@ -30,7 +30,7 @@ export function AppHeader() {
         </div>
 
         {/* Right actions */}
-        <div className="flex items-center gap-4 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {isFree && (
             <Link
               href="/#pricing"
@@ -46,7 +46,7 @@ export function AppHeader() {
             href="/music/perfil"
             className="transition-transform hover:scale-105 active:scale-95 relative"
           >
-            <Avatar className="h-11 w-11 border-2 border-border shadow-md ring-2 ring-background">
+            <Avatar className="h-9 w-9 sm:h-11 sm:w-11 border-2 border-border shadow-md ring-2 ring-background">
               <AvatarImage src={user?.avatarUrl} className="object-cover" />
               <AvatarFallback className="bg-primary/10 text-primary text-sm font-black uppercase">
                 {user?.name?.[0] || <UserIcon className="h-6 w-6" />}
