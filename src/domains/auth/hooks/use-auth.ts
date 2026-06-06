@@ -38,7 +38,8 @@ export function useAuth() {
                 email: decoded.email,
                 id: decoded.id,
                 role: decoded.role,
-                name: decoded.name
+                name: decoded.name,
+                plan: decoded.plan,
             },
             token: newToken
         });
