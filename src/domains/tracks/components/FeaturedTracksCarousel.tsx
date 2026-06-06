@@ -33,7 +33,7 @@ export function FeaturedTracksCarousel() {
         <h2 className="text-2xl font-bold text-foreground mb-6 px-4">Canciones Destacadas</h2>
         <div className="flex gap-4 overflow-x-hidden px-4 pb-4">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="shrink-0 w-[160px] sm:w-[180px]">
+            <div key={i} className="shrink-0 w-[135px] sm:w-[155px] md:w-[175px]">
               <div className="w-full aspect-square rounded-xl bg-slate-200 dark:bg-slate-800 animate-pulse mb-3" />
               <div className="w-3/4 h-3.5 bg-slate-200 dark:bg-slate-800 animate-pulse rounded mb-2" />
               <div className="w-1/2 h-3 bg-slate-300 dark:bg-slate-800/60 animate-pulse rounded" />
@@ -83,7 +83,7 @@ export function FeaturedTracksCarousel() {
         {/* Scrollable track list */}
         <div
           ref={scrollRef}
-          className="flex gap-4 sm:gap-5 overflow-x-auto pb-6 px-4 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          className="flex gap-3 sm:gap-4 md:gap-5 overflow-x-auto pb-6 px-2 sm:px-4 scroll-smooth snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
           {featuredTracks.map((track) => {
             const genreName = resolveGenreName(track.genre);
@@ -92,7 +92,7 @@ export function FeaturedTracksCarousel() {
               <Link
                 key={track.id}
                 href={`/music/tracks/${track.id}`}
-                className="group/track flex flex-col shrink-0 snap-start w-[155px] sm:w-[170px] md:w-[185px] cursor-pointer"
+                className="group/track flex flex-col shrink-0 snap-start w-[135px] sm:w-[155px] md:w-[175px] lg:w-[190px] cursor-pointer"
                 aria-label={`Ver detalle de ${track.title}`}
               >
                 {/* Cover */}

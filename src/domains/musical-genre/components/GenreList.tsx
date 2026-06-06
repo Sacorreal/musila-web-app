@@ -23,7 +23,7 @@ export function GenreList() {
     return (
       <div className="py-8 w-full">
         <h2 className="text-2xl font-bold text-foreground mb-6 px-4">Explorar por género</h2>
-        <div className="flex gap-3 overflow-x-auto px-4 pb-4 animate-in fade-in duration-500 [&::-webkit-scrollbar]:hidden">
+        <div className="flex gap-2 sm:gap-3 overflow-x-auto px-2 sm:px-4 pb-4 animate-in fade-in duration-500 [&::-webkit-scrollbar]:hidden">
           {[...Array(10)].map((_, i) => (
             <div key={i} className="h-10 w-24 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-full shrink-0" />
           ))}
@@ -61,13 +61,13 @@ export function GenreList() {
       <div className="relative overflow-hidden">
         <div 
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto pb-4 px-4 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          className="flex gap-2 sm:gap-3 overflow-x-auto pb-4 px-2 sm:px-4 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         >
           {genres.map((genre) => (
             <Link 
               key={genre.id} 
               href={`/music/genre/${genre.slug || genre.id}`} 
-              className="px-6 py-2.5 rounded-full bg-slate-100 dark:bg-slate-800/40 border border-slate-300 dark:border-white/5 text-foreground text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all duration-200 shrink-0 whitespace-nowrap"
+              className="px-4 sm:px-6 py-2 sm:py-2.5 rounded-full bg-slate-100 dark:bg-slate-800/40 border border-slate-300 dark:border-white/5 text-foreground text-xs sm:text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 hover:scale-105 active:scale-95 transition-all duration-200 shrink-0 whitespace-nowrap"
             >
               {genre.genre}
             </Link>

@@ -11,11 +11,11 @@ export default function MyMusicPage() {
   const isGuest = user?.role === UserRole.INVITADO;
 
   return (
-    <div className="flex flex-col w-full min-h-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="flex flex-col w-full min-h-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-5 sm:py-6 md:py-8">
       {/* Header section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-2">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Mi Música</h1>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Mi Música</h1>
           <p className="text-muted-foreground mt-1">
             Gestiona tus listas de reproducción y colabora con otros artistas.
           </p>

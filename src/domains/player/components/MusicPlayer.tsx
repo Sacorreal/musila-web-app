@@ -118,150 +118,183 @@ export function MusicPlayer() {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 h-24 bg-background/80 backdrop-blur-xl border-t border-white/5 z-50 flex items-center px-4 md:px-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-      
-      {/* Hidden Audio Element */}
-      <audio
-        ref={audioRef}
-        src={currentTrack.audioUrl || undefined}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={handleEnded}
-      />
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-t border-white/5 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
 
-      {/* Left: Track Info */}
-      <div className="flex items-center gap-3 flex-1 min-w-0 md:w-1/3 md:flex-none">
-        <div className="w-12 h-12 md:w-14 md:h-14 rounded-md bg-muted overflow-hidden flex-shrink-0 shadow-md">
-          {currentTrack.coverUrl ? (
-            <img src={currentTrack.coverUrl} alt={currentTrack.title} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-slate-800">
-              <Music2 className="w-6 h-6 text-slate-500" />
+        {/* Hidden Audio Element */}
+        <audio
+          ref={audioRef}
+          src={currentTrack.audioUrl || undefined}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onEnded={handleEnded}
+        />
+
+        {/* Main controls row */}
+        <div className="flex items-center h-16 md:h-24 px-2 sm:px-4 md:px-6 gap-1 sm:gap-2 md:gap-0">
+
+          {/* Left: Track Info */}
+          <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-none w-[42%] sm:w-[40%] md:w-1/3">
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-md bg-muted overflow-hidden flex-shrink-0 shadow-md">
+              {currentTrack.coverUrl ? (
+                <img src={currentTrack.coverUrl} alt={currentTrack.title} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                  <Music2 className="w-5 h-5 text-slate-500" />
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div className="flex flex-col truncate min-w-0">
-          <Link href={`/music/tracks/${currentTrack.id}`} className="font-bold text-sm text-foreground hover:underline truncate">
-            {currentTrack.title}
-          </Link>
-          <p className="text-xs text-muted-foreground truncate">
-            {currentTrack.authors && currentTrack.authors.length > 0
-              ? (currentTrack.authors.every(a => typeof a === 'string')
-                  ? 'Varios Artistas'
-                  : currentTrack.authors.map((a, idx, arr) => {
-                      if (typeof a === 'string') return null;
-                      const name = `${(a as any).name || ''} ${(a as any).lastName || ''}`.trim();
-                      if (!name) return null;
-                      return (
-                        <span key={(a as any).id || idx}>
-                          <Link href={`/music/artista/${(a as any).id}`} className="hover:underline hover:text-primary transition-colors">
-                            {name}
-                          </Link>
-                          {idx < arr.length - 1 && ', '}
-                        </span>
-                      );
-                    }).filter(Boolean)
-                )
-              : 'Autor Desconocido'}
-          </p>
-        </div>
-      </div>
+            <div className="flex flex-col truncate min-w-0 flex-1">
+              <Link href={`/music/tracks/${currentTrack.id}`} className="font-bold text-xs md:text-sm text-foreground hover:underline truncate">
+                {currentTrack.title}
+              </Link>
+              <p className="text-[10px] md:text-xs text-muted-foreground truncate">
+                {currentTrack.authors && currentTrack.authors.length > 0
+                  ? (currentTrack.authors.every(a => typeof a === 'string')
+                      ? 'Varios Artistas'
+                      : currentTrack.authors.map((a, idx, arr) => {
+                          if (typeof a === 'string') return null;
+                          const name = `${(a as any).name || ''} ${(a as any).lastName || ''}`.trim();
+                          if (!name) return null;
+                          return (
+                            <span key={(a as any).id || idx}>
+                              <Link href={`/music/artista/${(a as any).id}`} className="hover:underline hover:text-primary transition-colors">
+                                {name}
+                              </Link>
+                              {idx < arr.length - 1 && ', '}
+                            </span>
+                          );
+                        }).filter(Boolean)
+                    )
+                  : 'Autor Desconocido'}
+              </p>
+            </div>
+          </div>
 
-      {/* Center: Playback Controls & Progress */}
-      <div className="flex flex-col items-center justify-center gap-1 md:flex-1 md:max-w-2xl">
-        <div className="flex items-center gap-3 md:gap-6">
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={playPrevious}>
-            <SkipBack className="w-5 h-5 fill-current" />
-          </Button>
-          
-          <Button
-            variant="default"
-            size="icon"
-            className="rounded-full w-10 h-10 bg-foreground text-background hover:scale-105 hover:bg-foreground transition-all shadow-md"
-            onClick={isPlaying ? pause : resume}
-          >
-            {isPlaying ? (
-              <Pause className="w-5 h-5 fill-current" />
-            ) : (
-              <Play className="w-5 h-5 fill-current ml-1" />
-            )}
-          </Button>
+          {/* Center: Playback Controls (+ progress on desktop) */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-0.5 md:gap-1 md:max-w-2xl">
+            <div className="flex items-center gap-1.5 sm:gap-3 md:gap-6">
+              <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground" onClick={playPrevious}>
+                <SkipBack className="w-4 h-4 md:w-5 md:h-5 fill-current" />
+              </Button>
 
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={playNext}>
-            <SkipForward className="w-5 h-5 fill-current" />
-          </Button>
+              <Button
+                variant="default"
+                size="icon"
+                className="rounded-full w-9 h-9 md:w-10 md:h-10 bg-foreground text-background hover:scale-105 hover:bg-foreground transition-all shadow-md"
+                onClick={isPlaying ? pause : resume}
+              >
+                {isPlaying ? (
+                  <Pause className="w-4 h-4 md:w-5 md:h-5 fill-current" />
+                ) : (
+                  <Play className="w-4 h-4 md:w-5 md:h-5 fill-current ml-0.5" />
+                )}
+              </Button>
+
+              <Button variant="ghost" size="icon" className="h-8 w-8 md:h-9 md:w-9 text-muted-foreground hover:text-foreground" onClick={playNext}>
+                <SkipForward className="w-4 h-4 md:w-5 md:h-5 fill-current" />
+              </Button>
+            </div>
+
+            {/* Progress bar — desktop only (inside center column) */}
+            <div className="hidden md:flex items-center gap-2 w-full text-xs text-muted-foreground font-medium">
+              <span className="w-10 text-right tabular-nums">{formatTime(currentTime)}</span>
+              <Slider
+                value={[currentTime]}
+                max={duration || 100}
+                step={1}
+                onValueChange={handleSeek}
+                className="cursor-pointer group"
+              />
+              <span className="w-10 text-left tabular-nums">{formatTime(duration)}</span>
+            </div>
+          </div>
+
+          {/* Right: Mute (mobile) | Volume + Extras (desktop) */}
+          <div className="flex items-center justify-end gap-1 md:gap-4 flex-none w-auto md:w-1/3">
+            {/* Mobile: mute button only */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden h-8 w-8 text-muted-foreground hover:text-foreground"
+              onClick={toggleMute}
+            >
+              {isMuted || volume === 0 ? (
+                <VolumeX className="w-4 h-4" />
+              ) : (
+                <Volume2 className="w-4 h-4" />
+              )}
+            </Button>
+
+            {/* Desktop: extra buttons + volume slider */}
+            <div className="hidden md:flex items-center gap-2 md:gap-4">
+              <AddToPlaylistModal trackId={currentTrack.id} trackTitle={currentTrack.title}>
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary transition-colors" title="Agregar a Playlist">
+                  <PlaylistIcon className="w-5 h-5" />
+                </Button>
+              </AddToPlaylistModal>
+
+              <RequestTrackModal
+                trackId={currentTrack.id}
+                genreSlug={typeof currentTrack.genre === 'object' ? (currentTrack.genre as any).slug : undefined}
+              >
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-emerald-500 transition-colors" title="Solicitar Uso">
+                  <FileText className="w-5 h-5" />
+                </Button>
+              </RequestTrackModal>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "transition-colors",
+                  currentTrack.lyric ? "text-muted-foreground hover:text-purple-500" : "text-muted-foreground/30 hover:bg-transparent cursor-not-allowed"
+                )}
+                title={currentTrack.lyric ? "Ver letra" : "Letra no disponible"}
+                onClick={() => currentTrack.lyric && setIsLyricsOpen(!isLyricsOpen)}
+                disabled={!currentTrack.lyric}
+              >
+                <Mic2 className="w-5 h-5" />
+              </Button>
+
+              <div className="flex items-center gap-2 w-28 ml-2">
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-8 w-8" onClick={toggleMute}>
+                  {isMuted || volume === 0 ? (
+                    <VolumeX className="w-4 h-4" />
+                  ) : (
+                    <Volume2 className="w-4 h-4" />
+                  )}
+                </Button>
+                <Slider
+                  value={[isMuted ? 0 : volume]}
+                  max={1}
+                  step={0.01}
+                  onValueChange={handleVolumeChange}
+                  className="cursor-pointer group"
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="hidden md:flex items-center gap-2 w-full text-xs text-muted-foreground font-medium">
-          <span className="w-10 text-right">{formatTime(currentTime)}</span>
+        {/* Mobile-only: progress bar below main row */}
+        <div className="md:hidden flex items-center gap-2 px-3 sm:px-4 pb-2.5 text-[10px] text-muted-foreground font-medium">
+          <span className="w-8 text-right tabular-nums">{formatTime(currentTime)}</span>
           <Slider
             value={[currentTime]}
             max={duration || 100}
             step={1}
             onValueChange={handleSeek}
-            className="cursor-pointer group"
+            className="cursor-pointer group flex-1"
           />
-          <span className="w-10 text-left">{formatTime(duration)}</span>
+          <span className="w-8 text-left tabular-nums">{formatTime(duration)}</span>
         </div>
       </div>
 
-      {/* Right: Extra Controls & Volume — hidden on mobile */}
-      <div className="hidden md:flex w-1/3 items-center justify-end gap-2 md:gap-4">
-        {/* Modals integrated into the player */}
-        <AddToPlaylistModal trackId={currentTrack.id} trackTitle={currentTrack.title}>
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary transition-colors" title="Agregar a Playlist">
-            <PlaylistIcon className="w-5 h-5" />
-          </Button>
-        </AddToPlaylistModal>
-
-        <RequestTrackModal
-          trackId={currentTrack.id}
-          genreSlug={typeof currentTrack.genre === 'object' ? (currentTrack.genre as any).slug : undefined}
-        >
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-emerald-500 transition-colors" title="Solicitar Uso">
-            <FileText className="w-5 h-5" />
-          </Button>
-        </RequestTrackModal>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "transition-colors",
-            currentTrack.lyric ? "text-muted-foreground hover:text-purple-500" : "text-muted-foreground/30 hover:bg-transparent cursor-not-allowed"
-          )}
-          title={currentTrack.lyric ? "Ver letra" : "Letra no disponible"}
-          onClick={() => currentTrack.lyric && setIsLyricsOpen(!isLyricsOpen)}
-          disabled={!currentTrack.lyric}
-        >
-          <Mic2 className="w-5 h-5" />
-        </Button>
-
-        {/* Volume Control */}
-        <div className="flex items-center gap-2 w-28 ml-2">
-          <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-8 w-8" onClick={toggleMute}>
-            {isMuted || volume === 0 ? (
-              <VolumeX className="w-4 h-4" />
-            ) : (
-              <Volume2 className="w-4 h-4" />
-            )}
-          </Button>
-          <Slider
-            value={[isMuted ? 0 : volume]}
-            max={1}
-            step={0.01}
-            onValueChange={handleVolumeChange}
-            className="cursor-pointer group"
-          />
-        </div>
-      </div>
-    </div>
-      
       {/* Lyrics Side Panel */}
-      <TrackLyricsSidePanel 
-        track={currentTrack as any} 
-        isOpen={isLyricsOpen} 
-        onClose={() => setIsLyricsOpen(false)} 
+      <TrackLyricsSidePanel
+        track={currentTrack as any}
+        isOpen={isLyricsOpen}
+        onClose={() => setIsLyricsOpen(false)}
       />
     </>
   );

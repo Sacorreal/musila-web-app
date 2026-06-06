@@ -38,10 +38,10 @@ export function RequestsFilters({
           className="pl-10 h-11 rounded-xl bg-background border-border focus-visible:ring-primary/30 w-full"
         />
       </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <Filter size={16} className="text-muted-foreground" />
+      <div className="flex items-center gap-2 flex-1 sm:flex-none">
+        <Filter size={16} className="text-muted-foreground hidden sm:block" />
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px] h-11 rounded-xl bg-background border-border font-semibold focus:ring-primary/30">
+          <SelectTrigger className="w-full sm:w-[180px] h-11 rounded-xl bg-background border-border font-semibold focus:ring-primary/30">
             <SelectValue placeholder="Estado" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">

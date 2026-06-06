@@ -350,7 +350,7 @@ export function ChatWindow({ chatId }: Props) {
             <img
               src={msg.fileUrl}
               alt={msg.fileName || "Imagen"}
-              className="max-w-[280px] max-h-[200px] rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
+              className="w-full sm:max-w-[280px] max-h-[200px] rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
             />
           </a>
           {msg.content && msg.content !== msg.fileName && (
@@ -419,7 +419,7 @@ export function ChatWindow({ chatId }: Props) {
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-black/20">
       {/* Header */}
-      <div className="h-16 flex items-center justify-between px-6 bg-background border-b border-border shadow-sm">
+      <div className="h-14 md:h-16 flex items-center justify-between px-3 sm:px-6 bg-background border-b border-border shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
             <Music2 className="w-5 h-5 text-primary" />
@@ -434,7 +434,7 @@ export function ChatWindow({ chatId }: Props) {
       {/* Área de mensajes */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-6 space-y-6"
+        className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4 md:space-y-6"
       >
         {allMessages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full gap-3 opacity-40">
@@ -450,7 +450,7 @@ export function ChatWindow({ chatId }: Props) {
             <div
               key={msg.id || index}
               className={cn(
-                "flex flex-col max-w-[80%] transition-opacity",
+                "flex flex-col max-w-[90%] sm:max-w-[80%] transition-opacity",
                 isMe ? "ml-auto items-end" : "mr-auto items-start",
                 isOptimistic && "opacity-70"
               )}
@@ -483,8 +483,8 @@ export function ChatWindow({ chatId }: Props) {
 
       {/* Preview de archivo seleccionado */}
       {pendingFile && (
-        <div className="px-4 pt-3 bg-background border-t border-border">
-          <div className="max-w-4xl mx-auto flex items-center gap-3 p-3 bg-primary/5 border border-primary/10 rounded-xl">
+        <div className="px-2 sm:px-4 pt-2 sm:pt-3 bg-background border-t border-border">
+          <div className="max-w-4xl mx-auto flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-primary/5 border border-primary/10 rounded-xl">
             {/* Thumbnail o icono */}
             {pendingFile.type.startsWith("image/") ? (
               <img
@@ -534,8 +534,8 @@ export function ChatWindow({ chatId }: Props) {
       )}
 
       {/* Área de entrada */}
-      <div className="p-4 bg-background border-t border-border">
-        <div className="max-w-4xl mx-auto flex items-center gap-3 bg-slate-100 dark:bg-white/5 p-1 rounded-2xl border border-border/50">
+      <div className="p-2 sm:p-4 bg-background border-t border-border">
+        <div className="max-w-4xl mx-auto flex items-center gap-2 sm:gap-3 bg-slate-100 dark:bg-white/5 p-1 rounded-2xl border border-border/50">
           {/* Input de archivo oculto */}
           <input
             ref={fileInputRef}

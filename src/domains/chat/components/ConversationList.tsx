@@ -35,8 +35,8 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
 
   return (
     <div className="flex flex-col h-full overflow-y-auto">
-      <div className="p-4 border-b border-border">
-        <h2 className="text-xl font-bold text-foreground">Conversaciones</h2>
+      <div className="p-3 sm:p-4 border-b border-border">
+        <h2 className="text-lg sm:text-xl font-bold text-foreground">Conversaciones</h2>
       </div>
       <div className="flex flex-col">
         {conversations?.map((conv: any, index: number) => {
@@ -74,13 +74,13 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
               key={conv.id}
               onClick={() => onSelectChat(chatId)}
               className={cn(
-                "flex items-center gap-4 p-4 transition-all hover:bg-slate-50 dark:hover:bg-white/[0.02] text-left border-b border-border/50 group w-full",
+                "flex items-center gap-2 sm:gap-4 p-3 sm:p-4 transition-all hover:bg-slate-50 dark:hover:bg-white/[0.02] text-left border-b border-border/50 group w-full",
                 isActive && "bg-primary/5 dark:bg-primary/10 border-r-4 border-r-primary"
               )}
             >
               {/* Track Cover */}
               <div className="relative flex-shrink-0">
-                <div className="w-14 h-14 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 shadow-lg group-hover:scale-105 transition-transform duration-300">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 shadow-lg group-hover:scale-105 transition-transform duration-300">
                   {track?.coverUrl ? (
                     <img src={track.coverUrl} alt={track.title} className="w-full h-full object-cover" />
                   ) : (
@@ -102,7 +102,7 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
               {/* Info */}
               <div className="flex-1 min-w-0 flex flex-col gap-1">
                 <h3 className={cn(
-                  "text-[14px] font-black truncate leading-tight transition-colors",
+                  "text-xs sm:text-[14px] font-black truncate leading-tight transition-colors",
                   isActive ? "text-primary" : "text-foreground group-hover:text-primary/80"
                 )}>
                   {displayTitle}
