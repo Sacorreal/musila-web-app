@@ -62,3 +62,11 @@ export async function updateRequestedTrack(id: string, input: Partial<TrackReque
     throw error;
   }
 }
+
+export async function setLicensePrice(id: string, priceInCOP: number): Promise<RequestedTrackResponse> {
+  const { data } = await apiClient.patch<RequestedTrackResponse>(
+    apiURLs.requestedTracks.price(id),
+    { priceInCOP }
+  );
+  return data;
+}

@@ -38,6 +38,7 @@ export const apiURLs = {
   requestedTracks: {
     base: '/requested-tracks' as const, // POST, GET
     byId: (id: string) => `/requested-tracks/${id}` as const, // GET, PUT, DELETE
+    price: (id: string) => `/requested-tracks/${id}/price` as const,
   },
   musicalGenre: {
     base: '/musical-genre' as const, // POST, GET
@@ -67,6 +68,8 @@ export const apiURLs = {
   },
   payments: {
     checkout: `${BASE_API_URL}/payments/checkout` as const,
+    licenseCheckout: `${BASE_API_URL}/payments/license-checkout` as const,
+    licenseStatus: (reference: string) => `${BASE_API_URL}/payments/license-status/${reference}` as const,
     paymentSources: `${BASE_API_URL}/payments/payment-sources` as const,
     paymentSourceMe: `${BASE_API_URL}/payments/payment-sources/me` as const,
     paymentSourceById: (id: string) => `${BASE_API_URL}/payments/payment-sources/${id}` as const,

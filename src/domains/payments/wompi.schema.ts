@@ -28,8 +28,15 @@ export const checkoutResponseSchema = z.object({
   externalReference: z.string().min(1),
 });
 
+export const licenseCheckoutResponseSchema = checkoutResponseSchema.extend({
+  licensePrice: z.number(),
+  commission: z.number(),
+  total: z.number(),
+});
+
 export type CheckoutInput = z.infer<typeof checkoutInputSchema>;
 export type WidgetParams = z.infer<typeof widgetParamsSchema>;
 export type CheckoutResponse = z.infer<typeof checkoutResponseSchema>;
+export type LicenseCheckoutResponse = z.infer<typeof licenseCheckoutResponseSchema>;
 export type WompiPaymentRole = z.infer<typeof paymentRoleSchema>;
 export type WompiBillingPeriod = z.infer<typeof billingPeriodSchema>;

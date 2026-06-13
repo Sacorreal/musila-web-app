@@ -14,15 +14,16 @@ import {
 import { TrackRequest, RequestStatus } from "../types/request.types";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CloudUpload, FileText, Loader2, Music, User, Calendar, FileCheck, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { CloudUpload, DollarSign, FileText, Loader2, Music, User, Calendar, FileCheck, CheckCircle2, XCircle, Clock, Tag } from "lucide-react";
 import { useUploadStorage } from "@/src/domains/storage/hooks/use-upload-storage";
 import { StorageFolder, UploadField } from "@/src/domains/storage/types/storage.types";
 import { toast } from "sonner";
-import { updateRequestedTrack } from "../services/requested-tracks.actions";
+import { updateRequestedTrack, setLicensePrice } from "../services/requested-tracks.actions";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/src/shared/libs/cn";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import { LicensePaymentModal } from "./LicensePaymentModal";
 
 interface Props {
   request: TrackRequest;
@@ -30,17 +31,38 @@ interface Props {
   onClose?: () => void;
 }
 
+const fmtCOP = (amount: number) =>
+  new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
+
 export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
   const queryClient = useQueryClient();
   const { mutateAsync: uploadStorage, progresses } = useUploadStorage();
-  
+
   const [status, setStatus] = useState<RequestStatus>(request.status);
   const [file, setFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
+  const fmtThousands = (raw: string) =>
+    raw.replace(/\./g, "").replace(/[^0-9]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  // Price state
+  const [priceInput, setPriceInput] = useState<string>(
+    request.licensePrice ? fmtThousands(String(Math.round(Number(request.licensePrice)))) : ""
+  );
+  const [priceCurrency, setPriceCurrency] = useState<"COP" | "USD">("COP");
+  const [showPriceEdit, setShowPriceEdit] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
   const user = useAuthStore((s) => s.user);
   const isRequester = user?.id === request.requester?.id;
   const canCancel = isRequester && request.status === RequestStatus.PENDIENTE;
+  const hasPriceSet = request.licensePrice !== null && request.licensePrice !== undefined;
+  const canOwnerApproveDirectly = isOwner;
+  const canRequesterPay = isRequester && request.status === RequestStatus.PENDIENTE && hasPriceSet && request.licensePaymentStatus !== "approved";
+
+  const rawPriceValue = parseInt(priceInput.replace(/\./g, ""), 10) || 0;
+  const currentPriceRaw = Math.round(Number(request.licensePrice || 0));
+  const priceChanged = isOwner && rawPriceValue > 0 && rawPriceValue !== currentPriceRaw;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -51,37 +73,43 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      let documentUrl = request.documentUrl;
-
-      // 1. Si hay archivo y el estado es APROBADA, subirlo
-      if (file && status === RequestStatus.APROBADA) {
-        if (!request.chat?.id) {
-          throw new Error("No se encontró el chat asociado para subir la licencia.");
-        }
-
-        const uploadResult = await uploadStorage([{
-          field: "document" as UploadField,
-          file: file,
-          folder: `chat/${request.chat.id}/documents` as any,
-        }]);
-
-        const licenseUpload = uploadResult.find((r) => r.field === "document");
-        if (licenseUpload) {
-          documentUrl = licenseUpload.publicUrl;
-        }
+      // 1. Guardar precio si cambió
+      if (priceChanged) {
+        const priceInCOP = priceCurrency === "USD" ? Math.round(rawPriceValue * 4100) : rawPriceValue;
+        await setLicensePrice(request.id, priceInCOP);
+        setShowPriceEdit(false);
       }
 
-      // 2. Actualizar la solicitud
-      await updateRequestedTrack(request.id, {
-        status: status,
-        ...(documentUrl ? { documentUrl } : {}),
-      } as any);
+      // 2. Guardar estado/documento si cambió
+      if (status !== request.status || file) {
+        let documentUrl = request.documentUrl;
 
-      toast.success("Solicitud actualizada correctamente");
+        if (file && status === RequestStatus.APROBADA) {
+          if (!request.chat?.id) {
+            throw new Error("No se encontró el chat asociado para subir la licencia.");
+          }
+
+          const uploadResult = await uploadStorage([{
+            field: "document" as UploadField,
+            file: file,
+            folder: `chat/${request.chat.id}/documents` as any,
+          }]);
+
+          const licenseUpload = uploadResult.find((r) => r.field === "document");
+          if (licenseUpload) documentUrl = licenseUpload.publicUrl;
+        }
+
+        await updateRequestedTrack(request.id, {
+          status,
+          ...(documentUrl ? { documentUrl } : {}),
+        } as any);
+      }
+
+      toast.success("Cambios guardados correctamente");
       queryClient.invalidateQueries({ queryKey: ["requested-tracks"] });
       if (onClose) onClose();
     } catch (error: any) {
-      toast.error(error.message || "Error al actualizar la solicitud");
+      toast.error(error?.response?.data?.message || error?.message || "Error al guardar los cambios");
     } finally {
       setIsSaving(false);
     }
@@ -168,12 +196,137 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
         </div>
       </div>
 
+      {/* License Price — Owner Section */}
+      <AnimatePresence>
+        {isOwner && request.status === RequestStatus.PENDIENTE && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            className="space-y-4"
+          >
+            <h3 className="text-sm font-black uppercase tracking-widest text-primary flex items-center gap-2">
+              <Tag size={16} /> Precio de licencia
+            </h3>
+            {hasPriceSet && !showPriceEdit ? (
+              <div className="flex items-center justify-between p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
+                <div>
+                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Precio establecido</p>
+                  <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{fmtCOP(Number(request.licensePrice))}</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPriceEdit(true)}
+                  className="rounded-xl font-bold text-xs"
+                >
+                  Editar
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPriceCurrency("COP")}
+                    className={cn(
+                      "flex-1 py-2 rounded-xl text-sm font-bold border transition-all",
+                      priceCurrency === "COP"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background border-border text-muted-foreground hover:border-primary/50"
+                    )}
+                  >
+                    COP
+                  </button>
+                  <button
+                    onClick={() => setPriceCurrency("USD")}
+                    className={cn(
+                      "flex-1 py-2 rounded-xl text-sm font-bold border transition-all",
+                      priceCurrency === "USD"
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background border-border text-muted-foreground hover:border-primary/50"
+                    )}
+                  >
+                    USD
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">
+                      {priceCurrency === "COP" ? "$" : "USD"}
+                    </span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={priceInput}
+                      onChange={(e) => setPriceInput(fmtThousands(e.target.value))}
+                      placeholder="0"
+                      className="w-full h-12 pl-12 pr-4 rounded-2xl border-2 border-border bg-background font-bold text-foreground focus:outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+                  {showPriceEdit && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => setShowPriceEdit(false)}
+                      className="rounded-2xl px-3 h-12 font-bold text-xs"
+                    >
+                      Cancelar
+                    </Button>
+                  )}
+                </div>
+                {priceCurrency === "USD" && priceInput && parseFloat(priceInput.replace(/\./g, "")) > 0 && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    ≈ {fmtCOP(Math.round(parseFloat(priceInput.replace(/\./g, "")) * 4100))} COP (estimado)
+                  </p>
+                )}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* License Price — Requester banner */}
+      <AnimatePresence>
+        {canRequesterPay && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            className="rounded-2xl border border-primary/25 overflow-hidden"
+          >
+            <div className="flex items-center justify-between px-5 py-3 bg-muted/20">
+              <span className="text-xs text-muted-foreground">Precio de la licencia</span>
+              <span className="text-sm font-bold">{fmtCOP(Number(request.licensePrice))}</span>
+            </div>
+            <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-t border-border/30">
+              <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                Comisión Musila
+                <span className="text-xs font-bold text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded-full">10%</span>
+              </span>
+              <span className="text-sm font-bold">{fmtCOP(Math.round(Number(request.licensePrice) * 0.10))}</span>
+            </div>
+            <div className="flex items-center justify-between px-5 py-4 bg-primary/5 border-t border-primary/20">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-primary">Total a pagar</p>
+                <p className="text-2xl font-black text-primary">{fmtCOP(Math.round(Number(request.licensePrice) * 1.10))}</p>
+              </div>
+              <Button
+                onClick={() => setShowPaymentModal(true)}
+                className="rounded-2xl h-12 px-6 font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 whitespace-nowrap"
+              >
+                <DollarSign size={16} className="mr-1" />
+                Aceptar y pagar
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Status Update (Only for Owner) */}
       <div className="space-y-4">
         <h3 className="text-sm font-black uppercase tracking-widest text-primary">Estado Solicitud</h3>
         {isOwner ? (
-          <Select 
-            value={status} 
+          <Select
+            value={status}
             onValueChange={(val) => setStatus(val as RequestStatus)}
             disabled={isSaving}
           >
@@ -182,7 +335,9 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
             </SelectTrigger>
             <SelectContent className="rounded-2xl shadow-2xl border-border">
               <SelectItem value={RequestStatus.PENDIENTE} className="py-3 font-medium">Pendiente</SelectItem>
-              <SelectItem value={RequestStatus.APROBADA} className="py-3 font-bold text-emerald-600 dark:text-emerald-400">Aprobar Solicitud</SelectItem>
+              {canOwnerApproveDirectly && (
+                <SelectItem value={RequestStatus.APROBADA} className="py-3 font-bold text-emerald-600 dark:text-emerald-400">Aprobar Solicitud</SelectItem>
+              )}
               <SelectItem value={RequestStatus.RECHAZADA} className="py-3 font-bold text-red-600 dark:text-red-400">Rechazar Solicitud</SelectItem>
             </SelectContent>
           </Select>
@@ -253,9 +408,9 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
       {/* Footer Actions */}
       <div className="flex justify-end gap-3 mt-4">
         {onClose && (
-          <Button 
-            variant="ghost" 
-            onClick={onClose} 
+          <Button
+            variant="ghost"
+            onClick={onClose}
             disabled={isSaving}
             className="rounded-xl font-bold uppercase text-xs tracking-widest"
           >
@@ -263,9 +418,9 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
           </Button>
         )}
         {(isOwner || canCancel) && (
-          <Button 
-            onClick={handleSave} 
-            disabled={isSaving || (status === request.status && !file)}
+          <Button
+            onClick={handleSave}
+            disabled={isSaving || (status === request.status && !file && !priceChanged)}
             className="rounded-2xl px-10 h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-tighter text-lg shadow-xl shadow-primary/20 transition-all active:scale-95"
           >
             {isSaving ? (
@@ -279,6 +434,16 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
           </Button>
         )}
       </div>
+
+      {/* License Payment Modal */}
+      {showPaymentModal && (
+        <LicensePaymentModal
+          isOpen={showPaymentModal}
+          request={request}
+          onClose={() => setShowPaymentModal(false)}
+          onSuccess={() => setShowPaymentModal(false)}
+        />
+      )}
     </div>
   );
 }
