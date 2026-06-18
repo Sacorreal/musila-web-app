@@ -100,6 +100,7 @@ export const es = {
     annual: 'Anual',
     showFreePlans: 'Ver planes gratuitos',
     securePay: '🔒 Pagos seguros',
+    processedBy: '💳 Procesado por Wompi',
     noHiddenFees: '✅ Sin cargos ocultos',
     cancelAnytime: '🔄 Cancelación en cualquier momento',
     freeLabel: 'Gratis',
