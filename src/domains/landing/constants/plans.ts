@@ -69,8 +69,8 @@ export const PLANS: PlanData[] = [
     name: 'Intérprete Pro',
     badge: '🔥 Acceso Vitalicio',
     mainBenefit: 'Acceso de por vida',
-    price: 249900,
-    priceLabel: '$249.900 COP',
+    price: 39900,
+    priceLabel: '$39.900 COP',
     billing: 'pago único',
     highlighted: false,
     cta: 'Obtener Acceso',
@@ -93,7 +93,7 @@ export const PLANS: PlanData[] = [
     highlighted: false,
     cta: 'Comenzar Gratis',
     features: [
-      { label: 'Hasta 3 canciones', included: true },
+      { label: 'Hasta 5 canciones', included: true },
       { label: 'Hasta 3 solicitudes', included: true },
       { label: 'Hasta 2 colaboradores', included: true },
       { label: 'Hasta 1 playlist', included: true },
@@ -111,7 +111,7 @@ export const PLANS: PlanData[] = [
     highlighted: false,
     cta: 'Comenzar Gratis',
     features: [
-      { label: 'Hasta 3 canciones', included: true },
+      { label: 'Hasta 5 canciones', included: true },
     ],
   },
   {
@@ -125,7 +125,7 @@ export const PLANS: PlanData[] = [
     highlighted: false,
     cta: 'Comenzar Gratis',
     features: [
-      { label: 'Hasta 3 solicitudes', included: true },
+      { label: 'Hasta 5 solicitudes', included: true },
       { label: 'Hasta 2 colaboradores', included: true },
       { label: 'Hasta 1 playlist', included: true },
       { label: 'Búsqueda ilimitada', included: true },
@@ -149,9 +149,9 @@ export interface ComparatorRow {
 export const COMPARATOR_ROWS: ComparatorRow[] = [
   {
     feature: 'Canciones permitidas',
-    autor_free: 'Hasta 3',
+    autor_free: 'Hasta 5',
     autor_pro: 'Ilimitadas',
-    cantautor_free: 'Hasta 3',
+    cantautor_free: 'Hasta 5',
     cantautor_pro: 'Ilimitadas',
     interprete_free: '—',
     interprete_pro: '—',
@@ -162,7 +162,7 @@ export const COMPARATOR_ROWS: ComparatorRow[] = [
     autor_pro: 'Ilimitadas (recibe)',
     cantautor_free: 'Hasta 3',
     cantautor_pro: 'Ilimitadas',
-    interprete_free: 'Hasta 3',
+    interprete_free: 'Hasta 5',
     interprete_pro: 'Ilimitadas',
   },
   {
@@ -208,6 +208,6 @@ export const COMPARATOR_ROWS: ComparatorRow[] = [
     cantautor_free: 'Gratis',
     cantautor_pro: '$59.900 COP/mes',
     interprete_free: 'Gratis',
-    interprete_pro: '$249.900 COP',
+    interprete_pro: '$39.900 COP',
   },
 ];

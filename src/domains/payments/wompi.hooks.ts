@@ -2,9 +2,10 @@
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiURLs } from '@shared/constants/urls';
-import { getPaymentStatus } from './payments.actions';
+import { getPaymentStatus, getLicensePaymentStatus } from './payments.actions';
 import { openWompiWidget, type WompiWidgetResult } from './wompi.client';
-import { checkoutResponseSchema, type CheckoutInput } from './wompi.schema';
+import { checkoutResponseSchema, licenseCheckoutResponseSchema, type CheckoutInput, type CheckoutResponse, type LicenseCheckoutResponse } from './wompi.schema';
+import { apiClient } from '@shared/libs/axios/axios-client';
 
 interface UseWompiCheckoutOptions {
   onResult?: (reference: string, result: WompiWidgetResult) => void;
@@ -55,7 +56,47 @@ export function useWompiCheckout(options: UseWompiCheckoutOptions = {}) {
   });
 }
 
+async function fetchLicenseCheckoutParams(requestedTrackId: string): Promise<LicenseCheckoutResponse> {
+  const { data } = await apiClient.post<LicenseCheckoutResponse>('/payments/license-checkout', { requestedTrackId });
+  return licenseCheckoutResponseSchema.parse(data);
+}
+
+interface UseLicenseCheckoutOptions {
+  onResult?: (reference: string, result: WompiWidgetResult) => void;
+}
+
+export function useLicenseCheckout(options: UseLicenseCheckoutOptions = {}) {
+  return useMutation({
+    mutationFn: async (requestedTrackId: string) => {
+      const checkout = await fetchLicenseCheckoutParams(requestedTrackId);
+      sessionStorage.setItem('wompi_license_ref', checkout.externalReference);
+      openWompiWidget(checkout.widget, {
+        onResult: (result) => options.onResult?.(checkout.externalReference, result),
+      });
+      return {
+        reference: checkout.externalReference,
+        licensePrice: checkout.licensePrice,
+        commission: checkout.commission,
+        total: checkout.total,
+      };
+    },
+  });
+}
+
 const POLL_INTERVAL_MS = 3000;
+
+export function useLicensePaymentStatusPolling(reference: string | null) {
+  return useQuery({
+    queryKey: ['license-payment-status', reference],
+    enabled: Boolean(reference),
+    queryFn: () => getLicensePaymentStatus(reference as string),
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      if (status === 'approved' || status === 'failed' || status === 'not_found') return false;
+      return POLL_INTERVAL_MS;
+    },
+  });
+}
 
 export function usePaymentStatusPolling(reference: string | null) {
   return useQuery({

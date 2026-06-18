@@ -29,4 +29,8 @@ export interface TrackRequest {
   chat?: {
     id: string;
   };
+  licensePrice?: number | null;
+  licensePriceSetAt?: string | null;
+  licensePaymentStatus?: 'none' | 'pending' | 'approved' | 'failed';
+  licensePaymentReference?: string | null;
 }
