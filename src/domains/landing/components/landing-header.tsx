@@ -43,6 +43,12 @@ export function LandingHeader() {
             >
               {t.nav.pricing}
             </Link>
+            <Link
+              href="/programa-afiliados"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Afiliados
+            </Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
@@ -92,6 +98,13 @@ export function LandingHeader() {
               onClick={() => setIsMenuOpen(false)}
             >
               {t.nav.pricing}
+            </Link>
+            <Link
+              href="/programa-afiliados"
+              className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Afiliados
             </Link>
             <div className="pt-4 space-y-2">
               <div className="flex items-center justify-center gap-2 pb-2">

@@ -89,6 +89,14 @@ export const apiURLs = {
     billing: `${BASE_API_URL}/users/me/billing` as const,
     paymentHistory: `${BASE_API_URL}/users/me/payments` as const,
   },
+  affiliates: {
+    register: `${BASE_API_URL}/affiliates/register` as const,
+    login: `${BASE_API_URL}/affiliates/login` as const,
+    me: '/affiliates/me' as const,
+    dashboard: '/affiliates/me/dashboard' as const,
+    referrals: '/affiliates/me/referrals' as const,
+    commissions: '/affiliates/me/commissions' as const,
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;

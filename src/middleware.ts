@@ -44,6 +44,27 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // ── /programa-afiliados/dashboard protection ─────────────────────────
+  // Cookie y secreto de JWT aislados del core (affiliate_access_token),
+  // para que un token de afiliado nunca coincida con /admin ni /music.
+  if (pathname.startsWith('/programa-afiliados/dashboard')) {
+    const affiliateToken = request.cookies.get('affiliate_access_token')?.value
+
+    if (!affiliateToken) {
+      return NextResponse.redirect(new URL('/programa-afiliados/login', request.url))
+    }
+
+    const payload = decodeJwtPayload(affiliateToken)
+    const now = Math.floor(Date.now() / 1000)
+    if (!payload || (payload.exp && payload.exp < now)) {
+      const response = NextResponse.redirect(new URL('/programa-afiliados/login', request.url))
+      response.cookies.delete('affiliate_access_token')
+      return response
+    }
+
+    return NextResponse.next()
+  }
+
   // ── /music protection ────────────────────────────────────────────────
   const isPublicMusicRoute =
     pathname.startsWith('/music/tracks') ||
@@ -73,5 +94,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/music/:path*', '/admin/:path*'],
+  matcher: ['/music/:path*', '/admin/:path*', '/programa-afiliados/dashboard/:path*'],
 }

@@ -37,10 +37,15 @@ export async function loginRequest(loginDto: LoginInput): Promise<string> {
 export async function registerUserRequest(createUserDto: CreateUserInput): Promise<string> {
   const cookieStore = await cookies();
 
+  // Programa de afiliados: si el navegador llegó a través de un enlace de
+  // referido (?ref=CODE), la cookie `musila_ref` fue seteada por
+  // ReferralCapture y aquí se adjunta al registro para atribuir la venta.
+  const referralCode = cookieStore.get('musila_ref')?.value;
+
   const response = await fetch(`${BASE_API_URL}${apiURLs.auth.register}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(createUserDto),
+    body: JSON.stringify({ ...createUserDto, ...(referralCode && { referralCode }) }),
   });
 
   if (!response.ok) {
