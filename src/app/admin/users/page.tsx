@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { ShieldPlus, Trash2, Search, X, Filter } from 'lucide-react'
+import { ShieldPlus, Trash2, Pencil, Search, X, Filter } from 'lucide-react'
 import { adminHooks } from '@/src/domains/admin/hooks/admin.hooks'
 import { AdminDataTable, type ColumnDef } from '@/src/domains/admin/components/AdminDataTable'
 import { AdminConfirmDialog } from '@/src/domains/admin/components/AdminConfirmDialog'
 import { AdminPagination } from '@/src/domains/admin/components/AdminPagination'
 import { CreateAdminDialog } from './CreateAdminDialog'
+import { UserFormDialog } from './UserFormDialog'
 import { Button } from '@/src/shared/components/UI/button'
 import { type AdminUserDto } from '@/src/domains/admin/types/admin.types'
 import { UserRole } from '@/src/domains/users/types/user.types'
@@ -63,6 +64,7 @@ export default function AdminUsersPage() {
   const { mutate: updateRole } = adminHooks.useUpdateUserRole()
 
   const [deleteTarget, setDeleteTarget] = useState<AdminUserDto | null>(null)
+  const [editTarget, setEditTarget] = useState<AdminUserDto | null>(null)
   const [showCreateAdmin, setShowCreateAdmin] = useState(false)
 
   const columns: ColumnDef<AdminUserDto>[] = [
@@ -119,13 +121,22 @@ export default function AdminUsersPage() {
       header: 'Acciones',
       width: '80px',
       render: (row) => (
-        <button
-          onClick={() => setDeleteTarget(row)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-          aria-label={`Eliminar ${row.name}`}
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setEditTarget(row)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+            aria-label={`Editar ${row.name}`}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={() => setDeleteTarget(row)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            aria-label={`Eliminar ${row.name}`}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       ),
     },
   ]
@@ -243,6 +254,8 @@ export default function AdminUsersPage() {
       />
 
       <CreateAdminDialog isOpen={showCreateAdmin} onClose={() => setShowCreateAdmin(false)} />
+
+      <UserFormDialog user={editTarget} onClose={() => setEditTarget(null)} />
     </div>
   )
 }

@@ -10,6 +10,18 @@ const sectionLabels: Record<string, string> = {
   '/admin/genres': 'Géneros Musicales',
   '/admin/tracks': 'Tracks',
   '/admin/requests': 'Solicitudes',
+  '/admin/intellectual-property': 'Propiedad Intelectual',
+  '/admin/guests': 'Invitados',
+  '/admin/invites': 'Invitaciones',
+  '/admin/affiliates': 'Afiliados',
+  '/admin/commissions': 'Comisiones',
+  '/admin/payments': 'Pagos',
+  '/admin/payment-sources': 'Fuentes de Pago',
+  '/admin/pending-registrations': 'Registros Pendientes',
+  '/admin/playlists': 'Playlists',
+  '/admin/chat': 'Chats',
+  '/admin/notifications': 'Notificaciones',
+  '/admin/audit-log': 'Auditoría',
 }
 
 interface AdminHeaderProps {

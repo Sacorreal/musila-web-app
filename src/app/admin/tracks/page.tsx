@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import Image from 'next/image'
-import { Trash2, Music, Play, Pause, Search, X, Filter } from 'lucide-react'
+import Link from 'next/link'
+import { Trash2, Pencil, Plus, Music, Play, Pause, Search, X, Filter } from 'lucide-react'
 import { adminHooks } from '@/src/domains/admin/hooks/admin.hooks'
 import { AdminDataTable, type ColumnDef } from '@/src/domains/admin/components/AdminDataTable'
 import { AdminConfirmDialog } from '@/src/domains/admin/components/AdminConfirmDialog'
 import { AdminPagination } from '@/src/domains/admin/components/AdminPagination'
+import { Button } from '@/src/shared/components/UI/button'
 import type { AdminTrackDto, TrackFilters } from '@/src/domains/admin/types/admin.types'
 import { usePlayerStore } from '@/src/domains/player/store/use-player-store'
 import type { TrackResponse } from '@/src/domains/tracks/types/track.types'
@@ -225,27 +227,45 @@ export default function AdminTracksPage() {
     {
       key: 'actions',
       header: '',
-      width: '48px',
+      width: '80px',
       render: (row) => (
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            setDeleteTarget(row)
-          }}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-          aria-label={`Eliminar ${row.title}`}
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            href={`/admin/tracks/${row.id}/editar`}
+            onClick={(e) => e.stopPropagation()}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+            aria-label={`Editar ${row.title}`}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </Link>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setDeleteTarget(row)
+            }}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            aria-label={`Eliminar ${row.title}`}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       ),
     },
   ]
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-black tracking-tight">Tracks</h2>
-        <p className="text-sm text-muted-foreground">{data?.total ?? '—'} tracks en el sistema</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-black tracking-tight">Tracks</h2>
+          <p className="text-sm text-muted-foreground">{data?.total ?? '—'} tracks en el sistema</p>
+        </div>
+        <Link href="/admin/tracks/new">
+          <Button className="gap-2">
+            <Plus className="h-4 w-4" />
+            Nuevo Track
+          </Button>
+        </Link>
       </div>
 
       {/* Barra de filtros */}

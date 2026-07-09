@@ -58,6 +58,10 @@ export const apiURLs = {
   invites: {
     base: '/invites' as const,
     byToken: (token: string) => `/invites/${token}` as const,
+    admin: {
+      base: '/invites/admin' as const, // GET (list)
+      byId: (id: string) => `/invites/admin/${id}` as const, // DELETE
+    },
   },
   app: {
     health: `${BASE_API_URL}` as const,
@@ -65,6 +69,7 @@ export const apiURLs = {
   admin: {
     stats: '/users/admin/stats' as const,
     createAdmin: '/users/admin/create' as const,
+    auditLog: '/users/admin/audit-log' as const,
   },
   payments: {
     checkout: `${BASE_API_URL}/payments/checkout` as const,
@@ -96,6 +101,36 @@ export const apiURLs = {
     dashboard: '/affiliates/me/dashboard' as const,
     referrals: '/affiliates/me/referrals' as const,
     commissions: '/affiliates/me/commissions' as const,
+    admin: {
+      base: '/affiliates/admin' as const, // GET (list), POST (create)
+      byId: (id: string) => `/affiliates/admin/${id}` as const, // GET, DELETE
+      status: (id: string) => `/affiliates/admin/${id}/status` as const, // PATCH
+      tier: (id: string) => `/affiliates/admin/${id}/tier` as const, // PATCH
+      commissions: '/affiliates/admin/commissions' as const, // GET
+      commissionPay: (id: string) => `/affiliates/admin/commissions/${id}/pay` as const, // PATCH
+      commissionReject: (id: string) => `/affiliates/admin/commissions/${id}/reject` as const, // PATCH
+    },
+  },
+  notifications: {
+    admin: {
+      base: '/notifications/admin' as const, // GET (list), POST (create)
+      byId: (id: string) => `/notifications/admin/${id}` as const, // DELETE
+    },
+  },
+  playlistCollaborators: {
+    base: (playlistId: string) => `/playlists/${playlistId}/collaborators` as const, // GET, POST
+    byId: (playlistId: string, collaboratorId: string) =>
+      `/playlists/${playlistId}/collaborators/${collaboratorId}` as const, // DELETE
+  },
+  paymentsAdmin: {
+    base: '/payments/admin' as const, // GET (list)
+    byId: (id: string) => `/payments/admin/${id}` as const, // GET
+    paymentSources: '/payments/admin/payment-sources' as const, // GET
+    pendingRegistrations: '/payments/admin/pending-registrations' as const, // GET
+  },
+  chatAdmin: {
+    base: '/chats/admin' as const, // GET (list)
+    messages: (id: string) => `/chats/admin/${id}/messages` as const, // GET
   },
 } as const;
 

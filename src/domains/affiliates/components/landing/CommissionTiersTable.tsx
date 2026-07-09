@@ -16,15 +16,15 @@ const TIERS = [
     firstPurchase: '30%',
     recurring: '20% durante 12 meses',
     highlight: true,
-    features: ['Todo lo del plan Estándar', 'Aparición en campañas', 'Participación en eventos', 'Certificación oficial'],
+    features: ['Todo lo del plan Estándar', 'Aparición en campañas', 'Participación en eventos', 'Certificación oficial', 'Bono de $ 250.000 COP'],
   },
   {
     name: 'Partner Estratégico',
     requirement: 'Más de 50 ventas + convenio',
-    firstPurchase: '30%',
+    firstPurchase: '40%',
     recurring: '30% durante 12 meses',
     highlight: false,
-    features: ['Todo lo del plan Embajador', 'Acceso anticipado a funciones', 'Co-marketing', 'Material exclusivo'],
+    features: ['Todo lo del plan Embajador', 'Acceso anticipado a funciones', 'Co-marketing', 'Material exclusivo', 'Bono de $ 500.000 COP'],
   },
 ];
 

@@ -21,11 +21,16 @@ export interface AdminUserDto {
   role: UserRole
   avatarUrl?: string
   isVerified: boolean
-  isUserFree: boolean
+  plan: 'free' | 'pro'
+  planExpiresAt?: string | null
   citizenID?: string
   typeCitizenID?: string
   countryCode?: string
   phone?: string
+  biography?: string
+  fiscalName?: string
+  taxId?: string
+  fiscalAddress?: string
   createdAt: string
   deletedAt: string | null
 }
@@ -58,6 +63,10 @@ export interface AdminRequestDto {
   licenseType: string
   approvedByRequester: boolean
   approvedByOwner: boolean
+  documentUrl?: string
+  licensePrice?: number | null
+  licensePaymentStatus: string
+  licensePaymentReference?: string | null
   createdAt: string
   requester?: { id: string; name: string; lastName: string; email: string }
   owner?: { id: string; name: string; lastName: string; email: string }

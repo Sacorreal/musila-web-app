@@ -1,9 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { Pencil, Trash2 } from 'lucide-react'
 import { adminHooks } from '@/src/domains/admin/hooks/admin.hooks'
+import { adminRequestedTracksHooks } from '@/src/domains/admin/requested-tracks/admin-requested-tracks.hooks'
 import { AdminDataTable, type ColumnDef } from '@/src/domains/admin/components/AdminDataTable'
+import { AdminConfirmDialog } from '@/src/domains/admin/components/AdminConfirmDialog'
 import { AdminPagination } from '@/src/domains/admin/components/AdminPagination'
+import { RequestFormDialog } from './RequestFormDialog'
 import type { AdminRequestDto } from '@/src/domains/admin/types/admin.types'
 
 const STATUS_STYLES: Record<string, string> = {
@@ -17,6 +21,10 @@ export default function AdminRequestsPage() {
   const [page, setPage] = useState(1)
   const limit = 10
   const { data, isLoading, error } = adminHooks.useAdminRequests(page, limit)
+  const { mutate: deleteRequest, isPending: isDeleting } = adminRequestedTracksHooks.useDeleteRequestedTrack()
+
+  const [editTarget, setEditTarget] = useState<AdminRequestDto | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<AdminRequestDto | null>(null)
 
   const columns: ColumnDef<AdminRequestDto>[] = [
     {
@@ -66,6 +74,29 @@ export default function AdminRequestsPage() {
         </span>
       ),
     },
+    {
+      key: 'actions',
+      header: 'Acciones',
+      width: '80px',
+      render: (row) => (
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setEditTarget(row)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+            aria-label="Editar solicitud"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={() => setDeleteTarget(row)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+            aria-label="Eliminar solicitud"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      ),
+    },
   ]
 
   return (
@@ -85,6 +116,19 @@ export default function AdminRequestsPage() {
       />
 
       <AdminPagination total={data?.total ?? 0} page={page} limit={limit} onPageChange={setPage} />
+
+      <AdminConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => {
+          if (deleteTarget) deleteRequest(deleteTarget.id, { onSuccess: () => setDeleteTarget(null) })
+        }}
+        isLoading={isDeleting}
+        title="¿Eliminar solicitud?"
+        description={`Se eliminará la solicitud de "${deleteTarget?.track?.title ?? 'este track'}".`}
+      />
+
+      <RequestFormDialog request={editTarget} onClose={() => setEditTarget(null)} />
     </div>
   )
 }
