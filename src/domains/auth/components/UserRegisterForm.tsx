@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Turnstile } from "@marsidev/react-turnstile";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -44,9 +45,11 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     reset,
     control,
+    register,
+    setValue,
   } = useForm<RegisterUsersFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -62,6 +65,8 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
       typeCitizenID: '',
       citizenID: '',
       role: defaultRole as RegisterUsersFormValues['role'] | undefined,
+      turnstileToken: '',
+      companyWebsite: '',
     },
   });
 
@@ -284,6 +289,28 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
           )}
         />
       </FieldGroup>
+
+      {/* Campo trampa anti-bot: invisible y fuera del tab order. Nunca debe completarse por un humano. */}
+      <input
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden"
+        {...register("companyWebsite")}
+      />
+
+      <div className="flex flex-col items-center gap-2">
+        <Turnstile
+          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
+          onSuccess={(token) => setValue("turnstileToken", token, { shouldValidate: true })}
+          onExpire={() => setValue("turnstileToken", "", { shouldValidate: true })}
+          onError={() => setValue("turnstileToken", "", { shouldValidate: true })}
+        />
+        {errors.turnstileToken && (
+          <p className="text-xs text-destructive">{errors.turnstileToken.message}</p>
+        )}
+      </div>
 
       <p className="text-xs text-muted-foreground leading-relaxed">
         Al hacer clic en "Crear cuenta", aceptas nuestros{" "}

@@ -6,6 +6,8 @@ export const apiURLs = {
     register: '/auth/register' as const,
     forgotPassword: '/auth/forgot-password' as const,
     resetPassword: '/auth/reset-password' as const,
+    verifyEmail: `${BASE_API_URL}/auth/verify-email` as const,
+    resendVerification: `${BASE_API_URL}/auth/resend-verification` as const,
   },
   users: {
     base: '/users' as const,

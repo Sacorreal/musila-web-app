@@ -65,7 +65,13 @@ type OptionalUser = Partial<
   Pick<UserDto, 'secondName' | 'secondLastName'>
 >
 
-export type CreateUserInput = BaseUser & OptionalUser & { externalReference?: string }
+export type CreateUserInput = BaseUser & OptionalUser & {
+  externalReference?: string
+  /** Token resuelto por el widget de Cloudflare Turnstile. */
+  turnstileToken: string
+  /** Campo trampa anti-bot: debe llegar siempre vacío, nunca mostrar en la UI. */
+  companyWebsite?: string
+}
 
 
 

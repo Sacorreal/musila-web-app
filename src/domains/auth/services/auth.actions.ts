@@ -101,3 +101,35 @@ export async function resetPasswordRequest(
 
   return response.json();
 }
+
+export async function verifyEmailRequest(token: string): Promise<{ message: string }> {
+  const response = await fetch(apiURLs.auth.verifyEmail, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const msg = errorData.message ?? 'Error al verificar el correo';
+    throw new Error(Array.isArray(msg) ? msg.join(', ') : String(msg));
+  }
+
+  return response.json();
+}
+
+export async function resendVerificationRequest(email: string): Promise<{ message: string }> {
+  const response = await fetch(apiURLs.auth.resendVerification, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const msg = errorData.message ?? 'Error al reenviar el correo de verificación';
+    throw new Error(Array.isArray(msg) ? msg.join(', ') : String(msg));
+  }
+
+  return response.json();
+}
