@@ -13,6 +13,7 @@ export interface TokenPayloadDto {
     exp: number;
     name: string;
     plan?: 'free' | 'pro';
+    isVerified?: boolean;
 }
 
 export type UserJWTResponse = {
@@ -21,6 +22,8 @@ export type UserJWTResponse = {
     role: UserRole
     name: string
     plan?: 'free' | 'pro'
+    /** Estado de verificación al momento de emitir el token — solo para UI (banner), no confiar para autorización. */
+    isVerified?: boolean
     secondName?: string
     lastName?: string
     secondLastName?: string

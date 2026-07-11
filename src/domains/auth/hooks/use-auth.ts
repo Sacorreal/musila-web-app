@@ -40,6 +40,7 @@ export function useAuth() {
                 role: decoded.role,
                 name: decoded.name,
                 plan: decoded.plan,
+                isVerified: decoded.isVerified,
             },
             token: newToken
         });
