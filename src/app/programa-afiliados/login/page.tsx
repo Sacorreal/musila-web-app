@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { MusilaLogo } from '@/src/shared/components/Icons/icons'
 import { AffiliateLoginForm } from '@/src/domains/affiliates/components/AffiliateLoginForm'
+import { AuthCardShell } from '@/src/domains/auth/components/AuthCardShell'
 
 export const metadata: Metadata = {
   title: 'Iniciar sesión como afiliado | Musila',
@@ -10,34 +9,13 @@ export const metadata: Metadata = {
 
 export default function AffiliateLoginPage() {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-blue-500/4 rounded-full blur-3xl" />
-      </div>
-
-      <header className="p-6 border-b border-border/50 backdrop-blur-sm">
-        <Link href="/programa-afiliados" className="inline-flex items-center gap-2">
-          <MusilaLogo className="h-auto w-auto text-primary" />
-        </Link>
-      </header>
-
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-md space-y-6 sm:space-y-8">
-          <div className="flex flex-col gap-2 text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/15 text-primary text-xs font-bold uppercase tracking-widest w-fit mx-auto">
-              Programa de Afiliados
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
-              Bienvenido de vuelta
-            </h1>
-          </div>
-
-          <div className="bg-card border border-border rounded-[2rem] p-5 sm:p-6 md:p-8 shadow-xl shadow-black/5">
-            <AffiliateLoginForm />
-          </div>
-        </div>
-      </main>
-    </div>
+    <AuthCardShell
+      logoHref="/programa-afiliados"
+      badge="Programa de Afiliados"
+      title="Bienvenido de vuelta"
+      centerHeading
+    >
+      <AffiliateLoginForm />
+    </AuthCardShell>
   )
 }

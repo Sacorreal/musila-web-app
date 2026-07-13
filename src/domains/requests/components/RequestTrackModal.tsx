@@ -32,7 +32,7 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
   const [open, setOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
-  const [licenseType, setLicenseType] = useState<LicenseType | "">("");
+  const [licenseType, setLicenseType] = useState<LicenseType | "">(LicenseType.LICENCIA_DE_PRIMER_USO);
   const { mutateAsync, isPending, uploadProgress, isConnectingSocket } = useRequestTrackFlow();
   const [checkingStatus, setCheckingStatus] = useState(false);
   const [existingRequest, setExistingRequest] = useState<TrackRequest | null>(null);
@@ -79,7 +79,7 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
       
       // Reset form
       setMessage("");
-      setLicenseType("");
+      setLicenseType(LicenseType.LICENCIA_DE_PRIMER_USO);
     } catch (error: unknown) {
       if (error instanceof ConflictRequestError) {
         toast.error("Ya tienes una solicitud activa para esta canción.", {
@@ -186,11 +186,9 @@ export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrack
                 <SelectValue placeholder="Selecciona un tipo de licencia" />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-slate-200 dark:border-slate-700">
-                {Object.values(LicenseType).map((type) => (
-                  <SelectItem key={type} value={type} className="text-base py-3 cursor-pointer">
-                    <span className="capitalize">{type}</span>
-                  </SelectItem>
-                ))}
+                <SelectItem value={LicenseType.LICENCIA_DE_PRIMER_USO} className="text-base py-3 cursor-pointer">
+                  <span className="capitalize">{LicenseType.LICENCIA_DE_PRIMER_USO}</span>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

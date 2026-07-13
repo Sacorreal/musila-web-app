@@ -1,9 +1,5 @@
-"use client"
-
+import { PlaceholderPage } from "@/src/shared/components/UI/PlaceholderPage";
 
 export default function ProfilePage() {
-  
-  return (
-  <h1>perfil del usuario</h1>
-  )
+  return <PlaceholderPage title="Perfil del usuario" />;
 }

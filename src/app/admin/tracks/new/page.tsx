@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useForm, Controller, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, Image as ImageIcon } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { useCreateTrack } from '@/src/domains/tracks/hooks/use-create-track'
@@ -11,7 +11,6 @@ import { createTrackSchema, type CreateTrackFormValues } from '@domains/tracks/v
 
 import { Input } from '@/src/shared/components/UI/input'
 import { Textarea } from '@shared/components/UI/textarea'
-import { Switch } from '@shared/components/UI/switch'
 import { Button } from '@shared/components/UI/button'
 import { Progress } from '@shared/components/UI/progress'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@shared/components/UI/field'
@@ -19,6 +18,8 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@shared/components/UI
 import { GenreSelector } from '@domains/musical-genre/components/GenreSelector'
 import { LanguageSelector } from '@domains/tracks/components/LanguageSelector'
 import { AudioUploadField } from '@domains/tracks/components/AudioUploadField'
+import { CoverImageUploadField } from '@domains/tracks/components/CoverImageUploadField'
+import { ToggleFieldCard } from '@domains/tracks/components/ToggleFieldCard'
 import { AdminEntitySelect } from '@/src/domains/admin/shared/AdminEntitySelect'
 import { fetchUserOptions } from '@/src/domains/admin/shared/fetch-user-options'
 
@@ -167,39 +168,9 @@ export default function AdminNewTrackPage() {
             <Controller
               name="coverImage"
               control={control}
-              render={({ field }) => {
-                const file = watch('coverImage')
-                const preview = file instanceof File ? URL.createObjectURL(file) : null
-                return (
-                  <Field>
-                    <FieldLabel>Portada (opcional)</FieldLabel>
-                    <div className="flex items-center gap-6 mt-2">
-                      <label
-                        htmlFor="admin-cover-upload"
-                        className="relative flex w-32 h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed bg-muted/50 hover:bg-muted transition-colors overflow-hidden group"
-                      >
-                        {preview ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={preview} alt="Cover preview" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="flex flex-col items-center justify-center text-muted-foreground">
-                            <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
-                            <span className="text-xs font-medium">Subir imagen</span>
-                          </div>
-                        )}
-                        <input
-                          id="admin-cover-upload"
-                          type="file"
-                          accept="image/*"
-                          className="sr-only"
-                          onChange={(e) => field.onChange(e.target.files?.[0] ?? null)}
-                        />
-                      </label>
-                      <p className="text-xs text-muted-foreground">Formatos: JPG, PNG. Máx 5MB.</p>
-                    </div>
-                  </Field>
-                )
-              }}
+              render={({ field }) => (
+                <CoverImageUploadField value={field.value} onChange={field.onChange} />
+              )}
             />
 
             <Controller
@@ -218,25 +189,23 @@ export default function AdminNewTrackPage() {
                 name="isAvailable"
                 control={control}
                 render={({ field }) => (
-                  <div className="flex items-center justify-between rounded-xl border p-4">
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium">Pública</p>
-                      <p className="text-xs text-muted-foreground">Visible para todos</p>
-                    </div>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </div>
+                  <ToggleFieldCard
+                    label="Pública"
+                    description="Visible para todos"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 )}
               />
               <Controller
                 name="isGospel"
                 control={control}
                 render={({ field }) => (
-                  <div className="flex items-center justify-between rounded-xl border p-4">
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium">Música Gospel</p>
-                    </div>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </div>
+                  <ToggleFieldCard
+                    label="Música Gospel"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 )}
               />
             </div>

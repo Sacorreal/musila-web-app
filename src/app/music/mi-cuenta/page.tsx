@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { AccountTabs } from '@/src/domains/account/components/AccountTabs';
 import { AccountTabsSkeleton } from '@/src/domains/account/components/AccountTabsSkeleton';
+import { PageHeader } from '@/src/shared/components/UI/PageHeader';
 
 interface PageProps {
   searchParams: Promise<{ tab?: string }>;
@@ -16,7 +17,7 @@ export default async function MiCuentaPage({ searchParams }: PageProps) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-foreground mb-6">Mi Cuenta</h1>
+      <PageHeader title="Mi Cuenta" className="mb-6" titleClassName="text-2xl font-bold" />
       <Suspense fallback={<AccountTabsSkeleton />}>
         <AccountTabs activeTab={activeTab} />
       </Suspense>

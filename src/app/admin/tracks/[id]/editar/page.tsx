@@ -12,12 +12,12 @@ import { updateTrackSchema, type UpdateTrackFormValues } from '@domains/tracks/v
 
 import { Input } from '@/src/shared/components/UI/input'
 import { Textarea } from '@shared/components/UI/textarea'
-import { Switch } from '@shared/components/UI/switch'
 import { Button } from '@shared/components/UI/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@shared/components/UI/field'
 
 import { GenreSelector } from '@domains/musical-genre/components/GenreSelector'
 import { LanguageSelector } from '@domains/tracks/components/LanguageSelector'
+import { ToggleFieldCard } from '@domains/tracks/components/ToggleFieldCard'
 import { AdminEntitySelect, type AdminEntityOption } from '@/src/domains/admin/shared/AdminEntitySelect'
 import { fetchUserOptions } from '@/src/domains/admin/shared/fetch-user-options'
 
@@ -197,25 +197,23 @@ export default function AdminEditTrackPage() {
                 name="isAvailable"
                 control={control}
                 render={({ field }) => (
-                  <div className="flex items-center justify-between rounded-xl border p-4">
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium">Pública</p>
-                      <p className="text-xs text-muted-foreground">Visible para todos</p>
-                    </div>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </div>
+                  <ToggleFieldCard
+                    label="Pública"
+                    description="Visible para todos"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 )}
               />
               <Controller
                 name="isGospel"
                 control={control}
                 render={({ field }) => (
-                  <div className="flex items-center justify-between rounded-xl border p-4">
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-medium">Música Gospel</p>
-                    </div>
-                    <Switch checked={field.value} onCheckedChange={field.onChange} />
-                  </div>
+                  <ToggleFieldCard
+                    label="Música Gospel"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 )}
               />
             </div>
