@@ -1,7 +1,7 @@
 'use server';
 
 import { apiURLs } from '@shared/constants/urls';
-import type { PaymentRole } from './payments.types';
+import type { PaymentPlanType } from './payments.types';
 
 export interface PseBank {
   id: string;
@@ -9,7 +9,7 @@ export interface PseBank {
 }
 
 export interface CreatePsePaymentInput {
-  role: PaymentRole;
+  planType: PaymentPlanType;
   plan: 'pro';
   billingPeriod?: 'monthly' | 'annual';
   email: string;

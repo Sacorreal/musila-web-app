@@ -20,6 +20,7 @@ import {
   DialogDescription,
 } from '@/src/shared/components/UI/dialog'
 import type { AdminUserDto } from '@/src/domains/admin/types/admin.types'
+import { MusicRole, MUSIC_ROLE_LABELS } from '@/src/domains/users/types/user.types'
 
 const schema = z.object({
   name: z.string().min(1, 'El nombre es obligatorio'),
@@ -33,6 +34,7 @@ const schema = z.object({
   citizenID: z.string().optional(),
   biography: z.string().optional(),
   isVerified: z.boolean(),
+  role: z.nativeEnum(MusicRole),
   plan: z.enum(['free', 'pro']),
   planExpiresAt: z.string().optional(),
   fiscalName: z.string().optional(),
@@ -73,6 +75,7 @@ export function UserFormDialog({ user, onClose }: Props) {
         citizenID: user.citizenID ?? '',
         biography: user.biography ?? '',
         isVerified: user.isVerified,
+        role: user.role,
         plan: user.plan,
         planExpiresAt: user.planExpiresAt ? user.planExpiresAt.slice(0, 10) : '',
         fiscalName: user.fiscalName ?? '',
@@ -175,6 +178,18 @@ export function UserFormDialog({ user, onClose }: Props) {
                 </div>
                 <Switch checked={watch('isVerified')} onCheckedChange={(v) => setValue('isVerified', v)} />
               </div>
+              <Field data-invalid={!!errors.role}>
+                <FieldLabel>Rol (disciplina musical)</FieldLabel>
+                <select
+                  {...register('role')}
+                  className="h-9 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                >
+                  {Object.values(MusicRole).map((r) => (
+                    <option key={r} value={r}>{MUSIC_ROLE_LABELS[r]}</option>
+                  ))}
+                </select>
+                {errors.role && <FieldError errors={[errors.role]} />}
+              </Field>
             </TabsContent>
 
             <TabsContent value="plan" className="space-y-4 pt-4">

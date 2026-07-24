@@ -12,12 +12,12 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: '¿Puedo cancelar mi suscripción?',
     answer:
-      'Sí. Los planes mensuales (Autor Pro y Cantautor Pro) pueden cancelarse cuando lo desees. Conservarás el acceso hasta el final del período ya pagado.',
+      'Sí. Los planes mensuales (Plan Autor Pro y Plan 360 Pro) pueden cancelarse cuando lo desees. Conservarás el acceso hasta el final del período ya pagado.',
   },
   {
     question: '¿Qué incluye el acceso vitalicio?',
     answer:
-      'El acceso vitalicio del Plan Intérprete Pro otorga acceso permanente a todas las funcionalidades del plan mediante un único pago de $249.900 COP. No habrá cargos recurrentes ni renewals.',
+      'El acceso vitalicio del Plan Descubridor Pro otorga acceso permanente a todas las funcionalidades del plan mediante un único pago de $249.900 COP. No habrá cargos recurrentes ni renewals.',
   },
   {
     question: '¿Cómo funcionan las solicitudes de licencia?',

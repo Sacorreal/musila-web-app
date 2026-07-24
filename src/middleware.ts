@@ -16,8 +16,8 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value
 
   // ── /admin protection ────────────────────────────────────────────────
-  // Note: role check here is for UX redirection only; real authorization
-  // happens in the backend via JWTAuthGuard + RolesGuard on every API call.
+  // Note: plan check here is for UX redirection only; real authorization
+  // happens in the backend via JWTAuthGuard + PlansGuard on every API call.
   if (pathname.startsWith('/admin')) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url))
@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
       return response
     }
 
-    if (payload.role !== 'admin') {
+    if (payload.planType !== 'admin') {
       return NextResponse.redirect(new URL('/music', request.url))
     }
 

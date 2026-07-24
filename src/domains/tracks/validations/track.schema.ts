@@ -37,7 +37,7 @@ export const createTrackSchema = z.object({
   intellectualProperties: z
     .array(
       z.object({
-        type: z.enum(["copyrightOffice", "cmo", "splitSheet"]),
+        type: z.enum(["copyrightOffice", "cmo"]),
         key: z.string().min(1, "Debes seleccionar una opción o ingresar un valor"),
         file: z.instanceof(File, {
           message: "El documento PDF es obligatorio",

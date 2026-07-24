@@ -1,6 +1,6 @@
 "use client";
 
-import { UserRoleRegister } from "@/src/domains/users/types/user.types";
+import { MusicRole, MUSIC_ROLE_LABELS } from "@/src/domains/users/types/user.types";
 import {
   Select,
   SelectContent,
@@ -10,17 +10,17 @@ import {
   SelectValue,
 } from "@shared/components/UI/select";
 
-interface SelectRoleUserProps {
-  value?: UserRoleRegister;
-  onValueChange?: (value: UserRoleRegister) => void;
+interface SelectMusicRoleProps {
+  value?: MusicRole;
+  onValueChange?: (value: MusicRole) => void;
   disabled?: boolean;
 }
 
-export function SelectRoleUser({
+export function SelectMusicRole({
   value,
   onValueChange,
   disabled,
-}: SelectRoleUserProps) {
+}: SelectMusicRoleProps) {
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger>
@@ -29,9 +29,9 @@ export function SelectRoleUser({
 
       <SelectContent>
         <SelectGroup>
-          {Object.values(UserRoleRegister).map((role) => (
+          {Object.values(MusicRole).map((role) => (
             <SelectItem key={role} value={role}>
-              {role}
+              {MUSIC_ROLE_LABELS[role]}
             </SelectItem>
           ))}
         </SelectGroup>

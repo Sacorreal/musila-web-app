@@ -27,8 +27,8 @@ export function AppSidebar() {
   const currentTrack = usePlayerStore(state => state.currentTrack)
 
   const allowedNavItems = useMemo(
-    () => navItems.filter((item: MenuRoute) => hasMenuAccess(user?.role, item.rolAccess)),
-    [user?.role]
+    () => navItems.filter((item: MenuRoute) => hasMenuAccess(user?.planType, item.rolAccess)),
+    [user?.planType]
   )
 
   const unreadChatCount = useTotalUnreadCount()

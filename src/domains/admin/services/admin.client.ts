@@ -2,14 +2,18 @@
 
 import { apiClient } from '@/src/shared/libs/axios/axios-client'
 import { apiURLs } from '@/src/shared/constants/urls'
-import { UserRole } from '@/src/domains/users/types/user.types'
+import { UserPlanType, MusicRole } from '@/src/domains/users/types/user.types'
 import type { AdminGenreDto, CreateGenreInput, UpdateGenreInput } from '../types/admin.types'
 
 export async function deleteUser(id: string): Promise<void> {
   await apiClient.delete(apiURLs.users.userById(id))
 }
 
-export async function updateUserRole(id: string, role: UserRole): Promise<void> {
+export async function updatePlanType(id: string, planType: UserPlanType): Promise<void> {
+  await apiClient.put(apiURLs.users.userById(id), { planType })
+}
+
+export async function updateUserMusicRole(id: string, role: MusicRole): Promise<void> {
   await apiClient.put(apiURLs.users.userById(id), { role })
 }
 

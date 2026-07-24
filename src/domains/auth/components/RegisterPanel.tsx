@@ -3,10 +3,10 @@ import Link from "next/link";
 import { UserRegisterForm } from "@/src/domains/auth/components/UserRegisterForm";
 
 interface RegisterPanelProps {
-  defaultRole?: string;
+  defaultPlanType?: string;
 }
 
-export function RegisterPanel({ defaultRole }: RegisterPanelProps) {
+export function RegisterPanel({ defaultPlanType }: RegisterPanelProps) {
   return (
     <>
       <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -16,7 +16,7 @@ export function RegisterPanel({ defaultRole }: RegisterPanelProps) {
         Únete a la comunidad de compositores e intérpretes
       </p>
 
-      <UserRegisterForm defaultRole={defaultRole} />
+      <UserRegisterForm defaultPlanType={defaultPlanType} />
 
       <p className="mt-8 text-center text-sm text-muted-foreground">
         ¿Ya tienes una cuenta?{" "}

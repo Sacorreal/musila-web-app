@@ -9,6 +9,8 @@ import { TrackRequest } from "../types/request.types";
 import { useLicenseCheckout, useLicensePaymentStatusPolling } from "@/src/domains/payments/payments.hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { OtpVerificationStep } from "@/src/shared/components/otp/OtpVerificationStep";
+import { OtpPurpose } from "@/src/domains/otp/types/otp.types";
 
 interface Props {
   isOpen: boolean;
@@ -17,7 +19,7 @@ interface Props {
   onSuccess?: () => void;
 }
 
-type Step = "info" | "processing" | "polling" | "success" | "failed";
+type Step = "info" | "otp" | "processing" | "polling" | "success" | "failed";
 
 const fmtCOP = (amount: number) =>
   new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", minimumFractionDigits: 0 }).format(amount);
@@ -78,6 +80,8 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
     setBreakdown(null);
     onClose();
   };
+
+  const handleOtpBack = () => setStep("info");
 
   const handleRetry = () => {
     setStep("info");
@@ -155,7 +159,7 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
                     Cancelar
                   </Button>
                   <Button
-                    onClick={handlePay}
+                    onClick={() => setStep("otp")}
                     className="flex-1 rounded-2xl h-12 font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
                   >
                     <CreditCard size={18} className="mr-2" />
@@ -163,6 +167,19 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
                   </Button>
                 </div>
               </motion.div>
+            )}
+
+            {/* Step: otp */}
+            {step === "otp" && (
+              <OtpVerificationStep
+                purpose={OtpPurpose.LICENSE_SIGNING}
+                entityId={request.id}
+                active={step === "otp"}
+                onVerified={handlePay}
+                onBack={handleOtpBack}
+                title="Verifica tu identidad"
+                description="Por seguridad, confirma el código antes de firmar y pagar la licencia."
+              />
             )}
 
             {/* Step: processing */}

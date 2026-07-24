@@ -10,14 +10,14 @@ import { PRO_PLANS } from '@/src/domains/landing/constants/plans';
 import type { CurrencyInfo } from '../currency.actions';
 import { convertPrice } from '../currency.utils';
 import { checkoutResponseSchema } from '../wompi.schema';
-import type { WompiPaymentRole } from '../wompi.schema';
+import type { WompiPlanType } from '../wompi.schema';
 import '../wompi.client'; // importa el declare global de window.WidgetCheckout
 
 const BACKEND_CHECKOUT = process.env.NEXT_PUBLIC_API_URL + '/payments/checkout';
 const WEB_CHECKOUT = 'https://checkout.wompi.co/p/';
 
 interface CheckoutCartProps {
-  role: WompiPaymentRole;
+  planType: WompiPlanType;
   defaultAnnual?: boolean;
   currencyInfo: CurrencyInfo;
 }
@@ -46,10 +46,10 @@ function buildWebCheckoutUrl(w: {
   return `${WEB_CHECKOUT}?${parts.join('&')}`;
 }
 
-export function CheckoutCart({ role, defaultAnnual = false, currencyInfo }: CheckoutCartProps) {
+export function CheckoutCart({ planType, defaultAnnual = false, currencyInfo }: CheckoutCartProps) {
   const router = useRouter();
-  const plan = useMemo(() => PRO_PLANS.find((p) => p.role === role), [role]);
-  const isLifetime = role === 'interprete';
+  const plan = useMemo(() => PRO_PLANS.find((p) => p.planType === planType), [planType]);
+  const isLifetime = planType === 'plan_descubridor';
   const hasAnnual = !!plan?.annualTotalPrice && !isLifetime;
   const [annual, setAnnual] = useState(defaultAnnual && hasAnnual);
   const [paying, setPaying] = useState(false);
@@ -97,7 +97,7 @@ export function CheckoutCart({ role, defaultAnnual = false, currencyInfo }: Chec
       const res = await fetch(BACKEND_CHECKOUT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role, plan: 'pro', billingPeriod: annual ? 'annual' : 'monthly' }),
+        body: JSON.stringify({ planType, plan: 'pro', billingPeriod: annual ? 'annual' : 'monthly' }),
         signal: AbortSignal.timeout(15000),
       });
       console.log('[Wompi] paso 3: respuesta HTTP', res.status);

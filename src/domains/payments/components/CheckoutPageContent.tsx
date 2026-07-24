@@ -3,16 +3,16 @@ import Link from 'next/link';
 import { MusilaLogo } from '@/src/shared/components/Icons/icons';
 import { CheckoutCart } from '@/src/domains/payments/components/checkout-cart';
 import { InvalidPlanNotice } from '@/src/domains/payments/components/InvalidPlanNotice';
-import type { WompiPaymentRole } from '@/src/domains/payments/wompi.schema';
+import type { WompiPlanType } from '@/src/domains/payments/wompi.schema';
 import type { CurrencyInfo } from '@/src/domains/payments/currency.actions';
 
 interface CheckoutPageContentProps {
-  role: WompiPaymentRole | null;
+  planType: WompiPlanType | null;
   defaultAnnual: boolean;
   currencyInfo: CurrencyInfo;
 }
 
-export function CheckoutPageContent({ role, defaultAnnual, currencyInfo }: CheckoutPageContentProps) {
+export function CheckoutPageContent({ planType, defaultAnnual, currencyInfo }: CheckoutPageContentProps) {
   return (
     <div className="min-h-screen bg-background px-4 py-10 sm:px-8">
       <div className="mx-auto w-full max-w-4xl">
@@ -26,8 +26,8 @@ export function CheckoutPageContent({ role, defaultAnnual, currencyInfo }: Check
           Revisa el detalle de tu plan y completa el pago de forma segura.
         </p>
 
-        {role ? (
-          <CheckoutCart role={role} defaultAnnual={defaultAnnual} currencyInfo={currencyInfo} />
+        {planType ? (
+          <CheckoutCart planType={planType} defaultAnnual={defaultAnnual} currencyInfo={currencyInfo} />
         ) : (
           <InvalidPlanNotice />
         )}

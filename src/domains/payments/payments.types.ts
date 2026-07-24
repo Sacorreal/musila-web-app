@@ -1,6 +1,6 @@
 export type PlanType = 'free' | 'pro';
 
-export type PaymentRole = 'autor' | 'cantautor' | 'interprete';
+export type PaymentPlanType = 'plan_autor' | 'plan_360' | 'plan_descubridor';
 
 export interface PaymentPreference {
   initPoint: string;
@@ -13,5 +13,5 @@ export interface PaymentStatus {
   status: PaymentStatusValue;
   userId?: string;
   plan?: PlanType;
-  role?: PaymentRole;
+  planType?: PaymentPlanType;
 }

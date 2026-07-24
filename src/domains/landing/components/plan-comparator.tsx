@@ -39,12 +39,12 @@ export function PlanComparator() {
                 <td className="sticky left-0 bg-inherit px-4 py-3 font-medium text-foreground">
                   {row.feature}
                 </td>
-                <td className="px-4 py-3 text-muted-foreground">{row.autor_free}</td>
-                <td className="px-4 py-3 font-medium text-primary">{row.autor_pro}</td>
-                <td className="px-4 py-3 text-muted-foreground">{row.cantautor_free}</td>
-                <td className="px-4 py-3 font-medium text-primary">{row.cantautor_pro}</td>
-                <td className="px-4 py-3 text-muted-foreground">{row.interprete_free}</td>
-                <td className="px-4 py-3 font-medium text-primary">{row.interprete_pro}</td>
+                <td className="px-4 py-3 text-muted-foreground">{row.plan_autor_free}</td>
+                <td className="px-4 py-3 font-medium text-primary">{row.plan_autor_pro}</td>
+                <td className="px-4 py-3 text-muted-foreground">{row.plan_360_free}</td>
+                <td className="px-4 py-3 font-medium text-primary">{row.plan_360_pro}</td>
+                <td className="px-4 py-3 text-muted-foreground">{row.plan_descubridor_free}</td>
+                <td className="px-4 py-3 font-medium text-primary">{row.plan_descubridor_pro}</td>
               </tr>
             ))}
           </tbody>

@@ -15,7 +15,7 @@ import { PlaylistIcon, PlusIcon, MusicNoteIcon } from '@/src/shared/components/I
 import { CheckIcon } from 'lucide-react';
 
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
-import { UserRole } from '@/src/domains/users/types/user.types';
+import { UserPlanType } from '@/src/domains/users/types/user.types';
 
 interface AddToPlaylistModalProps {
   trackId: string;
@@ -29,7 +29,7 @@ export function AddToPlaylistModal({ trackId, trackTitle, children }: AddToPlayl
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('');
   
   const user = useAuthStore((s) => s.user);
-  const isGuest = user?.role === UserRole.INVITADO;
+  const isGuest = user?.planType === UserPlanType.INVITADO;
 
   const { data, isLoading } = usePlaylists();
   const updatePlaylist = useUpdatePlaylist();

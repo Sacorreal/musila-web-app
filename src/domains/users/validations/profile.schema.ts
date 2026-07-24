@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { MusicRole } from "@/src/domains/users/types/user.types";
 
 export const profileSchema = z
   .object({
@@ -11,6 +12,9 @@ export const profileSchema = z
     countryCode: z.string().optional(),
     typeCitizenID: z.string().optional(),
     citizenID: z.string().optional(),
+    role: z.nativeEnum(MusicRole, {
+      errorMap: () => ({ message: "El rol es obligatorio" }),
+    }),
     password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres").optional().or(z.literal("")),
     confirmPassword: z.string().optional().or(z.literal("")),
   })

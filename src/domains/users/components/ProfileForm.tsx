@@ -11,6 +11,7 @@ import { usersService } from "@/src/domains/users/services/users.service";
 import { useUploadStorage } from "@/src/domains/storage/hooks/use-upload-storage";
 import { StorageFolder, UploadField } from "@/src/domains/storage/types/storage.types";
 import { profileSchema, type ProfileFormValues } from "@/src/domains/users/validations/profile.schema";
+import { MUSIC_ROLE_LABELS } from "@/src/domains/users/types/user.types";
 import { ProfileHeader } from "@/src/domains/users/components/ProfileHeader";
 import { ProfileAvatarCard } from "@/src/domains/users/components/ProfileAvatarCard";
 import { ProfilePersonalInfoSection } from "@/src/domains/users/components/ProfilePersonalInfoSection";
@@ -60,6 +61,7 @@ export function ProfileForm() {
         countryCode: user.countryCode || "",
         typeCitizenID: user.typeCitizenID || "",
         citizenID: user.citizenID || "",
+        role: user.role,
       });
       if (user.avatarUrl) setAvatarPreview(user.avatarUrl);
     }
@@ -141,7 +143,7 @@ export function ProfileForm() {
             <ProfileAvatarCard
               name={user?.name}
               lastName={user?.lastName}
-              role={user?.role}
+              role={user?.role ? MUSIC_ROLE_LABELS[user.role] : undefined}
               avatarPreview={avatarPreview}
               uploadProgress={uploadStorage.progresses["avatar"] ?? 0}
               onAvatarChange={onAvatarChange}
@@ -151,7 +153,7 @@ export function ProfileForm() {
           </div>
 
           <div className="lg:col-span-2 space-y-8">
-            <ProfilePersonalInfoSection register={register} errors={errors} email={user?.email} />
+            <ProfilePersonalInfoSection register={register} control={control} errors={errors} email={user?.email} />
             <ProfileContactSection register={register} control={control} />
             <ProfileSecuritySection register={register} errors={errors} />
           </div>

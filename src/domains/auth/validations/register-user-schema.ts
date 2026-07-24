@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { UserRoleRegister } from '@/src/domains/users/types/user.types';
+import { UserPlanTypeRegister, MusicRole } from '@/src/domains/users/types/user.types';
 
 /**
  * Schema de validación para el formulario de registro
@@ -54,7 +54,11 @@ export const registerSchema = z
             .string()
             .min(1, "El número de documento es obligatorio"),
 
-        role: z.nativeEnum(UserRoleRegister, {
+        planType: z.nativeEnum(UserPlanTypeRegister, {
+            errorMap: () => ({ message: "El plan es obligatorio" }),
+        }),
+
+        role: z.nativeEnum(MusicRole, {
             errorMap: () => ({ message: "El rol es obligatorio" }),
         }),
 

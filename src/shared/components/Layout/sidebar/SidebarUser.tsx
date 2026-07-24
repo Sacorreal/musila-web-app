@@ -1,14 +1,23 @@
 'use client'
 
-import { UserRole } from '@/src/domains/users/types/user.types'
+import { UserPlanType } from '@/src/domains/users/types/user.types'
 import { Button } from '@/src/shared/components/UI/button'
 import { LogOut } from 'lucide-react'
+
+const PLAN_TYPE_LABELS: Record<UserPlanType, string> = {
+  [UserPlanType.ADMIN]: 'Admin',
+  [UserPlanType.PLAN_AUTOR]: 'Plan Autor',
+  [UserPlanType.PLAN_360]: 'Plan 360',
+  [UserPlanType.PLAN_DESCUBRIDOR]: 'Plan Descubridor',
+  [UserPlanType.INVITADO]: 'Invitado',
+  [UserPlanType.EDITOR]: 'Editor',
+}
 
 type Props = {
   user?: {
     name?: string
     artisticName?: string
-    role?: UserRole
+    planType?: UserPlanType
   } | null
   onLogout: () => void
 }
@@ -28,7 +37,7 @@ export function SidebarUser({ user, onLogout }: Props) {
             {user?.artisticName || user?.name || 'Usuario'}
           </p>
           <p className="text-xs text-sidebar-foreground/60 truncate">
-            {user?.role === UserRole.AUTOR ? 'Compositor' : 'Invitado'}
+            {user?.planType ? PLAN_TYPE_LABELS[user.planType] : 'Invitado'}
           </p>
         </div>
       </div>

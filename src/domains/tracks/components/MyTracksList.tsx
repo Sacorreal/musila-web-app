@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useMyTracks } from "../hooks/use-tracks.hooks";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
-import { UserRole } from "@/src/domains/users/types/user.types";
+import { UserPlanType } from "@/src/domains/users/types/user.types";
 import { Search, Music2 } from "lucide-react";
 import { Input } from "@/src/shared/components/UI/input";
 import { Badge } from "@/src/shared/components/UI/badge";
@@ -38,8 +38,8 @@ export function MyTracksList() {
     }
   };
 
-  // Solo visible para autor o cantautor
-  if (user?.role !== UserRole.AUTOR && user?.role !== UserRole.CANTAUTOR) {
+  // Solo visible para Plan Autor o Plan 360
+  if (user?.planType !== UserPlanType.PLAN_AUTOR && user?.planType !== UserPlanType.PLAN_360) {
     return null;
   }
 

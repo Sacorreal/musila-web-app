@@ -1,17 +1,19 @@
 import React from "react";
 import { User, Mail } from "lucide-react";
-import type { UseFormRegister, FieldErrors } from "react-hook-form";
+import { Controller, type Control, type UseFormRegister, type FieldErrors } from "react-hook-form";
 import { Input } from "@/src/shared/components/UI/input";
 import { Label } from "@/src/shared/components/UI/label";
 import type { ProfileFormValues } from "@/src/domains/users/validations/profile.schema";
+import { SelectMusicRole } from "@/src/domains/auth/components/SelectMusicRole";
 
 interface ProfilePersonalInfoSectionProps {
   register: UseFormRegister<ProfileFormValues>;
+  control: Control<ProfileFormValues>;
   errors: FieldErrors<ProfileFormValues>;
   email?: string;
 }
 
-export function ProfilePersonalInfoSection({ register, errors, email }: ProfilePersonalInfoSectionProps) {
+export function ProfilePersonalInfoSection({ register, control, errors, email }: ProfilePersonalInfoSectionProps) {
   return (
     <div className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-10 shadow-xl space-y-8">
       <div className="flex items-center gap-3">
@@ -53,6 +55,18 @@ export function ProfilePersonalInfoSection({ register, errors, email }: ProfileP
           />
         </div>
         <p className="text-[10px] text-muted-foreground italic ml-1">El correo electrónico no puede ser modificado por seguridad.</p>
+      </div>
+
+      <div className="space-y-2">
+        <Label className="text-[11px] font-black uppercase tracking-widest ml-1 opacity-60">Rol</Label>
+        <Controller
+          name="role"
+          control={control}
+          render={({ field }) => (
+            <SelectMusicRole value={field.value} onValueChange={field.onChange} />
+          )}
+        />
+        {errors.role && <p className="text-xs text-red-500 font-bold ml-1">{errors.role.message}</p>}
       </div>
     </div>
   );

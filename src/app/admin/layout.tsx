@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   let userName: string | undefined
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
-    if (payload.role !== 'admin') redirect('/music')
+    if (payload.planType !== 'admin') redirect('/music')
     userName = payload.name
   } catch {
     redirect('/login')

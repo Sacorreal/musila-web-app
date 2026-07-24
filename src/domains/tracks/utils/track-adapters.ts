@@ -27,6 +27,6 @@ export function toTrackForPlayer(t: AdminTrackDto): TrackResponse {
     createdAt: t.createdAt,
     updatedAt: t.createdAt,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    authors: t.authors.map((a) => ({ id: a.id, name: a.name, lastName: a.lastName, email: '', role: '' as any })),
+    authors: t.authors.map((a) => ({ id: a.id, name: a.name, lastName: a.lastName, email: '', planType: '' as any })),
   }
 }

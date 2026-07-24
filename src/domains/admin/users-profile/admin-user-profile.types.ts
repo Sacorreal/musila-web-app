@@ -1,3 +1,5 @@
+import type { MusicRole } from '@/src/domains/users/types/user.types'
+
 export interface UpdateUserProfileInput {
   name?: string
   secondName?: string
@@ -10,6 +12,7 @@ export interface UpdateUserProfileInput {
   citizenID?: string
   biography?: string
   isVerified?: boolean
+  role?: MusicRole
   plan?: 'free' | 'pro'
   planExpiresAt?: string
   fiscalName?: string

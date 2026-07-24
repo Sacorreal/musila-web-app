@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shared/components/UI/select";
+import { SelectMusicRole } from "./SelectMusicRole";
 
 import {
   registerSchema,
@@ -34,11 +35,11 @@ import {
 import { useAuth } from "../hooks/use-auth";
 
 interface UserRegisterFormProps {
-  defaultRole?: string;
+  defaultPlanType?: string;
   externalReference?: string;
 }
 
-export function UserRegisterForm({ defaultRole, externalReference }: UserRegisterFormProps) {
+export function UserRegisterForm({ defaultPlanType, externalReference }: UserRegisterFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { registerUser} = useAuth()
@@ -64,7 +65,7 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
       countryCode: "+57",
       typeCitizenID: '',
       citizenID: '',
-      role: defaultRole as RegisterUsersFormValues['role'] | undefined,
+      planType: defaultPlanType as RegisterUsersFormValues['planType'] | undefined,
       turnstileToken: '',
       companyWebsite: '',
     },
@@ -239,6 +240,19 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
                 placeholder="tu@email.com"
                 autoComplete="email"
               />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        {/* Rol musical (descriptivo, no afecta permisos) */}
+        <Controller
+          name="role"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Rol</FieldLabel>
+              <SelectMusicRole value={field.value} onValueChange={field.onChange} />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}

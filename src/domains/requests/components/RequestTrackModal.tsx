@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
-import { UserRole } from "@/src/domains/users/types/user.types";
+import { UserPlanType } from "@/src/domains/users/types/user.types";
 
 interface RequestTrackModalProps {
   trackId: string;
@@ -28,7 +28,7 @@ interface RequestTrackModalProps {
 export function RequestTrackModal({ trackId, genreSlug, children }: RequestTrackModalProps) {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const isGuest = user?.role === UserRole.INVITADO;
+  const isGuest = user?.planType === UserPlanType.INVITADO;
   const [open, setOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");

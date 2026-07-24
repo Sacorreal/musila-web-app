@@ -10,12 +10,12 @@ export interface LanguageDto {
 
 export type AuthorTrackDto = Pick<
   AuthorsResponseDto,
-  | 'email' | 'id' | 'name' | 'role' | 'lastName'
+  | 'email' | 'id' | 'name' | 'planType' | 'lastName'
 >
 
 
 export interface IntellectualPropertyInput {
-  type: "copyrightOffice" | "cmo" | "splitSheet";
+  type: "copyrightOffice" | "cmo";
   key: string;
   documentKey: string;
   documentUrl: string;
@@ -42,8 +42,8 @@ export interface IntellectualPropertyDto {
   id: string;
   type: "copyrightOffice" | "cmo" | "splitSheet";
   key: string;
-  documentKey: string;
-  documentUrl: string;
+  documentKey?: string;
+  documentUrl?: string;
   createdAt: string;
 }
 

@@ -24,7 +24,7 @@ export function useRegisterUser() {
             user: {
                 email: decoded.email,
                 id: decoded.id,
-                role: decoded.role,
+                planType: decoded.planType,
                 name: decoded.name,
                 plan: decoded.plan,
             }

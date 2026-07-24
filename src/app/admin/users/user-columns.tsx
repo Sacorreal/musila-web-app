@@ -1,13 +1,13 @@
 import { Trash2, Pencil } from 'lucide-react'
 import type { ColumnDef } from '@/src/domains/admin/components/AdminDataTable'
 import type { AdminUserDto } from '@/src/domains/admin/types/admin.types'
-import { UserRole } from '@/src/domains/users/types/user.types'
+import { UserPlanType, MusicRole, MUSIC_ROLE_LABELS } from '@/src/domains/users/types/user.types'
 
-const ROLE_COLORS: Record<string, string> = {
+const PLAN_TYPE_COLORS: Record<string, string> = {
   admin: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-  autor: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  interprete: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-  cantautor: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400',
+  plan_autor: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  plan_descubridor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+  plan_360: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400',
   invitado: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400',
   editor: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
 }
@@ -15,10 +15,11 @@ const ROLE_COLORS: Record<string, string> = {
 interface UserColumnsOptions {
   onEdit: (row: AdminUserDto) => void
   onDelete: (row: AdminUserDto) => void
-  onUpdateRole: (params: { id: string; role: UserRole }) => void
+  onUpdatePlanType: (params: { id: string; planType: UserPlanType }) => void
+  onUpdateMusicRole: (params: { id: string; role: MusicRole }) => void
 }
 
-export function getUserColumns({ onEdit, onDelete, onUpdateRole }: UserColumnsOptions): ColumnDef<AdminUserDto>[] {
+export function getUserColumns({ onEdit, onDelete, onUpdatePlanType, onUpdateMusicRole }: UserColumnsOptions): ColumnDef<AdminUserDto>[] {
   return [
     {
       key: 'name',
@@ -32,18 +33,35 @@ export function getUserColumns({ onEdit, onDelete, onUpdateRole }: UserColumnsOp
       ),
     },
     {
+      key: 'planType',
+      header: 'Plan',
+      width: '160px',
+      render: (row) => (
+        <select
+          value={row.planType}
+          onChange={(e) => onUpdatePlanType({ id: row.id, planType: e.target.value as UserPlanType })}
+          className={`rounded-full px-2 py-0.5 text-xs font-semibold border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${PLAN_TYPE_COLORS[row.planType] ?? 'bg-muted text-foreground'}`}
+          aria-label={`Plan de ${row.name}`}
+        >
+          {Object.values(UserPlanType).map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+      ),
+    },
+    {
       key: 'role',
       header: 'Rol',
       width: '160px',
       render: (row) => (
         <select
           value={row.role}
-          onChange={(e) => onUpdateRole({ id: row.id, role: e.target.value as UserRole })}
-          className={`rounded-full px-2 py-0.5 text-xs font-semibold border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 ${ROLE_COLORS[row.role] ?? 'bg-muted text-foreground'}`}
-          aria-label={`Rol de ${row.name}`}
+          onChange={(e) => onUpdateMusicRole({ id: row.id, role: e.target.value as MusicRole })}
+          className="rounded-full px-2 py-0.5 text-xs font-semibold border-0 cursor-pointer bg-muted text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+          aria-label={`Rol musical de ${row.name}`}
         >
-          {Object.values(UserRole).map((r) => (
-            <option key={r} value={r}>{r}</option>
+          {Object.values(MusicRole).map((r) => (
+            <option key={r} value={r}>{MUSIC_ROLE_LABELS[r]}</option>
           ))}
         </select>
       ),

@@ -7,7 +7,8 @@ export interface UserDto {
     secondName: string
     lastName: string
     secondLastName: string
-    role: UserRoleRegister
+    planType: UserPlanTypeRegister
+    role: MusicRole
     email: string
     password: string;
     countryCode: string;
@@ -28,22 +29,46 @@ export interface UserDto {
 }
 
 
-export enum UserRole {
+export enum UserPlanType {
   ADMIN = "admin",
-  AUTOR = "autor",
-  INTERPRETE = "interprete",
-  CANTAUTOR = "cantautor",
+  PLAN_AUTOR = "plan_autor",
+  PLAN_360 = "plan_360",
+  PLAN_DESCUBRIDOR = "plan_descubridor",
   INVITADO = "invitado",
   EDITOR = "editor",
 }
 
 /**
- * roles para el registro de usuario permitidos temporalmente, durante *MVP
+ * planes permitidos temporalmente para el registro de usuario, durante *MVP
  */
-export enum UserRoleRegister {
-  AUTOR = "autor",
+export enum UserPlanTypeRegister {
+  PLAN_AUTOR = "plan_autor",
+  PLAN_DESCUBRIDOR = "plan_descubridor",
+  PLAN_360 = "plan_360",
+}
+
+/**
+ * Rol descriptivo (disciplina musical) del usuario. No tiene ningún efecto
+ * en permisos/acceso — solo es informativo.
+ */
+export enum MusicRole {
+  AGRUPACION = "agrupacion",
   INTERPRETE = "interprete",
-  CANTAUTOR = "cantautor",
+  COMPOSITOR = "compositor",
+  PRODUCTOR = "productor",
+  INGENIERO = "ingeniero",
+  MANAGER = "manager",
+  A_R = "a_r",
+}
+
+export const MUSIC_ROLE_LABELS: Record<MusicRole, string> = {
+  [MusicRole.AGRUPACION]: "Agrupación",
+  [MusicRole.INTERPRETE]: "Intérprete",
+  [MusicRole.COMPOSITOR]: "Compositor",
+  [MusicRole.PRODUCTOR]: "Productor",
+  [MusicRole.INGENIERO]: "Ingeniero",
+  [MusicRole.MANAGER]: "Manager",
+  [MusicRole.A_R]: "A&R",
 }
 
 
@@ -52,6 +77,7 @@ type BaseUser = Pick<
   | 'email'
   | 'name'
   | 'lastName'
+  | 'planType'
   | 'role'
   | 'password'
   | 'repeatPassword'
@@ -78,5 +104,4 @@ export type CreateUserInput = BaseUser & OptionalUser & {
 export type UpdateUserInput = Partial<CreateUserInput>
 
 export type UserResponse = Omit<UserDto, ''>
-
 

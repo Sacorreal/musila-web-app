@@ -1,4 +1,4 @@
-import { UserRole } from '@/src/domains/users/types/user.types'
+import { UserPlanType, MusicRole } from '@/src/domains/users/types/user.types'
 import { PaginatedResponse } from '@shared/types/shared.types'
 
 export interface AdminStatsDto {
@@ -18,7 +18,8 @@ export interface AdminUserDto {
   lastName: string
   secondLastName?: string
   email: string
-  role: UserRole
+  planType: UserPlanType
+  role: MusicRole
   avatarUrl?: string
   isVerified: boolean
   plan: 'free' | 'pro'
@@ -97,7 +98,7 @@ export type PaginatedAdminRequests = PaginatedResponse<AdminRequestDto>
 
 export interface UserFilters {
   search?: string
-  role?: string
+  planType?: string
   isVerified?: boolean
 }
 

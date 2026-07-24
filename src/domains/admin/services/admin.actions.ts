@@ -32,7 +32,7 @@ export async function fetchAllUsers(
   const offset = (page - 1) * limit
   const params: Record<string, unknown> = { limit, offset }
   if (filters.search) params.search = filters.search
-  if (filters.role) params.role = filters.role
+  if (filters.planType) params.planType = filters.planType
   if (filters.isVerified !== undefined) params.isVerified = filters.isVerified
   const response = await client.get<PaginatedAdminUsers>(apiURLs.users.base, { params })
   return response.data

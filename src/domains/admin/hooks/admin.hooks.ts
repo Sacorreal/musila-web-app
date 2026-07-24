@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { UserRole } from '@/src/domains/users/types/user.types'
+import { UserPlanType, MusicRole } from '@/src/domains/users/types/user.types'
 import {
   fetchAdminStats,
   fetchAllUsers,
@@ -14,7 +14,8 @@ import {
 import type { TrackFilters, UserFilters } from '../types/admin.types'
 import {
   deleteUser,
-  updateUserRole,
+  updatePlanType,
+  updateUserMusicRole,
   deleteTrack,
   deleteGenre,
   createGenre,
@@ -70,10 +71,22 @@ export function useDeleteUser() {
   })
 }
 
-export function useUpdateUserRole() {
+export function useUpdatePlanType() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, role }: { id: string; role: UserRole }) => updateUserRole(id, role),
+    mutationFn: ({ id, planType }: { id: string; planType: UserPlanType }) => updatePlanType(id, planType),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'users'] })
+      toast.success('Plan actualizado')
+    },
+    onError: () => toast.error('Error al actualizar el plan'),
+  })
+}
+
+export function useUpdateUserMusicRole() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, role }: { id: string; role: MusicRole }) => updateUserMusicRole(id, role),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['admin', 'users'] })
       toast.success('Rol actualizado')
@@ -155,7 +168,8 @@ export const adminHooks = {
   useAdminGenres,
   useAdminRequests,
   useDeleteUser,
-  useUpdateUserRole,
+  useUpdatePlanType,
+  useUpdateUserMusicRole,
   useDeleteTrack,
   useDeleteGenre,
   useCreateGenre,

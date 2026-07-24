@@ -1,4 +1,4 @@
-import type { PaymentRole, PlanType } from '@/src/domains/payments/payments.types';
+import type { PaymentPlanType, PlanType } from '@/src/domains/payments/payments.types';
 
 export interface PlanFeature {
   label: string;
@@ -6,7 +6,7 @@ export interface PlanFeature {
 }
 
 export interface PlanData {
-  role: PaymentRole;
+  planType: PaymentPlanType;
   plan: PlanType;
   name: string;
   badge?: string;
@@ -25,9 +25,9 @@ export interface PlanData {
 
 export const PLANS: PlanData[] = [
   {
-    role: 'cantautor',
+    planType: 'plan_360',
     plan: 'pro',
-    name: 'Cantautor Pro',
+    name: 'Plan 360 Pro',
     badge: '⭐ Más Popular',
     mainBenefit: 'Licencias ilimitadas',
     price: 59900,
@@ -46,9 +46,9 @@ export const PLANS: PlanData[] = [
     ],
   },
   {
-    role: 'autor',
+    planType: 'plan_autor',
     plan: 'pro',
-    name: 'Autor Pro',
+    name: 'Plan Autor Pro',
     badge: '🚀 Crecimiento Profesional',
     mainBenefit: 'Canciones ilimitadas',
     price: 39900,
@@ -64,9 +64,9 @@ export const PLANS: PlanData[] = [
     ],
   },
   {
-    role: 'interprete',
+    planType: 'plan_descubridor',
     plan: 'pro',
-    name: 'Intérprete Pro',
+    name: 'Plan Descubridor Pro',
     badge: '🔥 Acceso Vitalicio',
     mainBenefit: 'Acceso de por vida',
     price: 39900,
@@ -83,9 +83,9 @@ export const PLANS: PlanData[] = [
     ],
   },
   {
-    role: 'cantautor',
+    planType: 'plan_360',
     plan: 'free',
-    name: 'Cantautor Free',
+    name: 'Plan 360 Free',
     mainBenefit: 'Empieza a colaborar',
     price: null,
     priceLabel: 'Gratis',
@@ -101,9 +101,9 @@ export const PLANS: PlanData[] = [
     ],
   },
   {
-    role: 'autor',
+    planType: 'plan_autor',
     plan: 'free',
-    name: 'Autor Free',
+    name: 'Plan Autor Free',
     mainBenefit: 'Publica tus primeras canciones',
     price: null,
     priceLabel: 'Gratis',
@@ -115,9 +115,9 @@ export const PLANS: PlanData[] = [
     ],
   },
   {
-    role: 'interprete',
+    planType: 'plan_descubridor',
     plan: 'free',
-    name: 'Intérprete Free',
+    name: 'Plan Descubridor Free',
     mainBenefit: 'Descubre el catálogo',
     price: null,
     priceLabel: 'Gratis',
@@ -138,76 +138,76 @@ export const FREE_PLANS = PLANS.filter((p) => p.plan === 'free');
 
 export interface ComparatorRow {
   feature: string;
-  autor_free: string;
-  autor_pro: string;
-  cantautor_free: string;
-  cantautor_pro: string;
-  interprete_free: string;
-  interprete_pro: string;
+  plan_autor_free: string;
+  plan_autor_pro: string;
+  plan_360_free: string;
+  plan_360_pro: string;
+  plan_descubridor_free: string;
+  plan_descubridor_pro: string;
 }
 
 export const COMPARATOR_ROWS: ComparatorRow[] = [
   {
     feature: 'Canciones permitidas',
-    autor_free: 'Hasta 5',
-    autor_pro: 'Ilimitadas',
-    cantautor_free: 'Hasta 5',
-    cantautor_pro: 'Ilimitadas',
-    interprete_free: '—',
-    interprete_pro: '—',
+    plan_autor_free: 'Hasta 5',
+    plan_autor_pro: 'Ilimitadas',
+    plan_360_free: 'Hasta 5',
+    plan_360_pro: 'Ilimitadas',
+    plan_descubridor_free: '—',
+    plan_descubridor_pro: '—',
   },
   {
     feature: 'Solicitudes de licencia',
-    autor_free: '—',
-    autor_pro: 'Ilimitadas (recibe)',
-    cantautor_free: 'Hasta 3',
-    cantautor_pro: 'Ilimitadas',
-    interprete_free: 'Hasta 5',
-    interprete_pro: 'Ilimitadas',
+    plan_autor_free: '—',
+    plan_autor_pro: 'Ilimitadas (recibe)',
+    plan_360_free: 'Hasta 3',
+    plan_360_pro: 'Ilimitadas',
+    plan_descubridor_free: 'Hasta 5',
+    plan_descubridor_pro: 'Ilimitadas',
   },
   {
     feature: 'Colaboradores',
-    autor_free: '—',
-    autor_pro: '—',
-    cantautor_free: 'Hasta 2',
-    cantautor_pro: 'Hasta 5',
-    interprete_free: 'Hasta 2',
-    interprete_pro: 'Hasta 5',
+    plan_autor_free: '—',
+    plan_autor_pro: '—',
+    plan_360_free: 'Hasta 2',
+    plan_360_pro: 'Hasta 5',
+    plan_descubridor_free: 'Hasta 2',
+    plan_descubridor_pro: 'Hasta 5',
   },
   {
     feature: 'Playlists',
-    autor_free: '—',
-    autor_pro: '—',
-    cantautor_free: 'Hasta 1',
-    cantautor_pro: 'Ilimitadas',
-    interprete_free: 'Hasta 1',
-    interprete_pro: 'Ilimitadas',
+    plan_autor_free: '—',
+    plan_autor_pro: '—',
+    plan_360_free: 'Hasta 1',
+    plan_360_pro: 'Ilimitadas',
+    plan_descubridor_free: 'Hasta 1',
+    plan_descubridor_pro: 'Ilimitadas',
   },
   {
     feature: 'Búsqueda',
-    autor_free: 'Ilimitada',
-    autor_pro: 'Ilimitada',
-    cantautor_free: 'Ilimitada',
-    cantautor_pro: 'Ilimitada',
-    interprete_free: 'Ilimitada',
-    interprete_pro: 'Ilimitada',
+    plan_autor_free: 'Ilimitada',
+    plan_autor_pro: 'Ilimitada',
+    plan_360_free: 'Ilimitada',
+    plan_360_pro: 'Ilimitada',
+    plan_descubridor_free: 'Ilimitada',
+    plan_descubridor_pro: 'Ilimitada',
   },
   {
     feature: 'Modalidad de pago',
-    autor_free: 'Gratis',
-    autor_pro: 'Mensual',
-    cantautor_free: 'Gratis',
-    cantautor_pro: 'Mensual',
-    interprete_free: 'Gratis',
-    interprete_pro: 'Pago único',
+    plan_autor_free: 'Gratis',
+    plan_autor_pro: 'Mensual',
+    plan_360_free: 'Gratis',
+    plan_360_pro: 'Mensual',
+    plan_descubridor_free: 'Gratis',
+    plan_descubridor_pro: 'Pago único',
   },
   {
     feature: 'Precio',
-    autor_free: 'Gratis',
-    autor_pro: '$39.900 COP/mes',
-    cantautor_free: 'Gratis',
-    cantautor_pro: '$59.900 COP/mes',
-    interprete_free: 'Gratis',
-    interprete_pro: '$39.900 COP',
+    plan_autor_free: 'Gratis',
+    plan_autor_pro: '$39.900 COP/mes',
+    plan_360_free: 'Gratis',
+    plan_360_pro: '$59.900 COP/mes',
+    plan_descubridor_free: 'Gratis',
+    plan_descubridor_pro: '$39.900 COP',
   },
 ];

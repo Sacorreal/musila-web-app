@@ -30,37 +30,43 @@ export default function AdminUsersPage() {
 
   // Filtros locales
   const [searchInput, setSearchInput] = useState('')
-  const [role, setRole] = useState('')
+  const [planType, setPlanType] = useState('')
   const [isVerified, setIsVerified] = useState<'all' | 'true' | 'false'>('all')
 
   const debouncedSearch = useDebounce(searchInput, 400)
 
   const filters: UserFilters = {
     ...(debouncedSearch && { search: debouncedSearch }),
-    ...(role && { role }),
+    ...(planType && { planType }),
     ...(isVerified !== 'all' && { isVerified: isVerified === 'true' }),
   }
 
-  const hasActiveFilters = !!debouncedSearch || !!role || isVerified !== 'all'
+  const hasActiveFilters = !!debouncedSearch || !!planType || isVerified !== 'all'
 
   const resetFilters = useCallback(() => {
     setSearchInput('')
-    setRole('')
+    setPlanType('')
     setIsVerified('all')
     setPage(1)
   }, [])
 
-  useEffect(() => { setPage(1) }, [debouncedSearch, role, isVerified])
+  useEffect(() => { setPage(1) }, [debouncedSearch, planType, isVerified])
 
   const { data, isLoading, error } = adminHooks.useAdminUsers(page, limit, filters)
   const { mutate: deleteUser, isPending: isDeleting } = adminHooks.useDeleteUser()
-  const { mutate: updateRole } = adminHooks.useUpdateUserRole()
+  const { mutate: updatePlanType } = adminHooks.useUpdatePlanType()
+  const { mutate: updateMusicRole } = adminHooks.useUpdateUserMusicRole()
 
   const [deleteTarget, setDeleteTarget] = useState<AdminUserDto | null>(null)
   const [editTarget, setEditTarget] = useState<AdminUserDto | null>(null)
   const [showCreateAdmin, setShowCreateAdmin] = useState(false)
 
-  const columns = getUserColumns({ onEdit: setEditTarget, onDelete: setDeleteTarget, onUpdateRole: updateRole })
+  const columns = getUserColumns({
+    onEdit: setEditTarget,
+    onDelete: setDeleteTarget,
+    onUpdatePlanType: updatePlanType,
+    onUpdateMusicRole: updateMusicRole,
+  })
 
   return (
     <div className="space-y-6">
@@ -81,8 +87,8 @@ export default function AdminUsersPage() {
       <UserFiltersToolbar
         searchInput={searchInput}
         onSearchInputChange={setSearchInput}
-        role={role}
-        onRoleChange={setRole}
+        planType={planType}
+        onPlanTypeChange={setPlanType}
         isVerified={isVerified}
         onIsVerifiedChange={setIsVerified}
         hasActiveFilters={hasActiveFilters}

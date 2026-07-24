@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
 import { TrackResponse } from "@/src/domains/tracks/types/track.types";
-import { ShieldCheck, FileText, Download, Building2, Globe, Users } from "lucide-react";
+import { ShieldCheck, FileText, Building2, Globe, Users } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -69,15 +70,25 @@ export function TrackIntellectualProperty({ track }: TrackIntellectualPropertyPr
                   </p>
                 </div>
 
-                <a
-                  href={ip.documentUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all shadow-sm"
-                  title="Ver documento"
-                >
-                  <FileText className="h-5 w-5" />
-                </a>
+                {isSplitSheet ? (
+                  <Link
+                    href={`#split`}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all shadow-sm"
+                    title="Ver detalle del split"
+                  >
+                    <Users className="h-5 w-5" />
+                  </Link>
+                ) : (
+                  <a
+                    href={ip.documentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all shadow-sm"
+                    title="Ver documento"
+                  >
+                    <FileText className="h-5 w-5" />
+                  </a>
+                )}
               </div>
             </div>
           );

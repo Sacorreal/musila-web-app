@@ -1,4 +1,4 @@
-import { UserRole } from "@/src/domains/users/types/user.types"
+import { UserPlanType } from "@/src/domains/users/types/user.types"
 import {
     ChatIcon,
     DashboardIcon,
@@ -12,7 +12,7 @@ import {
 } from "@/src/shared/components/Icons/icons"
 import type { NavItems } from "@shared/types/shared.types"
 
-export const ALL_ROLES = Object.values(UserRole)
+export const ALL_ROLES = Object.values(UserPlanType)
 
 export const navItems: NavItems = [
     {
@@ -26,7 +26,7 @@ export const navItems: NavItems = [
         href: "/music/mi-musica",
         icon: PlaylistIcon,
         label: "Mis Playlists",
-        rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE, UserRole.INVITADO]
+        rolAccess: [UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR, UserPlanType.INVITADO]
 
     },
 
@@ -34,7 +34,7 @@ export const navItems: NavItems = [
         href: "/music/publicar",
         icon: UploadIcon,
         label: "Publicar",
-        rolAccess: [UserRole.AUTOR, UserRole.CANTAUTOR],
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360],
     },
 
     {
@@ -48,25 +48,24 @@ export const navItems: NavItems = [
         href: "/music/solicitudes",
         icon: RequestIcon,
         label: "Solicitudes",
-        rolAccess: [UserRole.AUTOR, UserRole.CANTAUTOR, UserRole.ADMIN, UserRole.INTERPRETE]
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, UserPlanType.ADMIN, UserPlanType.PLAN_DESCUBRIDOR]
     },
     {
         href: "/music/invitar-usuario",
         icon: GuestUserIcon,
         label: "Invitar Usuario",
-        rolAccess: [UserRole.CANTAUTOR, UserRole.INTERPRETE],
+        rolAccess: [UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR],
     },
     {
         href: "/music/mi-cuenta",
         icon: UserIcon,
         label: "Mi Cuenta",
-        rolAccess: [UserRole.AUTOR, UserRole.CANTAUTOR, UserRole.INTERPRETE],
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR],
     },
     {
         href: "/admin",
         icon: ShieldIcon,
         label: "Panel Admin",
-        rolAccess: [UserRole.ADMIN],
+        rolAccess: [UserPlanType.ADMIN],
     }
 ]
-

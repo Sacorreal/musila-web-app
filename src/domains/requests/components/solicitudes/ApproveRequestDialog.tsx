@@ -15,7 +15,6 @@ import {
   CloudUpload,
   FileCheck,
   FileText,
-  Loader2,
   Music,
   ShieldCheck,
   X,
@@ -26,6 +25,8 @@ import { UploadField } from "@/src/domains/storage/types/storage.types";
 import { updateRequestedTrack } from "../../services/requested-tracks.actions";
 import { RequestStatus } from "../../types/request.types";
 import { toast } from "sonner";
+import { OtpVerificationStep } from "@/src/shared/components/otp/OtpVerificationStep";
+import { OtpPurpose } from "@/src/domains/otp/types/otp.types";
 
 interface Props {
   isOpen: boolean;
@@ -35,7 +36,7 @@ interface Props {
 }
 
 export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess }: Props) {
-  const [step, setStep] = useState<"confirm" | "upload">("confirm");
+  const [step, setStep] = useState<"confirm" | "upload" | "otp">("confirm");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -211,20 +212,16 @@ export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess }: Pr
                       Adjuntar documento
                     </Button>
                     <Button
-                      onClick={handleApprove}
+                      onClick={() => setStep("otp")}
                       disabled={isSaving}
                       className="flex-1 rounded-xl h-12 bg-blue-600 hover:bg-blue-700 text-white font-black tracking-tight shadow-lg shadow-blue-500/25 transition-all active:scale-95 gap-2"
                     >
-                      {isSaving ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <CheckCircle2 size={16} />
-                      )}
-                      {isSaving ? "Aprobando..." : "Aprobar ahora"}
+                      <CheckCircle2 size={16} />
+                      Aprobar ahora
                     </Button>
                   </div>
                 </motion.div>
-              ) : (
+              ) : step === "upload" ? (
                 <motion.div
                   key="upload"
                   initial={{ opacity: 0, y: 8 }}
@@ -312,21 +309,26 @@ export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess }: Pr
                       Volver
                     </Button>
                     <Button
-                      onClick={handleApprove}
+                      onClick={() => setStep("otp")}
                       disabled={isSaving}
                       className="flex-1 rounded-xl h-12 bg-blue-600 hover:bg-blue-700 text-white font-black tracking-tight shadow-lg shadow-blue-500/25 transition-all active:scale-95 gap-2"
                     >
-                      {isSaving ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <CheckCircle2 size={16} />
-                      )}
-                      {isSaving
-                        ? file ? "Subiendo y aprobando..." : "Aprobando..."
-                        : file ? "Subir y aprobar" : "Aprobar sin documento"}
+                      <CheckCircle2 size={16} />
+                      {file ? "Subir y aprobar" : "Aprobar sin documento"}
                     </Button>
                   </div>
                 </motion.div>
+              ) : (
+                <OtpVerificationStep
+                  purpose={OtpPurpose.REQUESTED_TRACK_APPROVAL}
+                  entityId={request?.id ?? ""}
+                  active={step === "otp"}
+                  onVerified={handleApprove}
+                  onBack={() => setStep("confirm")}
+                  title="Verifica tu identidad"
+                  description="Por seguridad, confirma el código antes de aprobar esta solicitud."
+                  isProcessing={isSaving}
+                />
               )}
             </AnimatePresence>
           </div>

@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-/** Roles que tienen plan Pro de pago. */
-export const paymentRoleSchema = z.enum(['autor', 'cantautor', 'interprete']);
+/** Planes que tienen tier Pro de pago. */
+export const paymentPlanTypeSchema = z.enum(['plan_autor', 'plan_360', 'plan_descubridor']);
 
 export const billingPeriodSchema = z.enum(['monthly', 'annual']);
 
 /** Entrada del checkout (compartida entre cliente y servidor). */
 export const checkoutInputSchema = z.object({
-  role: paymentRoleSchema,
+  planType: paymentPlanTypeSchema,
   plan: z.literal('pro'),
   billingPeriod: billingPeriodSchema.default('monthly'),
   customerEmail: z.string().email().optional(),
@@ -38,5 +38,5 @@ export type CheckoutInput = z.infer<typeof checkoutInputSchema>;
 export type WidgetParams = z.infer<typeof widgetParamsSchema>;
 export type CheckoutResponse = z.infer<typeof checkoutResponseSchema>;
 export type LicenseCheckoutResponse = z.infer<typeof licenseCheckoutResponseSchema>;
-export type WompiPaymentRole = z.infer<typeof paymentRoleSchema>;
+export type WompiPlanType = z.infer<typeof paymentPlanTypeSchema>;
 export type WompiBillingPeriod = z.infer<typeof billingPeriodSchema>;

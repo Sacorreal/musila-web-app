@@ -10,6 +10,9 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
+    // Usado por el backend para resolver el canal de envío de códigos OTP
+    // (web → email, mobile → push in-app).
+    "X-Client-Platform": "web",
   },
 });
 

@@ -1,4 +1,4 @@
-import { UserRole } from "../../users/types/user.types";
+import { UserPlanType } from "../../users/types/user.types";
 
 export interface GuestResponse {
   id: string;
@@ -11,7 +11,7 @@ export interface GuestResponse {
   citizenID?: string;
   avatar?: string;
   isVerified: boolean;
-  role: UserRole;
+  planType: UserPlanType;
   createdAt: string;
   updatedAt: string;
   invited_by?: {

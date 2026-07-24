@@ -14,7 +14,7 @@ const FAQS = [
   {
     question: '¿Qué planes generan comisión?',
     answer:
-      'Autor Pro, Cantautor Pro e Intérprete Pro. Los planes gratuitos, créditos promocionales y bonificaciones internas no generan comisión.',
+      'Plan Autor Pro, Plan 360 Pro y Plan Descubridor Pro. Los planes gratuitos, créditos promocionales y bonificaciones internas no generan comisión.',
   },
   {
     question: '¿Cómo se atribuye una venta a mi cuenta?',

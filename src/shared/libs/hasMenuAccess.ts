@@ -1,38 +1,37 @@
-import { UserRole } from "@/src/domains/users/types/user.types"
+import { UserPlanType } from "@/src/domains/users/types/user.types"
 
-const USER_ROLE_VALUES = Object.values(UserRole) as string[]
+const USER_PLAN_TYPE_VALUES = Object.values(UserPlanType) as string[]
 
-/** Mapeo de roles de API (JWT/legacy) a UserRole para control de acceso. */
-const API_ROLE_TO_MENU: Record<string, UserRole[]> = {
-    COMPOSER: [UserRole.AUTOR, UserRole.CANTAUTOR],
-    INTERPRETER: [UserRole.INTERPRETE],
-    INTERPRETE: [UserRole.INTERPRETE],
-    ADMIN: [UserRole.ADMIN],
-    INVITADO: [UserRole.INVITADO],
-    AUTOR: [UserRole.AUTOR],
-    CANTAUTOR: [UserRole.CANTAUTOR],
-    EDITOR: [UserRole.EDITOR],
+/** Mapeo de planes de API (JWT/legacy) a UserPlanType para control de acceso. */
+const API_ROLE_TO_MENU: Record<string, UserPlanType[]> = {
+    COMPOSER: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360],
+    INTERPRETER: [UserPlanType.PLAN_DESCUBRIDOR],
+    PLAN_DESCUBRIDOR: [UserPlanType.PLAN_DESCUBRIDOR],
+    ADMIN: [UserPlanType.ADMIN],
+    INVITADO: [UserPlanType.INVITADO],
+    PLAN_AUTOR: [UserPlanType.PLAN_AUTOR],
+    PLAN_360: [UserPlanType.PLAN_360],
+    EDITOR: [UserPlanType.EDITOR],
 }
 
 /**
- * Indica si un rol (JWT/API o UserRole) tiene acceso a una ruta según rolAccess.
+ * Indica si un plan (JWT/API o UserPlanType) tiene acceso a una ruta según rolAccess.
  * - undefined: se trata como INVITADO.
- * - Rol en formato API (COMPOSER, INTERPRETER, etc.): se mapea a UserRole.
- * - Rol ya en formato UserRole (interprete, autor, etc.): se usa tal cual.
+ * - Plan en formato API (COMPOSER, INTERPRETER, etc.): se mapea a UserPlanType.
+ * - Plan ya en formato UserPlanType (plan_descubridor, plan_autor, etc.): se usa tal cual.
  */
 export function hasMenuAccess(
-    role: UserRole | string | undefined,
-    rolAccess: UserRole[]
+    planType: UserPlanType | string | undefined,
+    rolAccess: UserPlanType[]
 ): boolean {
-    if (role == null || role === "") {
-        return rolAccess.includes(UserRole.INVITADO)
+    if (planType == null || planType === "") {
+        return rolAccess.includes(UserPlanType.INVITADO)
     }
-    const normalized = String(role).toLowerCase()
-    const mapped = API_ROLE_TO_MENU[normalized.toUpperCase()] ?? API_ROLE_TO_MENU[role as string]
+    const normalized = String(planType).toLowerCase()
+    const mapped = API_ROLE_TO_MENU[normalized.toUpperCase()] ?? API_ROLE_TO_MENU[planType as string]
     if (mapped) return mapped.some((r) => rolAccess.includes(r))
-    if (USER_ROLE_VALUES.includes(normalized)) {
-        return rolAccess.includes(normalized as UserRole)
+    if (USER_PLAN_TYPE_VALUES.includes(normalized)) {
+        return rolAccess.includes(normalized as UserPlanType)
     }
-    return rolAccess.includes(role as UserRole)
+    return rolAccess.includes(planType as UserPlanType)
 }
-

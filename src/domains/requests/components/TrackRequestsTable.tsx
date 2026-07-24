@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
-import { UserRole } from "@/src/domains/users/types/user.types";
+import { UserPlanType } from "@/src/domains/users/types/user.types";
 import { ChevronRight, Loader2, MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -25,12 +25,12 @@ interface Props {
 export function TrackRequestsTable({ trackId, authors }: Props) {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const role = user?.role;
+  const planType = user?.planType;
   const [requests, setRequests] = useState<TrackRequest[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Solo visible para el rol autor o cantautor Y si es el dueño del track
-  const isAutor = role === UserRole.AUTOR || role === UserRole.CANTAUTOR;
+  // Solo visible para Plan Autor o Plan 360 Y si es el dueño del track
+  const isAutor = planType === UserPlanType.PLAN_AUTOR || planType === UserPlanType.PLAN_360;
   const isOwner = authors?.some((a) => a.id === user?.id) ?? false;
   const canSeeTable = isAutor && isOwner;
 

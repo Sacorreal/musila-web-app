@@ -11,9 +11,10 @@ export const apiURLs = {
   },
   users: {
     base: '/users' as const,
-    roles: '/users/roles' as const,    
+    roles: '/users/roles' as const,
     authors: '/users/authors' as const,
     userById: (id: string) => `/users/${id}` as const,
+    byCreatorId: (musilaCreatorId: string) => `/users/search/by-creator-id/${musilaCreatorId}` as const,
     me: '/users/me' as const,
     deleteMe: (id: string) => `/users/me/${id}` as const,
   },
@@ -133,6 +134,16 @@ export const apiURLs = {
   chatAdmin: {
     base: '/chats/admin' as const, // GET (list)
     messages: (id: string) => `/chats/admin/${id}/messages` as const, // GET
+  },
+  otp: {
+    request: '/otp/request' as const,
+    verify: '/otp/verify' as const,
+  },
+  splits: {
+    byTrack: (trackId: string) => `/tracks/${trackId}/splits` as const, // POST, GET
+    byId: (id: string) => `/splits/${id}` as const, // PUT
+    approve: (id: string) => `/splits/${id}/approve` as const,
+    reject: (id: string) => `/splits/${id}/reject` as const,
   },
 } as const;
 

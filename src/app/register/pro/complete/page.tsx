@@ -2,7 +2,7 @@ import { CenteredAuthShell } from "@/src/domains/auth/components/CenteredAuthShe
 import { RegistrationCompletePanel } from "@/src/domains/auth/components/RegistrationCompletePanel";
 
 interface CompletePageProps {
-  searchParams: Promise<{ ref?: string; role?: string }>;
+  searchParams: Promise<{ ref?: string; planType?: string }>;
 }
 
 export default async function CompletePage({ searchParams }: CompletePageProps) {
@@ -11,7 +11,7 @@ export default async function CompletePage({ searchParams }: CompletePageProps) 
   return (
     <CenteredAuthShell>
       <RegistrationCompletePanel
-        defaultRole={params.role}
+        defaultPlanType={params.planType}
         externalReference={params.ref}
       />
     </CenteredAuthShell>

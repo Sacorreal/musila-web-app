@@ -43,7 +43,7 @@ function PaymentPendingContent() {
 
     if (status.status === "approved") {
       sessionStorage.removeItem("wompi_pending_ref");
-      router.replace(`/register/pro/complete?ref=${reference}&role=${status.role ?? ""}`);
+      router.replace(`/register/pro/complete?ref=${reference}&planType=${status.planType ?? ""}`);
     } else if (status.status === "expired" || status.status === "not_found") {
       sessionStorage.removeItem("wompi_pending_ref");
       router.replace(`/register/pro/error?ref=${reference}`);

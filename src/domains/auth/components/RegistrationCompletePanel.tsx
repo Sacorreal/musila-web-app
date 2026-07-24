@@ -2,12 +2,12 @@ import React from "react";
 import { UserRegisterForm } from "@/src/domains/auth/components/UserRegisterForm";
 
 interface RegistrationCompletePanelProps {
-  defaultRole?: string;
+  defaultPlanType?: string;
   externalReference?: string;
 }
 
 export function RegistrationCompletePanel({
-  defaultRole,
+  defaultPlanType,
   externalReference,
 }: RegistrationCompletePanelProps) {
   return (
@@ -22,7 +22,7 @@ export function RegistrationCompletePanel({
       </p>
 
       <UserRegisterForm
-        defaultRole={defaultRole}
+        defaultPlanType={defaultPlanType}
         externalReference={externalReference}
       />
     </>

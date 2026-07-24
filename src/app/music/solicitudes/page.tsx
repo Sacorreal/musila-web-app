@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
-import { UserRole } from "@/src/domains/users/types/user.types";
+import { UserPlanType } from "@/src/domains/users/types/user.types";
 import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { RequestStatus, TrackRequest } from "@/src/domains/requests/types/request.types";
@@ -16,16 +16,16 @@ import { PageHeader } from "@/src/shared/components/UI/PageHeader";
 import { LoadingState } from "@/src/shared/components/UI/LoadingState";
 
 // Helpers de permisos
-function getAvailableTabs(role: UserRole | undefined): TabKey[] {
-  if (role === UserRole.ADMIN) return ["enviadas", "recibidas"];
-  if (role === UserRole.CANTAUTOR) return ["enviadas", "recibidas"];
-  if (role === UserRole.AUTOR) return ["recibidas"];
+function getAvailableTabs(planType: UserPlanType | undefined): TabKey[] {
+  if (planType === UserPlanType.ADMIN) return ["enviadas", "recibidas"];
+  if (planType === UserPlanType.PLAN_360) return ["enviadas", "recibidas"];
+  if (planType === UserPlanType.PLAN_AUTOR) return ["recibidas"];
   return ["enviadas"];
 }
 
 export default function RequestsPage() {
   const user = useAuthStore((s) => s.user);
-  const role = user?.role as UserRole | undefined;
+  const role = user?.planType as UserPlanType | undefined;
 
   const availableTabs = getAvailableTabs(role);
   const [activeTab, setActiveTab] = useState<TabKey>(availableTabs[0]);
@@ -72,9 +72,9 @@ export default function RequestsPage() {
 
   const received = useMemo(() => {
     // Si es admin, ve todas las que no envió él mismo
-    if (role === UserRole.ADMIN) return requests.filter((r) => r.requester?.id !== user?.id);
+    if (role === UserPlanType.ADMIN) return requests.filter((r) => r.requester?.id !== user?.id);
 
-    // Si es Autor o Cantautor, ve las solicitudes de sus canciones
+    // Si es Plan Autor o Plan 360, ve las solicitudes de sus canciones
     return requests.filter((r) => {
       const authors = (r.track as any)?.authors as any[] | undefined;
       if (!Array.isArray(authors)) return false;

@@ -1,11 +1,11 @@
 import { Search, X, Filter } from 'lucide-react'
-import { UserRole } from '@/src/domains/users/types/user.types'
+import { UserPlanType } from '@/src/domains/users/types/user.types'
 
 interface UserFiltersToolbarProps {
   searchInput: string
   onSearchInputChange: (value: string) => void
-  role: string
-  onRoleChange: (value: string) => void
+  planType: string
+  onPlanTypeChange: (value: string) => void
   isVerified: 'all' | 'true' | 'false'
   onIsVerifiedChange: (value: 'all' | 'true' | 'false') => void
   hasActiveFilters: boolean
@@ -15,8 +15,8 @@ interface UserFiltersToolbarProps {
 export function UserFiltersToolbar({
   searchInput,
   onSearchInputChange,
-  role,
-  onRoleChange,
+  planType,
+  onPlanTypeChange,
   isVerified,
   onIsVerifiedChange,
   hasActiveFilters,
@@ -51,15 +51,15 @@ export function UserFiltersToolbar({
           )}
         </div>
 
-        {/* Rol */}
+        {/* Plan */}
         <select
-          value={role}
-          onChange={(e) => onRoleChange(e.target.value)}
+          value={planType}
+          onChange={(e) => onPlanTypeChange(e.target.value)}
           className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
         >
-          <option value="">Todos los roles</option>
-          {Object.values(UserRole).map((r) => (
-            <option key={r} value={r}>{r}</option>
+          <option value="">Todos los planes</option>
+          {Object.values(UserPlanType).map((p) => (
+            <option key={p} value={p}>{p}</option>
           ))}
         </select>
 
