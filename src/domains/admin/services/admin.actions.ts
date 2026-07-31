@@ -7,11 +7,15 @@ import type {
   AdminUserDto,
   AdminTrackDto,
   AdminGenreDto,
+  AdminMoodDto,
+  AdminThemeDto,
   AdminRequestDto,
   CreateAdminUserInput,
   PaginatedAdminUsers,
   PaginatedAdminTracks,
   PaginatedAdminGenres,
+  PaginatedAdminMoods,
+  PaginatedAdminThemes,
   PaginatedAdminRequests,
   UserFilters,
   TrackFilters,
@@ -60,6 +64,24 @@ export async function fetchAllGenres(page = 1, limit = 10): Promise<PaginatedAdm
   const client = await getServerApiClient()
   const offset = (page - 1) * limit
   const response = await client.get<PaginatedAdminGenres>(apiURLs.genres.base, {
+    params: { limit, offset },
+  })
+  return response.data
+}
+
+export async function fetchAllMoods(page = 1, limit = 10): Promise<PaginatedAdminMoods> {
+  const client = await getServerApiClient()
+  const offset = (page - 1) * limit
+  const response = await client.get<PaginatedAdminMoods>(apiURLs.moods.base, {
+    params: { limit, offset },
+  })
+  return response.data
+}
+
+export async function fetchAllThemes(page = 1, limit = 10): Promise<PaginatedAdminThemes> {
+  const client = await getServerApiClient()
+  const offset = (page - 1) * limit
+  const response = await client.get<PaginatedAdminThemes>(apiURLs.themes.base, {
     params: { limit, offset },
   })
   return response.data

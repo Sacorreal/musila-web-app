@@ -27,6 +27,8 @@ import {
   MessageSquare,
   Bell,
   ScrollText,
+  Smile,
+  Tag,
 } from 'lucide-react'
 import { cn } from '@/src/shared/libs/cn'
 import { MusilaLogo } from '@/src/shared/components/Icons/icons'
@@ -53,6 +55,8 @@ const navGroups: NavGroup[] = [
     items: [
       { href: '/admin/tracks', icon: Headphones, label: 'Tracks' },
       { href: '/admin/genres', icon: Music, label: 'Géneros' },
+      { href: '/admin/moods', icon: Smile, label: 'Moods' },
+      { href: '/admin/temas', icon: Tag, label: 'Temas' },
       { href: '/admin/intellectual-property', icon: ScrollText, label: 'Propiedad Intelectual' },
     ],
   },

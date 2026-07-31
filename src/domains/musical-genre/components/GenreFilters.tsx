@@ -21,6 +21,16 @@ const LANGUAGE_LABELS: Record<string, string> = {
   zh: "Chino",
 };
 
+interface MoodOption {
+  id: string;
+  name: string;
+}
+
+interface ThemeOption {
+  id: string;
+  name: string;
+}
+
 interface GenreFiltersProps {
   isGospelFilter: boolean;
   onGospelFilterChange: (value: boolean) => void;
@@ -30,6 +40,12 @@ interface GenreFiltersProps {
   onLanguageFilterChange: (value: string) => void;
   uniqueSubGenres: string[];
   uniqueLanguages: string[];
+  moodFilter: string;
+  onMoodFilterChange: (value: string) => void;
+  uniqueMoods: MoodOption[];
+  themeFilter: string;
+  onThemeFilterChange: (value: string) => void;
+  uniqueThemes: ThemeOption[];
 }
 
 export function GenreFilters({
@@ -41,9 +57,19 @@ export function GenreFilters({
   onLanguageFilterChange,
   uniqueSubGenres,
   uniqueLanguages,
+  moodFilter,
+  onMoodFilterChange,
+  uniqueMoods,
+  themeFilter,
+  onThemeFilterChange,
+  uniqueThemes,
 }: GenreFiltersProps) {
   const hasActiveFilters =
-    isGospelFilter || subGenreFilter !== "all" || languageFilter !== "all";
+    isGospelFilter ||
+    subGenreFilter !== "all" ||
+    languageFilter !== "all" ||
+    moodFilter !== "all" ||
+    themeFilter !== "all";
 
   return (
     <div className="flex flex-wrap items-center gap-4 py-2">
@@ -82,6 +108,34 @@ export function GenreFilters({
         </SelectContent>
       </Select>
 
+      <Select value={moodFilter} onValueChange={onMoodFilterChange}>
+        <SelectTrigger className="w-[180px] h-10 bg-background text-foreground border border-input font-bold rounded-xl shadow-sm hover:bg-accent focus:ring-0">
+          <SelectValue placeholder="Mood" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Mood</SelectItem>
+          {uniqueMoods.map((mood) => (
+            <SelectItem key={mood.id} value={mood.id}>
+              {mood.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Select value={themeFilter} onValueChange={onThemeFilterChange}>
+        <SelectTrigger className="w-[180px] h-10 bg-background text-foreground border border-input font-bold rounded-xl shadow-sm hover:bg-accent focus:ring-0">
+          <SelectValue placeholder="Tema" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Tema</SelectItem>
+          {uniqueThemes.map((theme) => (
+            <SelectItem key={theme.id} value={theme.id}>
+              {theme.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       {hasActiveFilters && (
         <Button
           variant="ghost"
@@ -90,6 +144,8 @@ export function GenreFilters({
             onGospelFilterChange(false);
             onSubGenreFilterChange("all");
             onLanguageFilterChange("all");
+            onMoodFilterChange("all");
+            onThemeFilterChange("all");
           }}
         >
           Eliminar filtros <X size={16} />

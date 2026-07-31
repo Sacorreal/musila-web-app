@@ -20,6 +20,8 @@ export default function GenreDetailPage({
   const [isGospelFilter, setIsGospelFilter] = useState(false);
   const [subGenreFilter, setSubGenreFilter] = useState("all");
   const [languageFilter, setLanguageFilter] = useState("all");
+  const [moodFilter, setMoodFilter] = useState("all");
+  const [themeFilter, setThemeFilter] = useState("all");
 
   const uniqueSubGenres = useMemo(() => {
     if (!genre?.tracks) return [];
@@ -33,6 +35,20 @@ export default function GenreDetailPage({
     return Array.from(new Set(languages));
   }, [genre]);
 
+  const uniqueMoods = useMemo(() => {
+    if (!genre?.tracks) return [];
+    const moods = genre.tracks.flatMap((t) => t.moods ?? []);
+    const byId = new Map(moods.map((m) => [m.id, m]));
+    return Array.from(byId.values());
+  }, [genre]);
+
+  const uniqueThemes = useMemo(() => {
+    if (!genre?.tracks) return [];
+    const themes = genre.tracks.map((t) => t.theme).filter((t): t is NonNullable<typeof t> => Boolean(t));
+    const byId = new Map(themes.map((t) => [t.id, t]));
+    return Array.from(byId.values());
+  }, [genre]);
+
   const filteredTracks = useMemo(() => {
     if (!genre?.tracks) return [];
     return genre.tracks.filter((track) => {
@@ -41,9 +57,13 @@ export default function GenreDetailPage({
         return false;
       if (languageFilter !== "all" && track.language !== languageFilter)
         return false;
+      if (moodFilter !== "all" && !track.moods?.some((m) => m.id === moodFilter))
+        return false;
+      if (themeFilter !== "all" && track.theme?.id !== themeFilter)
+        return false;
       return true;
     });
-  }, [genre, isGospelFilter, subGenreFilter, languageFilter]);
+  }, [genre, isGospelFilter, subGenreFilter, languageFilter, moodFilter, themeFilter]);
 
   if (isLoading) {
     return <GenreDetailSkeleton />;
@@ -69,6 +89,12 @@ export default function GenreDetailPage({
           onLanguageFilterChange={setLanguageFilter}
           uniqueSubGenres={uniqueSubGenres as string[]}
           uniqueLanguages={uniqueLanguages as string[]}
+          moodFilter={moodFilter}
+          onMoodFilterChange={setMoodFilter}
+          uniqueMoods={uniqueMoods}
+          themeFilter={themeFilter}
+          onThemeFilterChange={setThemeFilter}
+          uniqueThemes={uniqueThemes}
         />
 
         <PlayAllButton tracks={filteredTracks} />

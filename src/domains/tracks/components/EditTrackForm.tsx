@@ -32,6 +32,8 @@ import {
 
 // Domain Components
 import { GenreSelector } from "@domains/musical-genre/components/GenreSelector";
+import { MoodMultiSelect } from "@domains/moods/components/MoodMultiSelect";
+import { ThemeSelector } from "@domains/themes/components/ThemeSelector";
 import { LanguageSelector } from "../components/LanguageSelector";
 
 interface EditTrackFormProps {
@@ -57,6 +59,9 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
       iswc: "",
       isAvailable: true,
       isGospel: false,
+      moodsIds: [],
+      themeId: "",
+      isFeat: false,
     },
   });
 
@@ -74,6 +79,9 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
         iswc: track.iswc || "",
         isAvailable: track.isAvailable,
         isGospel: track.isGospel,
+        moodsIds: track.moods?.map((m) => m.id) ?? [],
+        themeId: track.theme?.id ?? "",
+        isFeat: track.isFeat,
       });
     }
   }, [track, reset]);
@@ -95,6 +103,9 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
         iswc: data.iswc,
         isAvailable: data.isAvailable,
         isGospel: data.isGospel,
+        moodsIds: data.moodsIds,
+        themeId: data.themeId || undefined,
+        isFeat: data.isFeat,
       };
 
       await updateTrack({ id: trackId, data: payload });
@@ -214,6 +225,30 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                     )}
                   />
 
+                  <Controller
+                    name="moodsIds"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>Moods (1 a 2)</FieldLabel>
+                        <MoodMultiSelect value={field.value ?? []} onChange={field.onChange} maxSelected={2} />
+                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    name="themeId"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>Tema (opcional)</FieldLabel>
+                        <ThemeSelector themeId={field.value} onChange={field.onChange} />
+                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Controller
                       name="language"
@@ -269,6 +304,19 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                       <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                         <div className="space-y-0.5">
                           <p className="text-sm font-medium">Música Gospel</p>
+                        </div>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </div>
+                    )}
+                  />
+
+                  <Controller
+                    name="isFeat"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
+                        <div className="space-y-0.5">
+                          <p className="text-sm font-medium">Grabación a dúo (Feat)</p>
                         </div>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </div>

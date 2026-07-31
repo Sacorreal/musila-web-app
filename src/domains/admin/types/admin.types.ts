@@ -58,6 +58,21 @@ export interface AdminGenreDto {
   createdAt: string
 }
 
+export interface AdminMoodDto {
+  id: string
+  name: string
+  slug?: string
+  category?: string
+  createdAt: string
+}
+
+export interface AdminThemeDto {
+  id: string
+  name: string
+  slug?: string
+  createdAt: string
+}
+
 export interface AdminRequestDto {
   id: string
   status: string
@@ -91,9 +106,26 @@ export interface CreateGenreInput {
 
 export interface UpdateGenreInput extends Partial<CreateGenreInput> {}
 
+export interface CreateMoodInput {
+  name: string
+  slug?: string
+  category?: string
+}
+
+export interface UpdateMoodInput extends Partial<CreateMoodInput> {}
+
+export interface CreateThemeInput {
+  name: string
+  slug?: string
+}
+
+export interface UpdateThemeInput extends Partial<CreateThemeInput> {}
+
 export type PaginatedAdminUsers = PaginatedResponse<AdminUserDto>
 export type PaginatedAdminTracks = PaginatedResponse<AdminTrackDto>
 export type PaginatedAdminGenres = PaginatedResponse<AdminGenreDto>
+export type PaginatedAdminMoods = PaginatedResponse<AdminMoodDto>
+export type PaginatedAdminThemes = PaginatedResponse<AdminThemeDto>
 export type PaginatedAdminRequests = PaginatedResponse<AdminRequestDto>
 
 export interface UserFilters {

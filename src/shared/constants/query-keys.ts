@@ -8,6 +8,12 @@ export const queryKeys = {
     languages:{
       all: ['languages'] as const
     },
+    moods: {
+      all: ['moods'] as const,
+    },
+    themes: {
+      all: ['themes'] as const,
+    },
    
     tracks: {
       all: ['tracks'] as const,

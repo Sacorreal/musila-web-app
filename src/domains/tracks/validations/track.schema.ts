@@ -25,9 +25,18 @@ export const createTrackSchema = z.object({
     .default([]),
   
   isAvailable: z.boolean().optional().default(true),
-  
+
   isGospel: z.boolean({ required_error: 'Debes indicar si es Gospel o no' }),
-  
+
+  moodsIds: z
+    .array(z.string())
+    .min(1, 'Selecciona al menos 1 mood')
+    .max(2, 'Máximo 2 moods por canción'),
+
+  themeId: z.string().optional(),
+
+  isFeat: z.boolean().optional().default(false),
+
   iswc: z.string().optional(),
   
   audio: z.instanceof(File, { message: "Audio requerido" }),
@@ -54,7 +63,11 @@ export const updateTrackSchema = createTrackSchema.partial().extend({
   title: z.string().min(1, 'El título es obligatorio').trim(),
   genreId: z.string().min(1, 'Debes seleccionar un género musical'),
   language: z.string().min(1, 'El idioma es obligatorio'),
-  lyric: z.string().min(1, 'La letra es obligatoria').transform((val) => val.replace(/\s+/g, " ")), 
+  lyric: z.string().min(1, 'La letra es obligatoria').transform((val) => val.replace(/\s+/g, " ")),
+  moodsIds: z
+    .array(z.string())
+    .min(1, 'Selecciona al menos 1 mood')
+    .max(2, 'Máximo 2 moods por canción'),
 });
 
 export type UpdateTrackFormValues = z.infer<typeof updateTrackSchema>;

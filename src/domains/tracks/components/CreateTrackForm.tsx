@@ -32,6 +32,8 @@ import {
 
 // Domain Components
 import { GenreSelector } from "@domains/musical-genre/components/GenreSelector";
+import { MoodMultiSelect } from "@domains/moods/components/MoodMultiSelect";
+import { ThemeSelector } from "@domains/themes/components/ThemeSelector";
 import { LanguageSelector } from "../components/LanguageSelector";
 import { AudioUploadField } from "../components/AudioUploadField";
 import { IntellectualPropertySection } from "./IntellectualPropertySection";
@@ -55,6 +57,9 @@ export function CreateTrackForm() {
         authorsIds: user?.id ? [user.id] : [],
         isAvailable: true,
         isGospel: false,
+        moodsIds: [],
+        themeId: "",
+        isFeat: false,
         intellectualProperties: [],
       },
     });
@@ -247,6 +252,34 @@ export function CreateTrackForm() {
                   )}
                 />
 
+                <Controller
+                  name="moodsIds"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Moods (1 a 2)</FieldLabel>
+                      <MoodMultiSelect value={field.value ?? []} onChange={field.onChange} maxSelected={2} />
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="themeId"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Tema (opcional)</FieldLabel>
+                      <ThemeSelector themeId={field.value} onChange={field.onChange} />
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Controller
                     name="language"
@@ -388,6 +421,25 @@ export function CreateTrackForm() {
                         <p className="text-sm font-medium">Música Gospel</p>
                         <p className="text-xs text-muted-foreground">
                           ¿Es una canción góspel?
+                        </p>
+                      </div>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </div>
+                  )}
+                />
+
+                <Controller
+                  name="isFeat"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
+                      <div className="space-y-0.5">
+                        <p className="text-sm font-medium">Grabación a dúo (Feat)</p>
+                        <p className="text-xs text-muted-foreground">
+                          ¿Está grabada con varias voces?
                         </p>
                       </div>
                       <Switch

@@ -37,6 +37,14 @@ export const apiURLs = {
     base: '/musical-genre' as const,
     byId: (id: string) => `/musical-genre/${id}` as const,
   },
+  moods: {
+    base: '/moods' as const,
+    byId: (id: string) => `/moods/${id}` as const,
+  },
+  themes: {
+    base: '/themes' as const,
+    byId: (id: string) => `/themes/${id}` as const,
+  },
   playlists: {
     base: '/playlists' as const, // Used for POST and GET (all)
     byId: (id: string) => `/playlists/${id}` as const, // Used for GET, PUT, DELETE

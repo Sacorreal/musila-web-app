@@ -9,6 +9,16 @@ export interface LanguageDto {
   label: string; // ej: 'Español', 'Inglés'
 }
 
+export interface TrackMoodDto {
+  id: string;
+  name: string;
+}
+
+export interface TrackThemeDto {
+  id: string;
+  name: string;
+}
+
 export type AuthorTrackDto = Pick<
   AuthorsResponseDto,
   | 'email' | 'id' | 'name' | 'planType' | 'lastName'
@@ -29,6 +39,9 @@ export interface CreateTrackInput {
   language: string;
   lyric: string;
   authorsIds: string[];
+  moodsIds: string[];
+  themeId?: string;
+  isFeat?: boolean;
   isAvailable?: boolean;
   isGospel: boolean;
   audioKey: string;
@@ -63,6 +76,9 @@ export interface TracksResponseDto {
   iswc?: string;
   isAvailable: boolean;
   isGospel: boolean;
+  moods: TrackMoodDto[];
+  theme: TrackThemeDto | null;
+  isFeat: boolean;
   coverKey: string | null;
   authors: string[];
   intellectualProperties: IntellectualPropertyDto[];
@@ -89,6 +105,9 @@ export interface TrackResponse {
   iswc?: string;
   isAvailable: boolean;
   isGospel: boolean;
+  moods: TrackMoodDto[];
+  theme: TrackThemeDto | null;
+  isFeat: boolean;
   coverKey: string | null;
   intellectualProperties: IntellectualPropertyDto[];
   playlists: PlaylistTrackDto[];

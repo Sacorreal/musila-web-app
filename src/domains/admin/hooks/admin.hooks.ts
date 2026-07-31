@@ -8,6 +8,8 @@ import {
   fetchAllUsers,
   fetchAllTracks,
   fetchAllGenres,
+  fetchAllMoods,
+  fetchAllThemes,
   fetchAllRequests,
   createAdminUser,
 } from '../services/admin.actions'
@@ -20,8 +22,22 @@ import {
   deleteGenre,
   createGenre,
   updateGenre,
+  deleteMood,
+  createMood,
+  updateMood,
+  deleteTheme,
+  createTheme,
+  updateTheme,
 } from '../services/admin.client'
-import type { CreateAdminUserInput, CreateGenreInput, UpdateGenreInput } from '../types/admin.types'
+import type {
+  CreateAdminUserInput,
+  CreateGenreInput,
+  UpdateGenreInput,
+  CreateMoodInput,
+  UpdateMoodInput,
+  CreateThemeInput,
+  UpdateThemeInput,
+} from '../types/admin.types'
 
 export function useAdminStats() {
   return useQuery({
@@ -48,6 +64,20 @@ export function useAdminGenres(page = 1, limit = 10) {
   return useQuery({
     queryKey: ['admin', 'genres', page, limit],
     queryFn: () => fetchAllGenres(page, limit),
+  })
+}
+
+export function useAdminMoods(page = 1, limit = 10) {
+  return useQuery({
+    queryKey: ['admin', 'moods', page, limit],
+    queryFn: () => fetchAllMoods(page, limit),
+  })
+}
+
+export function useAdminThemes(page = 1, limit = 10) {
+  return useQuery({
+    queryKey: ['admin', 'themes', page, limit],
+    queryFn: () => fetchAllThemes(page, limit),
   })
 }
 
@@ -146,6 +176,78 @@ export function useUpdateGenre() {
   })
 }
 
+export function useDeleteMood() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => deleteMood(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'moods'] })
+      toast.success('Mood eliminado')
+    },
+    onError: () => toast.error('Error al eliminar el mood'),
+  })
+}
+
+export function useCreateMood() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: CreateMoodInput) => createMood(input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'moods'] })
+      toast.success('Mood creado')
+    },
+    onError: () => toast.error('Error al crear el mood'),
+  })
+}
+
+export function useUpdateMood() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: UpdateMoodInput }) => updateMood(id, input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'moods'] })
+      toast.success('Mood actualizado')
+    },
+    onError: () => toast.error('Error al actualizar el mood'),
+  })
+}
+
+export function useDeleteTheme() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => deleteTheme(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'themes'] })
+      toast.success('Tema eliminado')
+    },
+    onError: () => toast.error('Error al eliminar el tema'),
+  })
+}
+
+export function useCreateTheme() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: CreateThemeInput) => createTheme(input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'themes'] })
+      toast.success('Tema creado')
+    },
+    onError: () => toast.error('Error al crear el tema'),
+  })
+}
+
+export function useUpdateTheme() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: UpdateThemeInput }) => updateTheme(id, input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'themes'] })
+      toast.success('Tema actualizado')
+    },
+    onError: () => toast.error('Error al actualizar el tema'),
+  })
+}
+
 export function useCreateAdminUser() {
   const qc = useQueryClient()
   return useMutation({
@@ -166,6 +268,8 @@ export const adminHooks = {
   useAdminUsers,
   useAdminTracks,
   useAdminGenres,
+  useAdminMoods,
+  useAdminThemes,
   useAdminRequests,
   useDeleteUser,
   useUpdatePlanType,
@@ -174,5 +278,11 @@ export const adminHooks = {
   useDeleteGenre,
   useCreateGenre,
   useUpdateGenre,
+  useDeleteMood,
+  useCreateMood,
+  useUpdateMood,
+  useDeleteTheme,
+  useCreateTheme,
+  useUpdateTheme,
   useCreateAdminUser,
 }

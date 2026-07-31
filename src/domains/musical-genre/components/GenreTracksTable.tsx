@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Play, X, FileText } from "lucide-react";
 import { Button } from "@/src/shared/components/UI/button";
+import { Badge } from "@/src/shared/components/UI/badge";
 import { PlaylistIcon } from "@/src/shared/components/Icons/icons";
 import { RequestTrackModal } from "@/src/domains/requests/components/RequestTrackModal";
 import { AddToPlaylistModal } from "@/src/domains/playlists/components/AddToPlaylistModal";
@@ -31,6 +32,7 @@ export function GenreTracksTable({ tracks, genreName, genreSlug }: GenreTracksTa
               <th className="px-8 py-6">Autor</th>
               <th className="px-8 py-6">Género</th>
               <th className="px-8 py-6">Subgénero</th>
+              <th className="px-8 py-6">Moods</th>
               <th className="px-8 py-6 w-16"></th>
             </tr>
           </thead>
@@ -85,6 +87,19 @@ export function GenreTracksTable({ tracks, genreName, genreSlug }: GenreTracksTa
                   {track.subGenre || "-"}
                 </td>
                 <td className="px-8 py-5">
+                  <div className="flex flex-wrap gap-1.5 max-w-[180px]">
+                    {track.moods?.length ? (
+                      track.moods.map((mood) => (
+                        <Badge key={mood.id} variant="secondary" className="whitespace-nowrap">
+                          {mood.name}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-muted-foreground text-xs">-</span>
+                    )}
+                  </div>
+                </td>
+                <td className="px-8 py-5">
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <AddToPlaylistModal trackId={track.id} trackTitle={track.title}>
                       <Button
@@ -115,7 +130,7 @@ export function GenreTracksTable({ tracks, genreName, genreSlug }: GenreTracksTa
             ))}
             {tracks.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-8 py-24 text-center">
+                <td colSpan={8} className="px-8 py-24 text-center">
                   <div className="flex flex-col items-center gap-4">
                     <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
                       <X className="text-muted-foreground" size={32} />
