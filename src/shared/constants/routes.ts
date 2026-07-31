@@ -9,6 +9,7 @@ import {
     ShieldIcon,
     UploadIcon,
     UserIcon,
+    WalletIcon,
 } from "@/src/shared/components/Icons/icons"
 import type { NavItems } from "@shared/types/shared.types"
 
@@ -55,6 +56,12 @@ export const navItems: NavItems = [
         icon: GuestUserIcon,
         label: "Invitar Usuario",
         rolAccess: [UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR],
+    },
+    {
+        href: "/music/wallet",
+        icon: WalletIcon,
+        label: "Wallet",
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR],
     },
     {
         href: "/music/mi-cuenta",

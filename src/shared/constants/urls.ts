@@ -99,6 +99,7 @@ export const apiURLs = {
     plan: `${BASE_API_URL}/users/me/plan` as const,
     billing: `${BASE_API_URL}/users/me/billing` as const,
     paymentHistory: `${BASE_API_URL}/users/me/payments` as const,
+    bankAccount: '/users/me/bank-account' as const,
   },
   affiliates: {
     register: `${BASE_API_URL}/affiliates/register` as const,
@@ -161,6 +162,19 @@ export const apiURLs = {
     confirmRecording: (id: string) => `/license-contracts/${id}/confirm-recording` as const,
   },
   licenseInstallmentCheckout: `${BASE_API_URL}/payments/license-installment-checkout` as const,
+  wallet: {
+    balance: '/wallet/balance' as const,
+    earnings: '/wallet/earnings' as const,
+    withdrawals: '/wallet/withdrawals' as const,
+    withdrawalById: (id: string) => `/wallet/withdrawals/${id}` as const,
+    admin: {
+      withdrawals: '/wallet/admin/withdrawals' as const,
+      withdrawalById: (id: string) => `/wallet/admin/withdrawals/${id}` as const,
+      process: (id: string) => `/wallet/admin/withdrawals/${id}/process` as const,
+      pay: (id: string) => `/wallet/admin/withdrawals/${id}/pay` as const,
+      reject: (id: string) => `/wallet/admin/withdrawals/${id}/reject` as const,
+    },
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;
