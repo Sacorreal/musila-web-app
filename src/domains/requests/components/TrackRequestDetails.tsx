@@ -23,6 +23,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/src/shared/libs/cn";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import { LicenseContractSection } from "@/src/domains/license-contracts/components/LicenseContractSection";
 // import { LicensePaymentModal } from "./LicensePaymentModal"; // PRECIO DE LICENCIA — EN PAUSA
 
 interface Props {
@@ -351,6 +352,8 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <LicenseContractSection request={request} isOwner={isOwner} />
 
       {/* Footer Actions */}
       <div className="flex justify-end gap-3 mt-4">

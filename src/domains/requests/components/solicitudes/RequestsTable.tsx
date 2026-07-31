@@ -127,6 +127,10 @@ export function RequestsTable({
           onApproveSuccess(id);
           setApproveTarget(null);
         }}
+        onGenerateOnline={() => {
+          if (approveTarget) setSelectedRequest({ request: approveTarget, isOwner: true });
+          setApproveTarget(null);
+        }}
       />
     </div>
   );

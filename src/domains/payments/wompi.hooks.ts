@@ -4,7 +4,15 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiURLs } from '@shared/constants/urls';
 import { getPaymentStatus, getLicensePaymentStatus } from './payments.actions';
 import { openWompiWidget, type WompiWidgetResult } from './wompi.client';
-import { checkoutResponseSchema, licenseCheckoutResponseSchema, type CheckoutInput, type CheckoutResponse, type LicenseCheckoutResponse } from './wompi.schema';
+import {
+  checkoutResponseSchema,
+  licenseCheckoutResponseSchema,
+  licenseInstallmentCheckoutResponseSchema,
+  type CheckoutInput,
+  type CheckoutResponse,
+  type LicenseCheckoutResponse,
+  type LicenseInstallmentCheckoutResponse,
+} from './wompi.schema';
 import { apiClient } from '@shared/libs/axios/axios-client';
 
 interface UseWompiCheckoutOptions {
@@ -76,6 +84,33 @@ export function useLicenseCheckout(options: UseLicenseCheckoutOptions = {}) {
       return {
         reference: checkout.externalReference,
         licensePrice: checkout.licensePrice,
+        commission: checkout.commission,
+        total: checkout.total,
+      };
+    },
+  });
+}
+
+async function fetchLicenseInstallmentCheckoutParams(collectionId: string): Promise<LicenseInstallmentCheckoutResponse> {
+  const { data } = await apiClient.post('/payments/license-installment-checkout', { collectionId });
+  return licenseInstallmentCheckoutResponseSchema.parse(data);
+}
+
+interface UseLicenseInstallmentCheckoutOptions {
+  onResult?: (reference: string, result: WompiWidgetResult) => void;
+}
+
+/** Checkout de una cuota de anticipo de un contrato de licencia de primer uso generado en línea. */
+export function useLicenseInstallmentCheckout(options: UseLicenseInstallmentCheckoutOptions = {}) {
+  return useMutation({
+    mutationFn: async (collectionId: string) => {
+      const checkout = await fetchLicenseInstallmentCheckoutParams(collectionId);
+      openWompiWidget(checkout.widget, {
+        onResult: (result) => options.onResult?.(checkout.externalReference, result),
+      });
+      return {
+        reference: checkout.externalReference,
+        installmentAmount: checkout.installmentAmount,
         commission: checkout.commission,
         total: checkout.total,
       };

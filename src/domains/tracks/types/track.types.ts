@@ -1,6 +1,7 @@
 import { PaginatedResponse } from '@shared/types/shared.types'
 import { AuthorsResponseDto } from '@domains/artists/types/artist.types'
 import { PaginationInput } from '@shared/types/shared.types'
+import { CertificateStatusValue } from './certificate.types'
 
 
 export interface LanguageDto {
@@ -95,7 +96,7 @@ export interface TrackResponse {
   createdAt: string;
   updatedAt: string;
   authors: AuthorTrackDto[];
-
+  certificateStatus?: CertificateStatusValue | null;
 
 }
 

@@ -22,6 +22,9 @@ export const apiURLs = {
     base: '/tracks' as const, // Used for POST and GET (all)
     myTracks: '/tracks/my-tracks' as const,
     byId: (id: string) => `/tracks/${id}` as const, // Used for GET, PUT, DELETE
+    certificate: (id: string) => `/tracks/${id}/certificate` as const, // GET status
+    certificateDownload: (id: string) => `/tracks/${id}/certificate/download` as const, // GET binary
+    certificateRegenerate: (id: string) => `/tracks/${id}/certificate/regenerate` as const, // POST
   },
   storage: {   
     presignedUrls: '/storage/upload-url' as const,
@@ -145,6 +148,19 @@ export const apiURLs = {
     approve: (id: string) => `/splits/${id}/approve` as const,
     reject: (id: string) => `/splits/${id}/reject` as const,
   },
+  licenseContracts: {
+    byRequestedTrack: (requestedTrackId: string) =>
+      `/requested-tracks/${requestedTrackId}/license-contract` as const, // POST, GET
+    byId: (id: string) => `/license-contracts/${id}` as const, // GET, DELETE
+    generatePreview: (id: string) => `/license-contracts/${id}/generate-preview` as const,
+    installments: (id: string) => `/license-contracts/${id}/installments` as const,
+    sign: (id: string, signatoryId: string) =>
+      `/license-contracts/${id}/signatories/${signatoryId}/sign` as const,
+    reject: (id: string, signatoryId: string) =>
+      `/license-contracts/${id}/signatories/${signatoryId}/reject` as const,
+    confirmRecording: (id: string) => `/license-contracts/${id}/confirm-recording` as const,
+  },
+  licenseInstallmentCheckout: `${BASE_API_URL}/payments/license-installment-checkout` as const,
 } as const;
 
 export type ApiURLs = typeof apiURLs;

@@ -34,9 +34,16 @@ export const licenseCheckoutResponseSchema = checkoutResponseSchema.extend({
   total: z.number(),
 });
 
+export const licenseInstallmentCheckoutResponseSchema = checkoutResponseSchema.extend({
+  installmentAmount: z.number(),
+  commission: z.number(),
+  total: z.number(),
+});
+
 export type CheckoutInput = z.infer<typeof checkoutInputSchema>;
 export type WidgetParams = z.infer<typeof widgetParamsSchema>;
 export type CheckoutResponse = z.infer<typeof checkoutResponseSchema>;
 export type LicenseCheckoutResponse = z.infer<typeof licenseCheckoutResponseSchema>;
+export type LicenseInstallmentCheckoutResponse = z.infer<typeof licenseInstallmentCheckoutResponseSchema>;
 export type WompiPlanType = z.infer<typeof paymentPlanTypeSchema>;
 export type WompiBillingPeriod = z.infer<typeof billingPeriodSchema>;
