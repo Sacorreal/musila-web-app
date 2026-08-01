@@ -9,6 +9,16 @@ export interface Playlist {
   updatedAt: string;
 }
 
+export interface PlaylistOwner {
+  id: string;
+  name: string;
+  lastName: string;
+}
+
+export interface PlaylistDetailResponse extends Playlist {
+  owner: PlaylistOwner;
+}
+
 export interface CreatePlaylistInput {
   title: string;
 }

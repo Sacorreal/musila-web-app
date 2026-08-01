@@ -11,6 +11,8 @@ import { Button } from '@/src/shared/components/UI/button';
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 import { PlaylistIcon } from '@/src/shared/components/Icons/icons';
 import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
+import { ShareButton } from '@/src/domains/sharing/components/ShareButton';
+import { ShareResourceType } from '@/src/domains/sharing/types/sharing.types';
 import { Play } from 'lucide-react';
 
 interface TrackDetailHeroProps {
@@ -112,6 +114,10 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
                 Agregar a Playlist
               </Button>
             </AddToPlaylistModal>
+
+            {isAuthor && (
+              <ShareButton resourceType={ShareResourceType.TRACK} resourceId={track.id} resourceTitle={track.title} />
+            )}
 
             {/* Solo visible para no-autores */}
             {!isAuthor && (

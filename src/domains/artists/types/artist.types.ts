@@ -1,4 +1,4 @@
-import { UserPlanType } from '@domains/users/types/user.types'
+import { MusicRole, UserPlanType } from '@domains/users/types/user.types'
 import { MusicalGenreDto } from '@domains/musical-genre/types/musical-genre.types'
 import { PaginatedResponse } from '@shared/types/shared.types'
 
@@ -68,12 +68,15 @@ export interface AuthorResponse {
   typeCitizenID?: string | null;
   citizenID?: string | null;
   planType: string;
+  role: MusicRole;
   avatar?: string | null;
   isVerified: boolean;
   plan?: 'free' | 'pro';
   biography?: string | null;
   socialNetworks?: any;
   tracks: AuthorTrackDetailDto[];
+  followersCount: number;
+  isFollowingByViewer: boolean;
 
   preferredGenres: any[];
   guests: any[];

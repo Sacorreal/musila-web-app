@@ -18,6 +18,10 @@ export const apiURLs = {
     me: '/users/me' as const,
     deleteMe: (id: string) => `/users/me/${id}` as const,
   },
+  follows: {
+    byUserId: (userId: string) => `/users/${userId}/follow` as const,
+    status: (userId: string) => `/users/${userId}/follow/status` as const,
+  },
   tracks: {
     base: '/tracks' as const, // Used for POST and GET (all)
     myTracks: '/tracks/my-tracks' as const,
@@ -170,6 +174,18 @@ export const apiURLs = {
     confirmRecording: (id: string) => `/license-contracts/${id}/confirm-recording` as const,
   },
   licenseInstallmentCheckout: `${BASE_API_URL}/payments/license-installment-checkout` as const,
+  sharing: {
+    profile: '/sharing/profile' as const,
+    byPlaylist: (playlistId: string) => `/sharing/playlists/${playlistId}` as const,
+    byTrack: (trackId: string) => `/sharing/tracks/${trackId}` as const,
+    mine: '/sharing/mine' as const,
+    byId: (shareLinkId: string) => `/sharing/${shareLinkId}` as const,
+    recipients: (shareLinkId: string) => `/sharing/${shareLinkId}/recipients` as const,
+    recipientById: (shareLinkId: string, recipientId: string) =>
+      `/sharing/${shareLinkId}/recipients/${recipientId}` as const,
+    validateAccess: (token: string) => `/sharing/access/${token}` as const,
+    accessLog: (shareLinkId: string) => `/sharing/${shareLinkId}/access-log` as const,
+  },
   wallet: {
     balance: '/wallet/balance' as const,
     earnings: '/wallet/earnings' as const,

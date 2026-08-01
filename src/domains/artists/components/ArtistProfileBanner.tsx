@@ -1,8 +1,9 @@
 import React from 'react';
 import { AuthorResponse } from '@/src/domains/artists/types/artist.types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/shared/components/UI/avatar';
-import { Button } from '@/src/shared/components/UI/button';
 import { VerifiedBadge } from '@/src/shared/components/UI/verified-badge';
+import { FollowButton } from '@/src/domains/artists/components/FollowButton';
+import { ProfileShareButton } from '@/src/domains/sharing/components/ProfileShareButton';
 import { Repeat2 } from 'lucide-react';
 
 interface ArtistProfileBannerProps {
@@ -45,10 +46,8 @@ export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
 
       {/* Action Buttons */}
       <div className="flex flex-wrap items-center gap-3 mt-2 px-2">
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6 font-semibold shadow-md transition-all">
-          Seguir
-        </Button>
-        
+        <FollowButton artist={artist} />
+        <ProfileShareButton artist={artist} />
       </div>
     </div>
   );
