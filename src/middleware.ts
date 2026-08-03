@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
       return response
     }
 
-    if (payload.planType !== 'admin') {
+    if (payload.planType !== 'admin' && payload.planType !== 'superadmin') {
       return NextResponse.redirect(new URL('/music', request.url))
     }
 

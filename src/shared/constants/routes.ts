@@ -1,4 +1,4 @@
-import { UserPlanType } from "@/src/domains/users/types/user.types"
+import { ADMIN_PLAN_TYPES, UserPlanType } from "@/src/domains/users/types/user.types"
 import {
     ChatIcon,
     DashboardIcon,
@@ -49,7 +49,7 @@ export const navItems: NavItems = [
         href: "/music/solicitudes",
         icon: RequestIcon,
         label: "Solicitudes",
-        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, UserPlanType.ADMIN, UserPlanType.PLAN_DESCUBRIDOR]
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, ...ADMIN_PLAN_TYPES, UserPlanType.PLAN_DESCUBRIDOR]
     },
     {
         href: "/music/invitar-usuario",
@@ -73,6 +73,6 @@ export const navItems: NavItems = [
         href: "/admin",
         icon: ShieldIcon,
         label: "Panel Admin",
-        rolAccess: [UserPlanType.ADMIN],
+        rolAccess: ADMIN_PLAN_TYPES,
     }
 ]

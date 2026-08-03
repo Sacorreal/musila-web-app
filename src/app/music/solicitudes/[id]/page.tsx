@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
-import { UserPlanType } from "@/src/domains/users/types/user.types";
+import { UserPlanType, isAdminPlanType } from "@/src/domains/users/types/user.types";
 import { TrackRequest } from "@/src/domains/requests/types/request.types";
 import { TrackRequestDetails } from "@/src/domains/requests/components/TrackRequestDetails";
 import { Button } from "@/src/shared/components/UI/button";
@@ -59,7 +59,7 @@ export default function RequestedTrackDetailPage() {
 
   const authors = (request.track as any)?.authors as any[] | undefined;
   const isOwner =
-    role === UserPlanType.ADMIN || (Array.isArray(authors) && authors.some((a) => a.id === user?.id));
+    isAdminPlanType(role) || (Array.isArray(authors) && authors.some((a) => a.id === user?.id));
 
   return (
     <main className="container mx-auto max-w-3xl p-6 md:p-10">

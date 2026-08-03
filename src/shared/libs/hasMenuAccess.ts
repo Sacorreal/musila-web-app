@@ -8,6 +8,7 @@ const API_ROLE_TO_MENU: Record<string, UserPlanType[]> = {
     INTERPRETER: [UserPlanType.PLAN_DESCUBRIDOR],
     PLAN_DESCUBRIDOR: [UserPlanType.PLAN_DESCUBRIDOR],
     ADMIN: [UserPlanType.ADMIN],
+    SUPERADMIN: [UserPlanType.SUPERADMIN],
     INVITADO: [UserPlanType.INVITADO],
     PLAN_AUTOR: [UserPlanType.PLAN_AUTOR],
     PLAN_360: [UserPlanType.PLAN_360],

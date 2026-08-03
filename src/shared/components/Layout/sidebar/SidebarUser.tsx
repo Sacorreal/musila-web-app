@@ -5,6 +5,7 @@ import { Button } from '@/src/shared/components/UI/button'
 import { LogOut } from 'lucide-react'
 
 const PLAN_TYPE_LABELS: Record<UserPlanType, string> = {
+  [UserPlanType.SUPERADMIN]: 'Superadmin',
   [UserPlanType.ADMIN]: 'Admin',
   [UserPlanType.PLAN_AUTOR]: 'Plan Autor',
   [UserPlanType.PLAN_360]: 'Plan 360',
