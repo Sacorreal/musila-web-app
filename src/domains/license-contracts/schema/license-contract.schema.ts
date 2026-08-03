@@ -39,6 +39,10 @@ export const licenseTermsSchema = z
       .array(z.nativeEnum(LicenseDistributionFormat))
       .min(1, "Selecciona al menos un formato de distribución"),
     advanceDistribution: z.array(advanceDistributionEntrySchema).optional(),
+    hasCustomInfo: z.boolean().optional(),
+    customInfo: z.string().optional(),
+    customAmount: z.number().optional(),
+    customCurrency: z.enum(["COP", "USD"]).optional(),
   })
   .refine(
     (data) =>
@@ -68,6 +72,14 @@ export const licenseTermsSchema = z
       return Math.round(sum * 100) / 100 === 100;
     },
     { message: "La distribución del anticipo debe sumar exactamente 100%", path: ["advanceDistribution"] },
+  )
+  .refine(
+    (data) => !data.hasCustomInfo || !!data.customInfo?.trim(),
+    { message: "Ingresa la información personalizada o desactiva la opción", path: ["customInfo"] },
+  )
+  .refine(
+    (data) => !data.customAmount || data.customAmount <= 0 || !!data.customCurrency,
+    { message: "Selecciona la moneda del valor a pagar", path: ["customCurrency"] },
   );
 
 export type LicenseTermsFormValues = z.infer<typeof licenseTermsSchema>;

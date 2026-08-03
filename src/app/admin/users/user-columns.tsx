@@ -9,7 +9,7 @@ const PLAN_TYPE_COLORS: Record<string, string> = {
   plan_descubridor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   plan_360: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400',
   invitado: 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400',
-  editor: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+  plan_publisher: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
 }
 
 interface UserColumnsOptions {

@@ -199,6 +199,33 @@ export const apiURLs = {
       reject: (id: string) => `/wallet/admin/withdrawals/${id}/reject` as const,
     },
   },
+  blog: {
+    articles: {
+      base: '/blog/articles' as const, // GET (list, público)
+      bySlug: (slug: string) => `/blog/articles/${slug}` as const, // GET (detalle, público)
+    },
+    authors: {
+      base: '/blog/authors' as const,
+      bySlug: (slug: string) => `/blog/authors/${slug}` as const, // GET (perfil público)
+      articlesBySlug: (slug: string) => `/blog/authors/${slug}/articles` as const, // GET (público)
+    },
+    admin: {
+      articles: {
+        base: '/blog/admin/articles' as const, // GET (list), POST
+        byId: (id: string) => `/blog/admin/articles/${id}` as const, // GET, PUT, DELETE
+        publish: (id: string) => `/blog/admin/articles/${id}/publish` as const, // PATCH
+        unpublish: (id: string) => `/blog/admin/articles/${id}/unpublish` as const, // PATCH
+      },
+      authors: {
+        base: '/blog/admin/authors' as const, // GET (list), POST
+        byId: (id: string) => `/blog/admin/authors/${id}` as const, // GET, PUT, DELETE
+      },
+      tags: {
+        base: '/blog/admin/tags' as const, // GET (list), POST
+        byId: (id: string) => `/blog/admin/tags/${id}` as const, // GET, PUT, DELETE
+      },
+    },
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;

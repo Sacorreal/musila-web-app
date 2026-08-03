@@ -83,6 +83,10 @@ export interface LicenseContractDto {
   royaltyPercentage: number;
   distributionFormats: LicenseDistributionFormat[];
   advanceDistribution: LicenseAdvanceDistributionEntry[] | null;
+  hasCustomInfo: boolean;
+  customInfo: string | null;
+  customAmount: number | null;
+  customCurrency: string | null;
   status: LicenseContractStatus;
   paymentStatus: LicenseContractPaymentStatus;
   documentUrl: string | null;
@@ -104,6 +108,10 @@ export interface UpsertLicenseContractTermsInput {
   royaltyPercentage: number;
   distributionFormats: LicenseDistributionFormat[];
   advanceDistribution?: LicenseAdvanceDistributionEntry[];
+  hasCustomInfo?: boolean;
+  customInfo?: string;
+  customAmount?: number;
+  customCurrency?: string;
 }
 
 export interface LicenseCollectionDto {

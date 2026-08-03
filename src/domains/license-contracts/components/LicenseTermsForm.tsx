@@ -8,6 +8,8 @@ import { Calendar, Coins, FileSignature, Loader2, Percent, Plus, Trash2 } from "
 import { Button } from "@/src/shared/components/UI/button";
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/src/shared/components/UI/field";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/src/shared/components/UI/input-group";
+import { Switch } from "@/src/shared/components/UI/switch";
+import { Textarea } from "@/src/shared/components/UI/textarea";
 import { cn } from "@/src/shared/libs/cn";
 import { useSplitByTrack } from "@/src/domains/splits/hooks/splits.hooks";
 import { TerritorySelector } from "./TerritorySelector";
@@ -82,6 +84,10 @@ export function LicenseTermsForm({ requestedTrackId, trackId, existingContract, 
           royaltyPercentage: Number(existingContract.royaltyPercentage),
           distributionFormats: existingContract.distributionFormats,
           advanceDistribution: existingContract.advanceDistribution ?? [],
+          hasCustomInfo: existingContract.hasCustomInfo ?? false,
+          customInfo: existingContract.customInfo ?? "",
+          customAmount: existingContract.customAmount ?? 0,
+          customCurrency: (existingContract.customCurrency as "COP" | "USD" | undefined) ?? undefined,
         }
       : {
           validityDate: "",
@@ -93,6 +99,10 @@ export function LicenseTermsForm({ requestedTrackId, trackId, existingContract, 
           royaltyPercentage: 0,
           distributionFormats: [],
           advanceDistribution: [],
+          hasCustomInfo: false,
+          customInfo: "",
+          customAmount: 0,
+          customCurrency: undefined,
         },
   });
 
@@ -108,6 +118,7 @@ export function LicenseTermsForm({ requestedTrackId, trackId, existingContract, 
   const distributionFormats = watch("distributionFormats") ?? [];
   const advanceDistribution = watch("advanceDistribution") ?? [];
   const validityDate = watch("validityDate");
+  const hasCustomInfo = watch("hasCustomInfo");
 
   const commissionAmount = Math.round(advanceAmount * 0.1);
   const totalPayableByLicensee = advanceAmount + commissionAmount;
@@ -177,6 +188,10 @@ export function LicenseTermsForm({ requestedTrackId, trackId, existingContract, 
           values.advanceAmount > 0 && hasCoauthors
             ? values.advanceDistribution?.map((d) => ({ userId: d.userId, percentage: d.percentage }))
             : undefined,
+        hasCustomInfo: values.hasCustomInfo,
+        customInfo: values.hasCustomInfo ? values.customInfo : undefined,
+        customAmount: values.hasCustomInfo ? values.customAmount : undefined,
+        customCurrency: values.hasCustomInfo ? values.customCurrency : undefined,
       });
 
       const finalContract = await generatePreview(contract.id);
@@ -438,6 +453,92 @@ export function LicenseTermsForm({ requestedTrackId, trackId, existingContract, 
         </div>
         {errors.distributionFormats && <FieldError errors={[errors.distributionFormats]} />}
       </Field>
+
+      <Controller
+        name="hasCustomInfo"
+        control={control}
+        render={({ field }) => (
+          <Field>
+            <div className="flex items-center justify-between">
+              <div>
+                <FieldLabel>¿Deseas agregar información personalizada?</FieldLabel>
+                <FieldDescription>
+                  Agrega cualquier término, nota o cláusula adicional que quieras incluir en el contrato.
+                </FieldDescription>
+              </div>
+              <Switch checked={field.value ?? false} onCheckedChange={field.onChange} disabled={isSubmitting} />
+            </div>
+          </Field>
+        )}
+      />
+
+      {hasCustomInfo && (
+        <div className="space-y-4">
+          <Controller
+            name="customInfo"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error}>
+                <FieldLabel>Información personalizada</FieldLabel>
+                <Textarea
+                  {...field}
+                  value={field.value ?? ""}
+                  rows={5}
+                  disabled={isSubmitting}
+                  placeholder="Escribe aquí la información o condición adicional..."
+                />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <Controller
+              name="customAmount"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={!!fieldState.error}>
+                  <FieldLabel>Valor a pagar (opcional)</FieldLabel>
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <InputGroupText>$</InputGroupText>
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      type="number"
+                      min={0}
+                      step="1000"
+                      disabled={isSubmitting}
+                      value={field.value ?? 0}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  </InputGroup>
+                  {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+            <Controller
+              name="customCurrency"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={!!fieldState.error}>
+                  <FieldLabel>Moneda</FieldLabel>
+                  <select
+                    {...field}
+                    value={field.value ?? ""}
+                    disabled={isSubmitting}
+                    className="flex h-11 w-full rounded-xl border border-input bg-background px-4 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+                  >
+                    <option value="">Selecciona...</option>
+                    <option value="COP">COP</option>
+                    <option value="USD">USD</option>
+                  </select>
+                  {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+          </div>
+        </div>
+      )}
 
       <Button type="submit" disabled={!isValid || isSubmitting} className="w-full gap-2 rounded-xl h-12 font-black">
         {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileSignature className="h-4 w-4" />}

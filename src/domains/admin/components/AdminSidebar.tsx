@@ -29,6 +29,9 @@ import {
   ScrollText,
   Smile,
   Tag,
+  Newspaper,
+  UserSquare2,
+  Tags,
 } from 'lucide-react'
 import { cn } from '@/src/shared/libs/cn'
 import { MusilaLogo } from '@/src/shared/components/Icons/icons'
@@ -58,6 +61,15 @@ const navGroups: NavGroup[] = [
       { href: '/admin/moods', icon: Smile, label: 'Moods' },
       { href: '/admin/temas', icon: Tag, label: 'Temas' },
       { href: '/admin/intellectual-property', icon: ScrollText, label: 'Propiedad Intelectual' },
+    ],
+  },
+  {
+    label: 'Blog',
+    icon: Newspaper,
+    items: [
+      { href: '/admin/blog/articulos', icon: Newspaper, label: 'Artículos' },
+      { href: '/admin/blog/autores', icon: UserSquare2, label: 'Autores' },
+      { href: '/admin/blog/etiquetas', icon: Tags, label: 'Etiquetas' },
     ],
   },
   {

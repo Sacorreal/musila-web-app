@@ -11,7 +11,7 @@ const PLAN_TYPE_LABELS: Record<UserPlanType, string> = {
   [UserPlanType.PLAN_360]: 'Plan 360',
   [UserPlanType.PLAN_DESCUBRIDOR]: 'Plan Descubridor',
   [UserPlanType.INVITADO]: 'Invitado',
-  [UserPlanType.EDITOR]: 'Editor',
+  [UserPlanType.PLAN_PUBLISHER]: 'Publisher',
 }
 
 type Props = {

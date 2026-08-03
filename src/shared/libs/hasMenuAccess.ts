@@ -12,7 +12,7 @@ const API_ROLE_TO_MENU: Record<string, UserPlanType[]> = {
     INVITADO: [UserPlanType.INVITADO],
     PLAN_AUTOR: [UserPlanType.PLAN_AUTOR],
     PLAN_360: [UserPlanType.PLAN_360],
-    EDITOR: [UserPlanType.EDITOR],
+    PLAN_PUBLISHER: [UserPlanType.PLAN_PUBLISHER],
 }
 
 /**
