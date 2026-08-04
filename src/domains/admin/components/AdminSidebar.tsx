@@ -32,6 +32,8 @@ import {
   Newspaper,
   UserSquare2,
   Tags,
+  UserCog,
+  ShieldCheck,
 } from 'lucide-react'
 import { cn } from '@/src/shared/libs/cn'
 import { MusilaLogo } from '@/src/shared/components/Icons/icons'
@@ -41,6 +43,8 @@ interface NavItem {
   icon: typeof LayoutDashboard
   label: string
   exact?: boolean
+  /** Si se define, el ítem solo se muestra si el usuario tiene alguno de estos permisos internos (OR). Sin definir = visible para todo staff, igual que hoy. */
+  requiredPermissions?: string[]
 }
 
 interface NavGroup {
@@ -79,6 +83,18 @@ const navGroups: NavGroup[] = [
       { href: '/admin/users', icon: Users, label: 'Usuarios' },
       { href: '/admin/guests', icon: UserPlus, label: 'Invitados' },
       { href: '/admin/invites', icon: Mail, label: 'Invitaciones' },
+      {
+        href: '/admin/staff',
+        icon: UserCog,
+        label: 'Equipo',
+        requiredPermissions: ['system:staff:view', 'system:staff:manage'],
+      },
+      {
+        href: '/admin/roles',
+        icon: ShieldCheck,
+        label: 'Roles internos',
+        requiredPermissions: ['system:roles:view', 'system:roles:manage'],
+      },
     ],
   },
   {
@@ -101,7 +117,7 @@ const navGroups: NavGroup[] = [
       { href: '/admin/playlists', icon: ListMusic, label: 'Playlists' },
       { href: '/admin/chat', icon: MessageSquare, label: 'Chats' },
       { href: '/admin/notifications', icon: Bell, label: 'Notificaciones' },
-      { href: '/admin/audit-log', icon: ScrollText, label: 'Auditoría' },
+      { href: '/admin/audit-log', icon: ScrollText, label: 'Auditoría', requiredPermissions: ['audit:view'] },
     ],
   },
 ]
@@ -160,8 +176,25 @@ function NavGroupSection({ group, pathname }: { group: NavGroup; pathname: strin
   )
 }
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  /** Permisos internos del usuario autenticado, resueltos server-side (ver `admin/layout.tsx`). Filtra ítems con `requiredPermissions` — solo UX, la autorización real es del backend. */
+  permissions?: string[]
+}
+
+function filterGroupsByPermissions(groups: NavGroup[], permissions: string[]): NavGroup[] {
+  return groups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) => !item.requiredPermissions || item.requiredPermissions.some((p) => permissions.includes(p)),
+      ),
+    }))
+    .filter((group) => group.items.length > 0)
+}
+
+export function AdminSidebar({ permissions = [] }: AdminSidebarProps) {
   const pathname = usePathname()
+  const visibleGroups = filterGroupsByPermissions(navGroups, permissions)
 
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar/95 backdrop-blur-xl md:flex">
@@ -179,7 +212,7 @@ export function AdminSidebar() {
       {/* Nav */}
       <nav className="flex flex-col gap-4 flex-1 overflow-y-auto px-3 py-4">
         <NavLink item={dashboardItem} active={isActive(pathname, dashboardItem.href, dashboardItem.exact)} />
-        {navGroups.map((group) => (
+        {visibleGroups.map((group) => (
           <NavGroupSection key={group.label} group={group} pathname={pathname} />
         ))}
       </nav>

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { AdminSidebar } from '@/src/domains/admin/components/AdminSidebar'
 import { AdminHeader } from '@/src/domains/admin/components/AdminHeader'
 import { MusicPlayer } from '@/src/domains/player/components/MusicPlayer'
+import { fetchMyStaffPermissions } from '@/src/domains/admin/staff-members/staff-members.actions'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
@@ -19,6 +20,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect('/login')
   }
 
+  // Solo UX: filtra qué secciones ve el staff en el menú, según su rol interno.
+  // La autorización real ocurre en el backend vía StaffPermissionGuard en cada request.
+  const { permissions } = await fetchMyStaffPermissions().catch(() => ({ permissions: [] as string[] }))
+
   return (
     <div className="min-h-screen bg-background">
       {/* Subtle admin grid pattern */}
@@ -31,7 +36,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         }}
       />
 
-      <AdminSidebar />
+      <AdminSidebar permissions={permissions} />
 
       <div className="flex min-h-screen flex-col md:ml-64">
         <AdminHeader userName={userName} />

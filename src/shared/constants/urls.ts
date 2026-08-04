@@ -226,6 +226,24 @@ export const apiURLs = {
       },
     },
   },
+  staff: {
+    permissions: '/staff/permissions' as const, // GET
+    roles: {
+      base: '/staff/roles' as const, // GET (list), POST
+      byId: (id: string) => `/staff/roles/${id}` as const, // GET, PATCH, DELETE
+    },
+    members: {
+      base: '/staff/members' as const, // GET (list)
+      me: '/staff/members/me/permissions' as const, // GET
+      invite: '/staff/members/invite' as const, // POST
+      assignRole: (userId: string) => `/staff/members/${userId}/assign-role` as const, // POST
+      revokeRole: (userId: string) => `/staff/members/${userId}/role` as const, // DELETE
+    },
+    auditLog: {
+      base: '/staff/audit-log' as const, // GET (list)
+      export: '/staff/audit-log/export' as const, // GET (binary)
+    },
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;
