@@ -62,10 +62,6 @@ export const registerSchema = z
             errorMap: () => ({ message: "El rol es obligatorio" }),
         }),
 
-        turnstileToken: z
-            .string()
-            .min(1, "Completa la verificación anti-bot antes de continuar"),
-
         // Campo trampa anti-bot: si un bot lo completa, la validación de humano falla en el submit.
         companyWebsite: z.string().max(0).optional().or(z.literal("")),
     })

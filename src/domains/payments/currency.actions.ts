@@ -49,12 +49,8 @@ async function getVisitorIp(): Promise<string | null> {
 async function getCountryFromEdgeHeader(): Promise<string | null> {
   try {
     const headerList = await headers();
-    // Vercel: x-vercel-ip-country | Cloudflare: cf-ipcountry.
-    const country =
-      headerList.get('x-vercel-ip-country')?.trim() ||
-      headerList.get('cf-ipcountry')?.trim() ||
-      '';
-    // Vercel/CF usan "XX" como marcador desconocido; lo descartamos.
+    const country = headerList.get('x-vercel-ip-country')?.trim() || '';
+    // Vercel usa "XX" como marcador desconocido; lo descartamos.
     if (!country || country === 'XX') return null;
     return country.toUpperCase();
   } catch {

@@ -105,8 +105,8 @@ type OptionalUser = Partial<
 
 export type CreateUserInput = BaseUser & OptionalUser & {
   externalReference?: string
-  /** Token resuelto por el widget de Cloudflare Turnstile. */
-  turnstileToken: string
+  /** Timestamp (epoch ms) de cuándo se mostró el formulario. Trampa de tiempo anti-bot. */
+  formStartedAt: number
   /** Campo trampa anti-bot: debe llegar siempre vacío, nunca mostrar en la UI. */
   companyWebsite?: string
 }

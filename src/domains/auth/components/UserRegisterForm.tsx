@@ -1,10 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Turnstile } from "@marsidev/react-turnstile";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -43,6 +42,9 @@ export function UserRegisterForm({ defaultPlanType, externalReference }: UserReg
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { registerUser} = useAuth()
+  // Trampa de tiempo anti-bot: cuándo se mostró el formulario. Un envío casi
+  // instantáneo (bot) se rechaza en el backend.
+  const formStartedAtRef = useRef(Date.now());
 
   const {
     handleSubmit,
@@ -50,7 +52,6 @@ export function UserRegisterForm({ defaultPlanType, externalReference }: UserReg
     reset,
     control,
     register,
-    setValue,
   } = useForm<RegisterUsersFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -66,14 +67,13 @@ export function UserRegisterForm({ defaultPlanType, externalReference }: UserReg
       typeCitizenID: '',
       citizenID: '',
       planType: defaultPlanType as RegisterUsersFormValues['planType'] | undefined,
-      turnstileToken: '',
       companyWebsite: '',
     },
   });
 
   const onSubmit = async (data: RegisterUsersFormValues) => {
     try {
-      await registerUser({ ...data, externalReference });
+      await registerUser({ ...data, externalReference, formStartedAt: formStartedAtRef.current });
       toast.success("Cuenta creada con éxito");
       reset();
       router.push("/music");
@@ -313,18 +313,6 @@ export function UserRegisterForm({ defaultPlanType, externalReference }: UserReg
         className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden"
         {...register("companyWebsite")}
       />
-
-      <div className="flex flex-col items-center gap-2">
-        <Turnstile
-          siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""}
-          onSuccess={(token) => setValue("turnstileToken", token, { shouldValidate: true })}
-          onExpire={() => setValue("turnstileToken", "", { shouldValidate: true })}
-          onError={() => setValue("turnstileToken", "", { shouldValidate: true })}
-        />
-        {errors.turnstileToken && (
-          <p className="text-xs text-destructive">{errors.turnstileToken.message}</p>
-        )}
-      </div>
 
       <p className="text-xs text-muted-foreground leading-relaxed">
         Al hacer clic en "Crear cuenta", aceptas nuestros{" "}
