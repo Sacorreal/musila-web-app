@@ -24,6 +24,8 @@ export function toTrackForPlayer(t: AdminTrackDto): TrackResponse {
     theme: null,
     isFeat: false,
     coverKey: null,
+    sheetMusicKey: null,
+    sheetMusicUrl: null,
     intellectualProperties: [],
     playlists: [],
     requestedTrack: [],

@@ -41,6 +41,7 @@ export const createTrackSchema = z.object({
   
   audio: z.instanceof(File, { message: "Audio requerido" }),
   coverImage: z.instanceof(File).optional(),
+  sheetMusic: z.instanceof(File).optional(),
 
   // Propiedad intelectual (opcional)
   intellectualProperties: z

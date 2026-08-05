@@ -36,6 +36,7 @@ import { MoodMultiSelect } from "@domains/moods/components/MoodMultiSelect";
 import { ThemeSelector } from "@domains/themes/components/ThemeSelector";
 import { LanguageSelector } from "../components/LanguageSelector";
 import { AudioUploadField } from "../components/AudioUploadField";
+import { SheetMusicUploadField } from "../components/SheetMusicUploadField";
 import { IntellectualPropertySection } from "./IntellectualPropertySection";
 
 export function CreateTrackForm() {
@@ -364,6 +365,19 @@ export function CreateTrackForm() {
                       </Field>
                     );
                   }}
+                />
+
+                {/* PARTITURA (PDF, opcional) */}
+                <Controller
+                  name="sheetMusic"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <SheetMusicUploadField
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={fieldState.error?.message}
+                    />
+                  )}
                 />
               </section>
 

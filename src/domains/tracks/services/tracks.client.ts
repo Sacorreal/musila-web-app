@@ -51,14 +51,15 @@ export async function createTrackRequest(
   options?: CreateTrackOptions,
 ): Promise<TrackResponse> {
   const { signal } = options || {};
-  const { audio, coverImage, authorsIds, intellectualProperties, ...dto } = data;
+  const { audio, coverImage, sheetMusic, authorsIds, intellectualProperties, ...dto } = data;
 
   if (!audio) throw new Error("Audio file is required");
 
-  // ── Archivos base (audio + cover) ──
+  // ── Archivos base (audio + cover + partitura) ──
   const filesToUpload: UploadableFileDto[] = [
     { field: "audio", file: audio, folder: StorageFolder.TRACK_AUDIO },
     ...(coverImage ? [{ field: "cover", file: coverImage, folder: StorageFolder.TRACK_COVER } as UploadableFileDto] : []),
+    ...(sheetMusic ? [{ field: "sheetMusic", file: sheetMusic, folder: StorageFolder.TRACK_SHEET_MUSIC } as UploadableFileDto] : []),
   ];
 
   // ── Archivos de Propiedad Intelectual ──
@@ -85,6 +86,7 @@ export async function createTrackRequest(
   // Buscamos los resultados por el nombre del 'field'
   const audioInfo = uploadedFiles.find((f) => f.field === "audio");
   const coverInfo = uploadedFiles.find((f) => f.field === "cover");
+  const sheetMusicInfo = uploadedFiles.find((f) => f.field === "sheetMusic");
 
   if (!audioInfo) throw new Error("Error en la verificación del audio subido.");
 
@@ -110,6 +112,8 @@ export async function createTrackRequest(
     audioUrl: audioInfo.publicUrl,
     coverKey: coverInfo?.key ?? undefined,
     coverUrl: coverInfo?.publicUrl ?? undefined,
+    sheetMusicKey: sheetMusicInfo?.key ?? undefined,
+    sheetMusicUrl: sheetMusicInfo?.publicUrl ?? undefined,
     ...(ipPayload.length > 0 ? { intellectualProperties: ipPayload } : {}),
   };
 
@@ -125,6 +129,7 @@ export async function createTrackRequest(
     // 🚨 Compensación: Usamos la función inyectada para limpiar
     const keysToDelete = [audioInfo.key];
     if (coverInfo?.key) keysToDelete.push(coverInfo.key);
+    if (sheetMusicInfo?.key) keysToDelete.push(sheetMusicInfo.key);
     // También limpiar documentos IP
     ipPayload.forEach((ip) => keysToDelete.push(ip.documentKey));
 

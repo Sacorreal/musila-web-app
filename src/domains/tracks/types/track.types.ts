@@ -48,6 +48,8 @@ export interface CreateTrackInput {
   audioUrl: string;
   coverKey?: string;
   coverUrl?: string;
+  sheetMusicKey?: string;
+  sheetMusicUrl?: string;
   iswc?: string;
   intellectualProperties?: IntellectualPropertyInput[];
 }
@@ -80,6 +82,8 @@ export interface TracksResponseDto {
   theme: TrackThemeDto | null;
   isFeat: boolean;
   coverKey: string | null;
+  sheetMusicKey: string | null;
+  sheetMusicUrl: string | null;
   authors: string[];
   intellectualProperties: IntellectualPropertyDto[];
 
@@ -109,6 +113,8 @@ export interface TrackResponse {
   theme: TrackThemeDto | null;
   isFeat: boolean;
   coverKey: string | null;
+  sheetMusicKey: string | null;
+  sheetMusicUrl: string | null;
   intellectualProperties: IntellectualPropertyDto[];
   playlists: PlaylistTrackDto[];
   requestedTrack: string[];
