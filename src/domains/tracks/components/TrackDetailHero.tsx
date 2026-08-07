@@ -13,7 +13,9 @@ import { PlaylistIcon } from '@/src/shared/components/Icons/icons';
 import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
 import { ShareButton } from '@/src/domains/sharing/components/ShareButton';
 import { ShareResourceType } from '@/src/domains/sharing/types/sharing.types';
-import { Play } from 'lucide-react';
+import { Play, FolderPlus } from 'lucide-react';
+import { useRegistrationFileByTrack } from '@/src/domains/registration-file/hooks/use-registration-file.hooks';
+import { RegistrationFileBadge } from '@/src/domains/registration-file/components/RegistrationFileBadge';
 
 interface TrackDetailHeroProps {
   track: TrackResponse;
@@ -31,6 +33,9 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
 
   // Ocultar "Solicitar Uso" si el usuario autenticado es uno de los autores del track
   const isAuthor = track.authors?.some((a) => a.id === userId) ?? false;
+
+  // Expediente de Registro — sección propia, independiente de "Propiedad Intelectual"
+  const { data: registrationFile } = useRegistrationFileByTrack(track.id, isAuthor);
 
   return (
     <section className="relative w-full">
@@ -69,6 +74,20 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20 dark:border-emerald-500/30 tracking-wide uppercase">
                 {track.ritmo}
               </span>
+            )}
+            {isAuthor && registrationFile && (
+              <Link href={`/music/tracks/${track.id}/expediente`}>
+                <RegistrationFileBadge status={registrationFile.status} caseNumber={registrationFile.caseNumber} />
+              </Link>
+            )}
+            {isAuthor && registrationFile === null && (
+              <Link
+                href={`/music/tracks/${track.id}/expediente`}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border border-dashed border-muted-foreground/40 text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors uppercase tracking-wide"
+              >
+                <FolderPlus className="w-3.5 h-3.5" />
+                Preparar expediente
+              </Link>
             )}
           </div>
 

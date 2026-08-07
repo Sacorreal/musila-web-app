@@ -226,6 +226,36 @@ export const apiURLs = {
       },
     },
   },
+  publishingContracts: {
+    base: '/publishing-contracts' as const, // POST
+    mine: '/publishing-contracts/me' as const, // GET
+    byId: (id: string) => `/publishing-contracts/${id}` as const, // GET, PATCH, DELETE
+  },
+  registrationFile: {
+    summaryByTrackIds: (trackIds: string[]) =>
+      `/tracks/registration-files/summary?trackIds=${trackIds.join(',')}` as const, // GET (batch)
+    byTrack: (trackId: string) => `/tracks/${trackId}/registration-file` as const, // POST, GET
+    byId: (id: string) => `/registration-file/${id}` as const, // GET
+    generalInfo: (id: string) => `/registration-file/${id}/general-info` as const, // PATCH
+    participants: (id: string) => `/registration-file/${id}/participants` as const, // PATCH
+    participantsFromSplit: (id: string) => `/registration-file/${id}/participants/from-split` as const, // POST
+    phonogram: (id: string) => `/registration-file/${id}/phonogram` as const, // PATCH
+    publishing: (id: string) => `/registration-file/${id}/publishing` as const, // PATCH
+    derivativeWork: (id: string) => `/registration-file/${id}/derivative-work` as const, // PATCH
+    commissionedWork: (id: string) => `/registration-file/${id}/commissioned-work` as const, // PATCH
+    aiUsage: (id: string) => `/registration-file/${id}/ai-usage` as const, // PATCH
+    documents: (id: string) => `/registration-file/${id}/documents` as const, // POST
+    documentById: (id: string, documentId: string) => `/registration-file/${id}/documents/${documentId}` as const, // DELETE
+    completeness: (id: string) => `/registration-file/${id}/completeness` as const, // GET
+    checklist: (id: string) => `/registration-file/${id}/checklist` as const, // GET
+    readyForSubmission: (id: string) => `/registration-file/${id}/ready-for-submission` as const, // POST
+    markProfileSubmitted: (id: string, profileKey: string) =>
+      `/registration-file/${id}/profile-status/${profileKey}/mark-submitted` as const, // POST
+    markProfileRegistered: (id: string, profileKey: string) =>
+      `/registration-file/${id}/profile-status/${profileKey}/mark-registered` as const, // POST
+    downloadPdf: (id: string) => `/registration-file/${id}/download/pdf` as const, // GET (binary)
+    downloadZip: (id: string) => `/registration-file/${id}/download/zip` as const, // GET (binary)
+  },
   staff: {
     permissions: '/staff/permissions' as const, // GET
     roles: {

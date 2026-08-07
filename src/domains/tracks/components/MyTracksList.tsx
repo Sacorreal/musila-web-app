@@ -23,6 +23,8 @@ import {
 } from "@/src/shared/components/UI/alert-dialog";
 import { useUpdateTrack } from "../hooks/use-tracks.hooks";
 import { CertificateCell } from "./CertificateCell";
+import { RegistrationFileCell } from "./RegistrationFileCell";
+import { useRegistrationFileSummaries } from "@/src/domains/registration-file/hooks/use-registration-file.hooks";
 
 const CERTIFICATE_NOTIFICATION_TYPES = new Set(["certificate.issued", "certificate.generation.failed"]);
 
@@ -34,6 +36,7 @@ export function MyTracksList() {
   const [trackToToggle, setTrackToToggle] = useState<{ id: string; title: string; currentStatus: boolean } | null>(null);
   const queryClient = useQueryClient();
   const latestNotification = useNotificationsStore((s) => s.notifications[0]);
+  const { data: registrationFileSummaries } = useRegistrationFileSummaries((tracks ?? []).map((t) => t.id));
 
   // Refresca el estado del certificado sin polling: el socket de notificaciones
   // ya está conectado globalmente (NotificationMenu); cuando llega el evento de
@@ -193,6 +196,7 @@ export function MyTracksList() {
                         trackTitle={track.title}
                         certificateStatus={track.certificateStatus}
                       />
+                      <RegistrationFileCell trackId={track.id} summary={registrationFileSummaries?.[track.id]} />
                     </div>
                   </td>
                 </tr>

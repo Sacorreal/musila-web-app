@@ -25,6 +25,8 @@ export interface UploadableFileDto {
     INTELLECTUAL_PROPERTY = 'intellectual-property',
     BLOG_ARTICLE_COVER = 'blog/articles/covers',
     BLOG_AUTHOR_AVATAR = 'blog/authors/avatars',
+    REGISTRATION_FILE_DOCUMENTS = 'registration-file/documents',
+    PUBLISHING_CONTRACT_DOCS = 'publishing-contracts/documents',
   }
 
 export interface UploadedFileDto {
@@ -34,4 +36,4 @@ export interface UploadedFileDto {
 }
 
 
-  export type UploadField = "audio" | "cover" | "sheetMusic" | "avatar" | "document" | "chatFile" | `ip_doc_${number}` | "blogArticleCover" | "blogAuthorAvatar";
+  export type UploadField = "audio" | "cover" | "sheetMusic" | "avatar" | "document" | "chatFile" | `ip_doc_${number}` | "blogArticleCover" | "blogAuthorAvatar" | "publishingContractDoc" | `rf_doc_${string}`;

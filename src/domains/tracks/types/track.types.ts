@@ -2,6 +2,13 @@ import { PaginatedResponse } from '@shared/types/shared.types'
 import { AuthorsResponseDto } from '@domains/artists/types/artist.types'
 import { PaginationInput } from '@shared/types/shared.types'
 import { CertificateStatusValue } from './certificate.types'
+import { RegistrationFileStatus } from '@domains/registration-file/types/registration-file.types'
+
+export interface RegistrationFileSummaryDto {
+  id: string
+  caseNumber: string
+  status: RegistrationFileStatus
+}
 
 
 export interface LanguageDto {
@@ -122,6 +129,7 @@ export interface TrackResponse {
   updatedAt: string;
   authors: AuthorTrackDto[];
   certificateStatus?: CertificateStatusValue | null;
+  registrationFile?: RegistrationFileSummaryDto | null;
 
 }
 
