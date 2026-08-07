@@ -147,6 +147,12 @@ export const apiURLs = {
     paymentSources: '/payments/admin/payment-sources' as const, // GET
     pendingRegistrations: '/payments/admin/pending-registrations' as const, // GET
   },
+  chats: {
+    base: '/chats' as const, // GET (lista unificada de conversaciones)
+    direct: '/chats/direct' as const, // POST (iniciar/recuperar chat directo)
+    messages: (id: string) => `/chats/${id}/messages` as const, // GET
+    read: (id: string) => `/chats/${id}/read` as const, // PATCH
+  },
   chatAdmin: {
     base: '/chats/admin' as const, // GET (list)
     messages: (id: string) => `/chats/admin/${id}/messages` as const, // GET

@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/src/shared/components/UI/
 import { VerifiedBadge } from '@/src/shared/components/UI/verified-badge';
 import { FollowButton } from '@/src/domains/artists/components/FollowButton';
 import { ProfileShareButton } from '@/src/domains/sharing/components/ProfileShareButton';
+import { StartConversationButton } from '@/src/domains/chat/components/StartConversationButton';
 import { Repeat2 } from 'lucide-react';
 
 interface ArtistProfileBannerProps {
@@ -47,6 +48,7 @@ export function ArtistProfileBanner({ artist }: ArtistProfileBannerProps) {
       {/* Action Buttons */}
       <div className="flex flex-wrap items-center gap-3 mt-2 px-2">
         <FollowButton artist={artist} />
+        <StartConversationButton artist={artist} />
         <ProfileShareButton artist={artist} />
       </div>
     </div>

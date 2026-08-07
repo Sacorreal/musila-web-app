@@ -23,3 +23,23 @@ export interface Chat {
   guests?: any[];
   createdAt: string;
 }
+
+export type ConversationKind = "REQUEST" | "DIRECT";
+
+export interface ConversationParty {
+  id: string;
+  name: string;
+  lastName: string;
+  avatarUrl?: string | null;
+}
+
+/** Item normalizado de la lista de conversaciones (GET /chats). */
+export interface ConversationItem {
+  chatId: string;
+  kind: ConversationKind;
+  otherParty: ConversationParty | null;
+  track: { title: string; coverUrl?: string | null } | null;
+  status: string | null;
+  unreadCount: number;
+  lastMessageAt: string | null;
+}

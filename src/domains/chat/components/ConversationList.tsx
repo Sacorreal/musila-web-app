@@ -7,16 +7,27 @@ import { Music2, User2 } from "lucide-react";
 import { RequestStatus } from "../../requests/types/request.types";
 import { motion } from "framer-motion";
 import { StatusBadge } from "../../requests/components/solicitudes/StatusBadge";
-import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import { ConversationItem } from "../types/chat.types";
 
 interface Props {
   selectedChatId?: string;
   onSelectChat: (chatId: string) => void;
 }
 
+function partyName(conv: ConversationItem): string {
+  if (conv.otherParty) {
+    return `${conv.otherParty.name} ${conv.otherParty.lastName}`.trim();
+  }
+  return "Participante";
+}
+
+function conversationTitle(conv: ConversationItem): string {
+  if (conv.kind === "DIRECT") return partyName(conv);
+  return `${partyName(conv)} - ${conv.track?.title ?? "Sin título"}`;
+}
+
 export function ConversationList({ selectedChatId, onSelectChat }: Props) {
   const { data: conversations, isLoading } = useConversations();
-  const user = useAuthStore((s) => s.user);
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -39,64 +50,57 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
         <h2 className="text-lg sm:text-xl font-bold text-foreground">Conversaciones</h2>
       </div>
       <div className="flex flex-col">
-        {conversations?.map((conv: any, index: number) => {
-          const track = conv.track;
-          const chatId = conv.chat?.id;
-          const requester = conv.requester;
-          
+        {conversations?.map((conv: ConversationItem, index: number) => {
+          const chatId = conv.chatId;
           if (!chatId) return null;
 
           const isActive = selectedChatId === chatId;
-          
-          // Lógica inteligente para el título
-          const isAuthor = track?.authors?.some((a: any) => (typeof a === 'string' ? a === user?.id : a.id === user?.id));
-          
-          let otherPartyName = "Participante";
-          
-          if (isAuthor) {
-            // Si yo soy el autor, quiero ver quién me solicita (el requester)
-            otherPartyName = requester ? `${requester.name} ${requester.lastName}` : "Solicitante";
-          } else {
-            // Si yo soy el solicitante, quiero ver quién es el autor
-            const mainAuthor = track?.authors?.[0];
-            otherPartyName = mainAuthor && typeof mainAuthor !== 'string' 
-              ? `${mainAuthor.name} ${mainAuthor.lastName}` 
-              : "Autor";
-          }
-
-          const displayTitle = `${otherPartyName} - ${track?.title || "Sin título"}`;
+          const isDirect = conv.kind === "DIRECT";
+          const displayTitle = conversationTitle(conv);
+          const coverUrl = isDirect ? conv.otherParty?.avatarUrl : conv.track?.coverUrl;
 
           return (
             <motion.button
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
-              key={conv.id}
+              key={chatId}
               onClick={() => onSelectChat(chatId)}
               className={cn(
                 "flex items-center gap-2 sm:gap-4 p-3 sm:p-4 transition-all hover:bg-slate-50 dark:hover:bg-white/[0.02] text-left border-b border-border/50 group w-full",
                 isActive && "bg-primary/5 dark:bg-primary/10 border-r-4 border-r-primary"
               )}
             >
-              {/* Track Cover */}
+              {/* Avatar del contacto (DIRECT) o portada del track (REQUEST) */}
               <div className="relative flex-shrink-0">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                  {track?.coverUrl ? (
-                    <img src={track.coverUrl} alt={track.title} className="w-full h-full object-cover" />
+                <div
+                  className={cn(
+                    "w-12 h-12 sm:w-14 sm:h-14 overflow-hidden bg-slate-200 dark:bg-slate-800 shadow-lg group-hover:scale-105 transition-transform duration-300",
+                    isDirect ? "rounded-full" : "rounded-xl sm:rounded-2xl"
+                  )}
+                >
+                  {coverUrl ? (
+                    <img src={coverUrl} alt={displayTitle} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Music2 className="w-6 h-6 text-muted-foreground" />
+                      {isDirect ? (
+                        <User2 className="w-6 h-6 text-muted-foreground" />
+                      ) : (
+                        <Music2 className="w-6 h-6 text-muted-foreground" />
+                      )}
                     </div>
                   )}
                 </div>
-                {/* Status indicator (Dot) */}
-                <div className={cn(
-                  "absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-4 border-background shadow-md",
-                  conv.status === RequestStatus.PENDIENTE && "bg-amber-400",
-                  conv.status === RequestStatus.APROBADA && "bg-emerald-500",
-                  conv.status === RequestStatus.RECHAZADA && "bg-red-500",
-                  conv.status === RequestStatus.CANCELADA && "bg-slate-400"
-                )} />
+                {/* Indicador de estado (solo chats de solicitud) */}
+                {!isDirect && (
+                  <div className={cn(
+                    "absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-4 border-background shadow-md",
+                    conv.status === RequestStatus.PENDIENTE && "bg-amber-400",
+                    conv.status === RequestStatus.APROBADA && "bg-emerald-500",
+                    conv.status === RequestStatus.RECHAZADA && "bg-red-500",
+                    conv.status === RequestStatus.CANCELADA && "bg-slate-400"
+                  )} />
+                )}
               </div>
 
               {/* Info */}
@@ -108,7 +112,13 @@ export function ConversationList({ selectedChatId, onSelectChat }: Props) {
                   {displayTitle}
                 </h3>
                 <div className="flex items-center justify-between">
-                   <StatusBadge status={conv.status} />
+                   {isDirect ? (
+                     <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                       Mensaje directo
+                     </span>
+                   ) : (
+                     <StatusBadge status={conv.status as RequestStatus} />
+                   )}
                    {conv.unreadCount > 0 && (
                      <div className="bg-primary text-primary-foreground text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 animate-in zoom-in duration-300">
                        {conv.unreadCount > 9 ? '+9' : conv.unreadCount}

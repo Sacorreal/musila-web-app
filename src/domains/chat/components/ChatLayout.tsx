@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { ConversationList } from "@/src/domains/chat/components/ConversationList";
 import { ChatWindow } from "@/src/domains/chat/components/ChatWindow";
 import { ChatEmptyState } from "@/src/domains/chat/components/ChatEmptyState";
@@ -9,7 +10,17 @@ import { Button } from "@/src/shared/components/UI/button";
 import { cn } from "@/src/shared/libs/cn";
 
 export function ChatLayout() {
-  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const chatIdFromUrl = searchParams.get("chatId");
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(chatIdFromUrl);
+
+  // Deep-link: abre la conversación indicada en la URL (?chatId=...),
+  // p. ej. al iniciar un chat directo desde el perfil de otro usuario.
+  useEffect(() => {
+    if (chatIdFromUrl) {
+      setSelectedChatId(chatIdFromUrl);
+    }
+  }, [chatIdFromUrl]);
 
   return (
     <main className="flex h-[calc(100dvh-80px)] md:h-[calc(100vh-120px)] bg-background rounded-lg sm:rounded-2xl md:rounded-3xl overflow-hidden border border-border shadow-2xl m-1 sm:m-2 md:m-8">
