@@ -2,6 +2,7 @@ import { ADMIN_PLAN_TYPES, UserPlanType } from "@/src/domains/users/types/user.t
 import {
     ChatIcon,
     DashboardIcon,
+    ExpedienteIcon,
     GuestUserIcon,
     HomeIcon,
     PlaylistIcon,
@@ -50,6 +51,12 @@ export const navItems: NavItems = [
         icon: RequestIcon,
         label: "Solicitudes",
         rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, ...ADMIN_PLAN_TYPES, UserPlanType.PLAN_DESCUBRIDOR]
+    },
+    {
+        href: "/music/expedientes",
+        icon: ExpedienteIcon,
+        label: "Expedientes",
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, ...ADMIN_PLAN_TYPES]
     },
     {
         href: "/music/invitar-usuario",

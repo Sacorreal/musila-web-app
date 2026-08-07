@@ -232,6 +232,7 @@ export const apiURLs = {
     byId: (id: string) => `/publishing-contracts/${id}` as const, // GET, PATCH, DELETE
   },
   registrationFile: {
+    list: '/registration-files' as const, // GET (listado paginado: search, status, ownerId, page, limit)
     summaryByTrackIds: (trackIds: string[]) =>
       `/tracks/registration-files/summary?trackIds=${trackIds.join(',')}` as const, // GET (batch)
     byTrack: (trackId: string) => `/tracks/${trackId}/registration-file` as const, // POST, GET

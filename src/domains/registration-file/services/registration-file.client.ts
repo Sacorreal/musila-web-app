@@ -4,9 +4,11 @@ import { apiClient } from '@shared/libs/axios/axios-client'
 import { apiURLs } from '@/src/shared/constants/urls'
 import type {
   OriginalWorkOrigin,
+  PaginatedRegistrationFiles,
   RecordingType,
   RegistrationFileChecklistItem,
   RegistrationFileDto,
+  RegistrationFileListQuery,
   RegistrationFileParticipantDto,
   RegistrationFileSummaryDto,
   RegistrationFileValidationResult,
@@ -26,6 +28,15 @@ export async function fetchRegistrationFileByTrack(trackId: string): Promise<Reg
     if (error?.response?.status === 404) return null
     throw error
   }
+}
+
+export async function fetchRegistrationFiles(
+  query: RegistrationFileListQuery,
+): Promise<PaginatedRegistrationFiles> {
+  const { data } = await apiClient.get<PaginatedRegistrationFiles>(apiURLs.registrationFile.list, {
+    params: query,
+  })
+  return data
 }
 
 export async function fetchRegistrationFileSummaries(

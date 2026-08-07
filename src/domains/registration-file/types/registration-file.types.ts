@@ -183,6 +183,33 @@ export interface RegistrationFileSummaryDto {
   status: RegistrationFileStatus
 }
 
+export interface RegistrationFileListItemDto {
+  id: string
+  caseNumber: string
+  title: string
+  status: RegistrationFileStatus
+  trackId: string
+  completenessPercentage: number | null
+  activeProfileKeys: RegistrationProfileKey[]
+  updatedAt: string
+  ownerName: string
+}
+
+export interface RegistrationFileListQuery {
+  page?: number
+  limit?: number
+  search?: string
+  status?: RegistrationFileStatus
+  ownerId?: string
+}
+
+export interface PaginatedRegistrationFiles {
+  data: RegistrationFileListItemDto[]
+  total: number
+  page: number
+  limit: number
+}
+
 export type RegistrationFileValidationSeverity = 'error' | 'warning'
 
 export interface RegistrationFileValidationIssue {

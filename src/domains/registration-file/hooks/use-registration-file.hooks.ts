@@ -1,9 +1,9 @@
 'use client'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import * as client from '../services/registration-file.client'
-import type { RegistrationProfileKey } from '../types/registration-file.types'
+import type { RegistrationFileListQuery, RegistrationProfileKey } from '../types/registration-file.types'
 
 const keys = {
   detail: (id: string) => ['registration-file', id] as const,
@@ -27,6 +27,14 @@ export function useRegistrationFileByTrack(trackId: string, enabled = true) {
     queryKey: ['registration-file', 'by-track', trackId],
     queryFn: () => client.fetchRegistrationFileByTrack(trackId),
     enabled: !!trackId && enabled,
+  })
+}
+
+export function useRegistrationFiles(query: RegistrationFileListQuery) {
+  return useQuery({
+    queryKey: ['registration-file', 'list', query] as const,
+    queryFn: () => client.fetchRegistrationFiles(query),
+    placeholderData: keepPreviousData,
   })
 }
 
