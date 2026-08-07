@@ -35,7 +35,7 @@ export interface IntellectualPropertyInput {
 export interface CreateTrackInput {
   title: string;
   genreId: string;
-  subGenre?: string;
+  ritmo?: string;
   language: string;
   lyric: string;
   authorsIds: string[];
@@ -67,7 +67,7 @@ export interface TracksResponseDto {
   id: string;
   title: string;
   genre: string;
-  subGenre: string;
+  ritmo: string;
   coverUrl: string;
   audioUrl: string | null;
   year: number;
@@ -98,7 +98,7 @@ export interface TrackResponse {
   id: string;
   title: string;
   genre: string;
-  subGenre: string;
+  ritmo: string;
   coverUrl: string;
   audioUrl: string | null;
   year: number;
@@ -141,7 +141,7 @@ export type UpdateTrackInput = Partial<CreateTrackInput>
 export interface FilterTrackInput extends PaginationInput {
   isGospel?: boolean;
   genreId?: string;
-  subGenre?: string;
+  ritmo?: string;
   language?: string;
   isAvailable?: boolean;
 }

@@ -82,8 +82,8 @@ export function getTrackColumns({
       render: (row) => (
         <div className="min-w-0">
           <p className="truncate text-xs text-muted-foreground">{row.genre || '—'}</p>
-          {row.subGenre && (
-            <p className="truncate text-[11px] text-muted-foreground/60">{row.subGenre}</p>
+          {row.ritmo && (
+            <p className="truncate text-[11px] text-muted-foreground/60">{row.ritmo}</p>
           )}
         </div>
       ),

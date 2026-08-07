@@ -40,7 +40,7 @@ export interface AdminTrackDto {
   id: string
   title: string
   genre: string
-  subGenre?: string
+  ritmo?: string
   coverUrl?: string
   audioUrl?: string | null
   language: string
@@ -53,7 +53,7 @@ export interface AdminTrackDto {
 export interface AdminGenreDto {
   id: string
   genre: string
-  subGenre: string[]
+  ritmo: string[]
   slug?: string
   createdAt: string
 }
@@ -100,7 +100,7 @@ export interface CreateAdminUserInput {
 
 export interface CreateGenreInput {
   genre: string
-  subGenre?: string[]
+  ritmo?: string[]
   slug?: string
 }
 
@@ -140,5 +140,5 @@ export interface TrackFilters {
   isAvailable?: boolean
   isGospel?: boolean
   genreId?: string
-  subGenre?: string
+  ritmo?: string
 }

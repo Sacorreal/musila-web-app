@@ -31,7 +31,7 @@ export function GenreTracksTable({ tracks, genreName, genreSlug }: GenreTracksTa
               <th className="px-8 py-6">Duración</th>
               <th className="px-8 py-6">Autor</th>
               <th className="px-8 py-6">Género</th>
-              <th className="px-8 py-6">Subgénero</th>
+              <th className="px-8 py-6">Ritmo</th>
               <th className="px-8 py-6">Moods</th>
               <th className="px-8 py-6 w-16"></th>
             </tr>
@@ -84,7 +84,7 @@ export function GenreTracksTable({ tracks, genreName, genreSlug }: GenreTracksTa
                   {genreName}
                 </td>
                 <td className="px-8 py-5 text-muted-foreground text-xs font-bold uppercase tracking-widest opacity-80">
-                  {track.subGenre || "-"}
+                  {track.ritmo || "-"}
                 </td>
                 <td className="px-8 py-5">
                   <div className="flex flex-wrap gap-1.5 max-w-[180px]">

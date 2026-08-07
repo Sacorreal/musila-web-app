@@ -22,7 +22,7 @@ interface AuthorResult {
 interface GenreResult {
   id: string
   genre: string
-  subGenre?: string[]
+  ritmo?: string[]
 }
 
 interface SearchResults {
@@ -234,9 +234,9 @@ export function SearchBox() {
                         <p className="text-sm font-medium text-foreground truncate">
                           {genre.genre}
                         </p>
-                        {genre.subGenre && genre.subGenre.length > 0 && (
+                        {genre.ritmo && genre.ritmo.length > 0 && (
                           <p className="text-xs text-muted-foreground truncate">
-                            {genre.subGenre.join(", ")}
+                            {genre.ritmo.join(", ")}
                           </p>
                         )}
                       </div>

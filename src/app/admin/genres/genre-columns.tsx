@@ -21,18 +21,18 @@ export function getGenreColumns({ onEdit, onDelete }: GenreColumnsOptions): Colu
       ),
     },
     {
-      key: 'subGenres',
-      header: 'Subgéneros',
+      key: 'ritmos',
+      header: 'Ritmos',
       width: '3fr',
       render: (row) => (
         <div className="flex flex-wrap gap-1">
-          {row.subGenre?.slice(0, 4).map((sg) => (
+          {row.ritmo?.slice(0, 4).map((sg) => (
             <span key={sg} className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
               {sg}
             </span>
           ))}
-          {(row.subGenre?.length ?? 0) > 4 && (
-            <span className="text-xs text-muted-foreground">+{row.subGenre.length - 4}</span>
+          {(row.ritmo?.length ?? 0) > 4 && (
+            <span className="text-xs text-muted-foreground">+{row.ritmo.length - 4}</span>
           )}
         </div>
       ),

@@ -10,7 +10,7 @@ export function toTrackForPlayer(t: AdminTrackDto): TrackResponse {
     id: t.id,
     title: t.title,
     genre: t.genre,
-    subGenre: t.subGenre ?? '',
+    ritmo: t.ritmo ?? '',
     coverUrl: t.coverUrl ?? '',
     audioUrl: t.audioUrl ?? null,
     year: 0,

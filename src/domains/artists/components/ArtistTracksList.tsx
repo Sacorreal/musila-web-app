@@ -52,11 +52,11 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
   const {
     filteredTracks,
     genreOptions,
-    subGenreOptions,
+    ritmoOptions,
     selectedGenre,
-    selectedSubGenre,
+    selectedRitmo,
     handleGenreChange,
-    handleSubGenreChange,
+    handleRitmoChange,
   } = useArtistTracksFilter(populatedTracks);
 
   return (
@@ -85,16 +85,16 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
             </SelectContent>
           </Select>
 
-          {/* SubGenre select — populated from track.subGenre string, filtered by selected genre */}
-          <Select value={selectedSubGenre} onValueChange={handleSubGenreChange}>
+          {/* Ritmo select — populated from track.ritmo string, filtered by selected genre */}
+          <Select value={selectedRitmo} onValueChange={handleRitmoChange}>
             <SelectTrigger className="w-[170px] bg-slate-100 dark:bg-slate-800 border-none text-foreground dark:text-slate-300 rounded-full h-10 px-4 shadow-sm hover:bg-slate-200 dark:hover:!bg-slate-700 cursor-pointer ring-0 focus:ring-0">
               <SelectValue>
-                {selectedSubGenre === "all" ? "Subgénero" : selectedSubGenre}
+                {selectedRitmo === "all" ? "Ritmo" : selectedRitmo}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-background border-border text-foreground">
-              <SelectItem value="all">Todos los subgéneros</SelectItem>
-              {subGenreOptions.map((sub) => (
+              <SelectItem value="all">Todos los ritmos</SelectItem>
+              {ritmoOptions.map((sub) => (
                 <SelectItem key={sub} value={sub}>
                   {sub}
                 </SelectItem>
@@ -162,7 +162,7 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
                   {resolveGenreName(track.genre) || "—"}
                 </span>
                 <span className="min-w-[9rem] hidden md:block truncate">
-                  {track.subGenre || "—"}
+                  {track.ritmo || "—"}
                 </span>
               </div>
 

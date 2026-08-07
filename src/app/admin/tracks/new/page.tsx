@@ -32,7 +32,7 @@ export default function AdminNewTrackPage() {
     defaultValues: {
       title: '',
       genreId: '',
-      subGenre: '',
+      ritmo: '',
       language: '',
       lyric: '',
       authorsIds: [],
@@ -135,9 +135,9 @@ export default function AdminNewTrackPage() {
                   <FieldLabel>Clasificación musical</FieldLabel>
                   <GenreSelector
                     genreId={field.value}
-                    subGenre={watch('subGenre')}
+                    ritmo={watch('ritmo')}
                     onGenreChange={field.onChange}
-                    onSubGenreChange={(val) => setValue('subGenre', val, { shouldValidate: true })}
+                    onRitmoChange={(val) => setValue('ritmo', val, { shouldValidate: true })}
                   />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>

@@ -52,7 +52,7 @@ export function CreateTrackForm() {
       defaultValues: {
         title: "",
         genreId: "",
-        subGenre: "",
+        ritmo: "",
         language: "",
         lyric: "",
         authorsIds: user?.id ? [user.id] : [],
@@ -240,10 +240,10 @@ export function CreateTrackForm() {
                       <FieldLabel>Clasificación musical</FieldLabel>
                       <GenreSelector
                         genreId={field.value}
-                        subGenre={watch("subGenre")}
+                        ritmo={watch("ritmo")}
                         onGenreChange={field.onChange}
-                        onSubGenreChange={(val) =>
-                          setValue("subGenre", val, { shouldValidate: true })
+                        onRitmoChange={(val) =>
+                          setValue("ritmo", val, { shouldValidate: true })
                         }
                       />
                       {fieldState.error && (

@@ -30,7 +30,7 @@ export interface AuthorTrackDetailDto {
   id: string;
   title: string;
   genre: MusicalGenreDto,
-  subGenre: string;
+  ritmo: string;
   coverUrl?: string | null;
   audioUrl?: string | null;
   year: number;

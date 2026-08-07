@@ -6,17 +6,17 @@ import { useGenres } from '@domains/musical-genre/hooks/useGenres';
 
 interface GenreSelectorProps {
   genreId?: string;
-  subGenre?: string;
+  ritmo?: string;
   onGenreChange: (genreId: string) => void;
-  onSubGenreChange: (subGenre: string) => void;
+  onRitmoChange: (ritmo: string) => void;
   disabled?: boolean;
 }
 
 export function GenreSelector({
   genreId,
-  subGenre,
+  ritmo,
   onGenreChange,
-  onSubGenreChange,
+  onRitmoChange,
   disabled,
 }: GenreSelectorProps) {
   // 1. Magia de React Query: Extraemos datos, estado de carga y errores en una sola línea
@@ -24,11 +24,11 @@ export function GenreSelector({
 
   // 2. Lógica de UI y dependencias
   const selectedGenre = genres.find((g) => String(g.id) === String(genreId));
-  const hasSubGenres = selectedGenre?.subGenre && selectedGenre.subGenre.length > 0;
+  const hasRitmos = selectedGenre?.ritmo && selectedGenre.ritmo.length > 0;
 
   const handleGenreChange = (newGenreId: string) => {
     onGenreChange(newGenreId);
-    onSubGenreChange(''); // Limpiamos el subgénero si el padre cambia
+    onRitmoChange(''); // Limpiamos el ritmo si el padre cambia
   };
 
   // 3. Renderizados de estado
@@ -63,15 +63,15 @@ export function GenreSelector({
         </Select>
       </div>
 
-      {/* SELECT DE SUBGÉNERO (Condicional) */}
-      {hasSubGenres && (
+      {/* SELECT DE RITMO (Condicional) */}
+      {hasRitmos && (
         <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-2">
-          <Select value={subGenre} onValueChange={onSubGenreChange} disabled={disabled}>
+          <Select value={ritmo} onValueChange={onRitmoChange} disabled={disabled}>
             <SelectTrigger>
-              <SelectValue placeholder="Selecciona un subgénero" />
+              <SelectValue placeholder="Selecciona un ritmo" />
             </SelectTrigger>
             <SelectContent>
-              {selectedGenre.subGenre!.map((sg) => (
+              {selectedGenre.ritmo!.map((sg) => (
                 <SelectItem key={sg} value={sg}>
                   {sg}
                 </SelectItem>

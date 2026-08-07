@@ -12,7 +12,7 @@ export const createTrackSchema = z.object({
   // Para la UI basta con que haya un género seleccionado (id string)
   genreId: z.string().min(1, 'Debes seleccionar un género musical'),
   
-  subGenre: z.string().optional(), 
+  ritmo: z.string().optional(),
   
   language: z.string().min(1, 'El idioma es obligatorio'),
   

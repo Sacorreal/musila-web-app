@@ -18,15 +18,15 @@ export default function GenreDetailPage({
   const { data: genre, isLoading, isError } = useGenreBySlug(slug);
 
   const [isGospelFilter, setIsGospelFilter] = useState(false);
-  const [subGenreFilter, setSubGenreFilter] = useState("all");
+  const [ritmoFilter, setRitmoFilter] = useState("all");
   const [languageFilter, setLanguageFilter] = useState("all");
   const [moodFilter, setMoodFilter] = useState("all");
   const [themeFilter, setThemeFilter] = useState("all");
 
-  const uniqueSubGenres = useMemo(() => {
+  const uniqueRitmos = useMemo(() => {
     if (!genre?.tracks) return [];
-    const subgenres = genre.tracks.map((t) => t.subGenre).filter(Boolean);
-    return Array.from(new Set(subgenres));
+    const ritmos = genre.tracks.map((t) => t.ritmo).filter(Boolean);
+    return Array.from(new Set(ritmos));
   }, [genre]);
 
   const uniqueLanguages = useMemo(() => {
@@ -53,7 +53,7 @@ export default function GenreDetailPage({
     if (!genre?.tracks) return [];
     return genre.tracks.filter((track) => {
       if (isGospelFilter && !track.isGospel) return false;
-      if (subGenreFilter !== "all" && track.subGenre !== subGenreFilter)
+      if (ritmoFilter !== "all" && track.ritmo !== ritmoFilter)
         return false;
       if (languageFilter !== "all" && track.language !== languageFilter)
         return false;
@@ -63,7 +63,7 @@ export default function GenreDetailPage({
         return false;
       return true;
     });
-  }, [genre, isGospelFilter, subGenreFilter, languageFilter, moodFilter, themeFilter]);
+  }, [genre, isGospelFilter, ritmoFilter, languageFilter, moodFilter, themeFilter]);
 
   if (isLoading) {
     return <GenreDetailSkeleton />;
@@ -83,11 +83,11 @@ export default function GenreDetailPage({
         <GenreFilters
           isGospelFilter={isGospelFilter}
           onGospelFilterChange={setIsGospelFilter}
-          subGenreFilter={subGenreFilter}
-          onSubGenreFilterChange={setSubGenreFilter}
+          ritmoFilter={ritmoFilter}
+          onRitmoFilterChange={setRitmoFilter}
           languageFilter={languageFilter}
           onLanguageFilterChange={setLanguageFilter}
-          uniqueSubGenres={uniqueSubGenres as string[]}
+          uniqueRitmos={uniqueRitmos as string[]}
           uniqueLanguages={uniqueLanguages as string[]}
           moodFilter={moodFilter}
           onMoodFilterChange={setMoodFilter}

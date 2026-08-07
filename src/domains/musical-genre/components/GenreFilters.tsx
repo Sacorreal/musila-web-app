@@ -34,11 +34,11 @@ interface ThemeOption {
 interface GenreFiltersProps {
   isGospelFilter: boolean;
   onGospelFilterChange: (value: boolean) => void;
-  subGenreFilter: string;
-  onSubGenreFilterChange: (value: string) => void;
+  ritmoFilter: string;
+  onRitmoFilterChange: (value: string) => void;
   languageFilter: string;
   onLanguageFilterChange: (value: string) => void;
-  uniqueSubGenres: string[];
+  uniqueRitmos: string[];
   uniqueLanguages: string[];
   moodFilter: string;
   onMoodFilterChange: (value: string) => void;
@@ -51,11 +51,11 @@ interface GenreFiltersProps {
 export function GenreFilters({
   isGospelFilter,
   onGospelFilterChange,
-  subGenreFilter,
-  onSubGenreFilterChange,
+  ritmoFilter,
+  onRitmoFilterChange,
   languageFilter,
   onLanguageFilterChange,
-  uniqueSubGenres,
+  uniqueRitmos,
   uniqueLanguages,
   moodFilter,
   onMoodFilterChange,
@@ -66,7 +66,7 @@ export function GenreFilters({
 }: GenreFiltersProps) {
   const hasActiveFilters =
     isGospelFilter ||
-    subGenreFilter !== "all" ||
+    ritmoFilter !== "all" ||
     languageFilter !== "all" ||
     moodFilter !== "all" ||
     themeFilter !== "all";
@@ -80,13 +80,13 @@ export function GenreFilters({
         <Switch checked={isGospelFilter} onCheckedChange={onGospelFilterChange} />
       </div>
 
-      <Select value={subGenreFilter} onValueChange={onSubGenreFilterChange}>
+      <Select value={ritmoFilter} onValueChange={onRitmoFilterChange}>
         <SelectTrigger className="w-[180px] h-10 bg-background text-foreground border border-input font-bold rounded-xl shadow-sm hover:bg-accent focus:ring-0">
-          <SelectValue placeholder="Subgénero" />
+          <SelectValue placeholder="Ritmo" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Subgéneros</SelectItem>
-          {uniqueSubGenres.map((sg) => (
+          <SelectItem value="all">Ritmos</SelectItem>
+          {uniqueRitmos.map((sg) => (
             <SelectItem key={sg} value={sg}>
               {sg}
             </SelectItem>
@@ -142,7 +142,7 @@ export function GenreFilters({
           className="h-10 text-primary hover:text-primary/80 hover:bg-primary/5 flex items-center gap-2 px-4 rounded-xl font-bold transition-all"
           onClick={() => {
             onGospelFilterChange(false);
-            onSubGenreFilterChange("all");
+            onRitmoFilterChange("all");
             onLanguageFilterChange("all");
             onMoodFilterChange("all");
             onThemeFilterChange("all");

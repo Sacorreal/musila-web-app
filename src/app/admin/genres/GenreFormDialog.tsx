@@ -21,7 +21,7 @@ import type { AdminGenreDto } from '@/src/domains/admin/types/admin.types'
 const schema = z.object({
   genre: z.string().min(1, 'El nombre del género es obligatorio'),
   slug: z.string().optional(),
-  subGenreRaw: z.string().optional(),
+  ritmoRaw: z.string().optional(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -50,20 +50,20 @@ export function GenreFormDialog({ isOpen, onClose, initialData }: Props) {
       reset({
         genre: initialData?.genre ?? '',
         slug: initialData?.slug ?? '',
-        subGenreRaw: initialData?.subGenre?.join(', ') ?? '',
+        ritmoRaw: initialData?.ritmo?.join(', ') ?? '',
       })
     }
   }, [isOpen, initialData, reset])
 
   const onSubmit = async (data: FormValues) => {
-    const subGenre = data.subGenreRaw
-      ? data.subGenreRaw.split(',').map((s) => s.trim()).filter(Boolean)
+    const ritmo = data.ritmoRaw
+      ? data.ritmoRaw.split(',').map((s) => s.trim()).filter(Boolean)
       : []
 
     if (isEdit && initialData) {
-      await updateGenre({ id: initialData.id, input: { genre: data.genre, slug: data.slug, subGenre } })
+      await updateGenre({ id: initialData.id, input: { genre: data.genre, slug: data.slug, ritmo } })
     } else {
-      await createGenre({ genre: data.genre, slug: data.slug, subGenre })
+      await createGenre({ genre: data.genre, slug: data.slug, ritmo })
     }
     reset()
     onClose()
@@ -92,8 +92,8 @@ export function GenreFormDialog({ isOpen, onClose, initialData }: Props) {
           </Field>
 
           <Field>
-            <FieldLabel>Subgéneros (separados por coma)</FieldLabel>
-            <Input placeholder="Ej: Rock Clásico, Rock Alternativo" {...register('subGenreRaw')} />
+            <FieldLabel>Ritmos (separados por coma)</FieldLabel>
+            <Input placeholder="Ej: Rock Clásico, Rock Alternativo" {...register('ritmoRaw')} />
           </Field>
 
           <div className="flex justify-end gap-3 pt-2">

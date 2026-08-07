@@ -34,7 +34,7 @@ export default function AdminEditTrackPage() {
     defaultValues: {
       title: '',
       genreId: '',
-      subGenre: '',
+      ritmo: '',
       language: '',
       lyric: '',
       iswc: '',
@@ -51,7 +51,7 @@ export default function AdminEditTrackPage() {
       reset({
         title: track.title,
         genreId: track.genre || '',
-        subGenre: track.subGenre || '',
+        ritmo: track.ritmo || '',
         language: track.language || '',
         lyric: track.lyric || '',
         iswc: track.iswc || '',
@@ -76,7 +76,7 @@ export default function AdminEditTrackPage() {
         data: {
           title: data.title,
           genreId: data.genreId,
-          subGenre: data.subGenre,
+          ritmo: data.ritmo,
           language: data.language,
           lyric: data.lyric,
           iswc: data.iswc,
@@ -161,9 +161,9 @@ export default function AdminEditTrackPage() {
                   <FieldLabel>Clasificación musical</FieldLabel>
                   <GenreSelector
                     genreId={field.value}
-                    subGenre={watch('subGenre')}
+                    ritmo={watch('ritmo')}
                     onGenreChange={field.onChange}
-                    onSubGenreChange={(val) => setValue('subGenre', val, { shouldValidate: true })}
+                    onRitmoChange={(val) => setValue('ritmo', val, { shouldValidate: true })}
                   />
                   {fieldState.error && <FieldError errors={[fieldState.error]} />}
                 </Field>

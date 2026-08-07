@@ -58,16 +58,16 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
             {track.title}
           </h1>
 
-          {/* Género y Subgénero */}
+          {/* Género y Ritmo */}
           <div className="flex flex-wrap gap-2">
             {genreName && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/20 dark:border-blue-500/30 tracking-wide uppercase">
                 {genreName}
               </span>
             )}
-            {track.subGenre && (
+            {track.ritmo && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20 dark:border-emerald-500/30 tracking-wide uppercase">
-                {track.subGenre}
+                {track.ritmo}
               </span>
             )}
           </div>

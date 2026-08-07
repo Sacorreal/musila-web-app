@@ -10,9 +10,9 @@ interface TrackFiltersToolbarProps {
   genres: AdminGenreDto[]
   genreId: string
   onGenreIdChange: (value: string) => void
-  subGenreOptions: string[]
-  subGenre: string
-  onSubGenreChange: (value: string) => void
+  ritmoOptions: string[]
+  ritmo: string
+  onRitmoChange: (value: string) => void
   language: string
   onLanguageChange: (value: string) => void
   isAvailable: Availability
@@ -29,9 +29,9 @@ export function TrackFiltersToolbar({
   genres,
   genreId,
   onGenreIdChange,
-  subGenreOptions,
-  subGenre,
-  onSubGenreChange,
+  ritmoOptions,
+  ritmo,
+  onRitmoChange,
   language,
   onLanguageChange,
   isAvailable,
@@ -82,15 +82,15 @@ export function TrackFiltersToolbar({
           ))}
         </select>
 
-        {/* Subgénero — solo visible si hay un género seleccionado con subgéneros */}
-        {genreId && subGenreOptions.length > 0 && (
+        {/* Ritmo — solo visible si hay un género seleccionado con ritmos */}
+        {genreId && ritmoOptions.length > 0 && (
           <select
-            value={subGenre}
-            onChange={(e) => onSubGenreChange(e.target.value)}
+            value={ritmo}
+            onChange={(e) => onRitmoChange(e.target.value)}
             className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
           >
-            <option value="">Todos los subgéneros</option>
-            {subGenreOptions.map((sg) => (
+            <option value="">Todos los ritmos</option>
+            {ritmoOptions.map((sg) => (
               <option key={sg} value={sg}>{sg}</option>
             ))}
           </select>

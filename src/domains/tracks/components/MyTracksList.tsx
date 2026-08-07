@@ -113,7 +113,7 @@ export function MyTracksList() {
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4">Estado</th>
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-center">Visible</th>
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 hidden md:table-cell">Género</th>
-                <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 hidden md:table-cell">Subgénero</th>
+                <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 hidden md:table-cell">Ritmo</th>
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-center">Acciones</th>
               </tr>
             </thead>
@@ -179,7 +179,7 @@ export function MyTracksList() {
                     {typeof track.genre === 'string' ? track.genre : (track.genre as any)?.genre || "-"}
                   </td>
                   <td className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm text-muted-foreground font-medium hidden md:table-cell">
-                    {track.subGenre || "-"}
+                    {track.ritmo || "-"}
                   </td>
                   <td className="px-2 sm:px-4 md:px-6 py-3 sm:py-4">
                     <div className="flex flex-col items-center gap-1.5" onClick={(e) => e.stopPropagation()}>

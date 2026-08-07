@@ -53,7 +53,7 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
     defaultValues: {
       title: "",
       genreId: "",
-      subGenre: "",
+      ritmo: "",
       language: "",
       lyric: "",
       iswc: "",
@@ -73,7 +73,7 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
       reset({
         title: track.title,
         genreId: track.genre || "", // Puede requerir lógica adicional si genre es el string y necesitas el ID
-        subGenre: track.subGenre || "",
+        ritmo: track.ritmo || "",
         language: track.language || "",
         lyric: track.lyric || "",
         iswc: track.iswc || "",
@@ -97,7 +97,7 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
       const payload = {
         title: data.title,
         genreId: data.genreId,
-        subGenre: data.subGenre,
+        ritmo: data.ritmo,
         language: data.language,
         lyric: data.lyric,
         iswc: data.iswc,
@@ -216,9 +216,9 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                         <FieldLabel>Clasificación musical</FieldLabel>
                         <GenreSelector
                           genreId={field.value}
-                          subGenre={watch("subGenre")}
+                          ritmo={watch("ritmo")}
                           onGenreChange={field.onChange}
-                          onSubGenreChange={(val) => setValue("subGenre", val, { shouldValidate: true })}
+                          onRitmoChange={(val) => setValue("ritmo", val, { shouldValidate: true })}
                         />
                         {fieldState.error && <FieldError errors={[fieldState.error]} />}
                       </Field>

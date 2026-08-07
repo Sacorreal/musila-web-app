@@ -26,7 +26,7 @@ export default function AdminTracksPage() {
   const [isAvailable, setIsAvailable] = useState<'all' | 'true' | 'false'>('all')
   const [isGospel, setIsGospel] = useState<'all' | 'true' | 'false'>('all')
   const [genreId, setGenreId] = useState('')
-  const [subGenre, setSubGenre] = useState('')
+  const [ritmo, setRitmo] = useState('')
 
   const debouncedTitle = useDebouncedSearch(titleInput, 400)
 
@@ -34,10 +34,10 @@ export default function AdminTracksPage() {
   const { data: genresData } = adminHooks.useAdminGenres(1, 200)
   const genres = genresData?.data ?? []
 
-  // Subgéneros del género seleccionado
-  const subGenreOptions = useMemo(() => {
+  // Ritmos del género seleccionado
+  const ritmoOptions = useMemo(() => {
     if (!genreId) return []
-    return genres.find((g) => g.id === genreId)?.subGenre ?? []
+    return genres.find((g) => g.id === genreId)?.ritmo ?? []
   }, [genreId, genres])
 
   const filters: TrackFilters = {
@@ -46,11 +46,11 @@ export default function AdminTracksPage() {
     ...(isAvailable !== 'all' && { isAvailable: isAvailable === 'true' }),
     ...(isGospel !== 'all' && { isGospel: isGospel === 'true' }),
     ...(genreId && { genreId }),
-    ...(subGenre && { subGenre }),
+    ...(ritmo && { ritmo }),
   }
 
   const hasActiveFilters =
-    !!debouncedTitle || !!language || isAvailable !== 'all' || isGospel !== 'all' || !!genreId || !!subGenre
+    !!debouncedTitle || !!language || isAvailable !== 'all' || isGospel !== 'all' || !!genreId || !!ritmo
 
   const resetFilters = useCallback(() => {
     setTitleInput('')
@@ -58,15 +58,15 @@ export default function AdminTracksPage() {
     setIsAvailable('all')
     setIsGospel('all')
     setGenreId('')
-    setSubGenre('')
+    setRitmo('')
     setPage(1)
   }, [])
 
   // Resetear página al cambiar filtros
-  useEffect(() => { setPage(1) }, [debouncedTitle, language, isAvailable, isGospel, genreId, subGenre])
+  useEffect(() => { setPage(1) }, [debouncedTitle, language, isAvailable, isGospel, genreId, ritmo])
 
-  // Resetear subgénero al cambiar género
-  useEffect(() => { setSubGenre('') }, [genreId])
+  // Resetear ritmo al cambiar género
+  useEffect(() => { setRitmo('') }, [genreId])
 
   const { data, isLoading, error } = adminHooks.useAdminTracks(page, limit, filters)
   const { mutate: deleteTrack, isPending: isDeleting } = adminHooks.useDeleteTrack()
@@ -112,9 +112,9 @@ export default function AdminTracksPage() {
         genres={genres}
         genreId={genreId}
         onGenreIdChange={setGenreId}
-        subGenreOptions={subGenreOptions}
-        subGenre={subGenre}
-        onSubGenreChange={setSubGenre}
+        ritmoOptions={ritmoOptions}
+        ritmo={ritmo}
+        onRitmoChange={setRitmo}
         language={language}
         onLanguageChange={setLanguage}
         isAvailable={isAvailable}

@@ -55,7 +55,7 @@ export async function fetchAllTracks(
   if (filters.isAvailable !== undefined) params.isAvailable = filters.isAvailable
   if (filters.isGospel !== undefined) params.isGospel = filters.isGospel
   if (filters.genreId) params.genreId = filters.genreId
-  if (filters.subGenre) params.subGenre = filters.subGenre
+  if (filters.ritmo) params.ritmo = filters.ritmo
   const response = await client.get<PaginatedAdminTracks>(apiURLs.tracks.base, { params })
   return response.data
 }
