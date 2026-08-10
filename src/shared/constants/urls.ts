@@ -263,6 +263,52 @@ export const apiURLs = {
     downloadPdf: (id: string) => `/registration-file/${id}/download/pdf` as const, // GET (binary)
     downloadZip: (id: string) => `/registration-file/${id}/download/zip` as const, // GET (binary)
   },
+  authz: {
+    myCapabilities: '/users/me/capabilities' as const, // GET (header x-organization-id opcional)
+    myMemberships: '/users/me/memberships' as const, // GET
+    myEntitlements: '/users/me/entitlements' as const, // GET
+    myUsage: '/users/me/usage' as const, // GET
+    permissionsCatalog: '/permissions/catalog' as const, // GET (MATRIZ DE CAPACIDADES)
+    adminCapabilities: {
+      base: '/admin/capabilities' as const, // GET
+      byId: (id: string) => `/admin/capabilities/${id}` as const, // PATCH
+    },
+    adminExplain: '/admin/authorization/explain' as const, // GET ?userId&organizationId
+    adminCheck: '/admin/authorization/check' as const, // POST
+  },
+  organizations: {
+    adminBase: '/admin/organizations' as const, // GET, POST
+    adminById: (id: string) => `/admin/organizations/${id}` as const, // GET, PATCH
+    roles: (orgId: string) => `/organizations/${orgId}/roles` as const, // GET, POST
+    roleById: (orgId: string, roleId: string) => `/organizations/${orgId}/roles/${roleId}` as const, // GET, PATCH, DELETE
+    roleCapabilities: (orgId: string, roleId: string) =>
+      `/organizations/${orgId}/roles/${roleId}/capabilities` as const, // PUT
+    roleCapabilityById: (orgId: string, roleId: string, capabilityId: string) =>
+      `/organizations/${orgId}/roles/${roleId}/capabilities/${capabilityId}` as const, // POST, DELETE
+    members: (orgId: string) => `/organizations/${orgId}/members` as const, // GET ?type=, POST (invite)
+    memberStatus: (orgId: string, membershipId: string) =>
+      `/organizations/${orgId}/members/${membershipId}/status` as const, // PATCH
+    memberRoles: (orgId: string, membershipId: string) =>
+      `/organizations/${orgId}/members/${membershipId}/roles` as const, // GET, PUT
+    memberAccept: (orgId: string, membershipId: string) =>
+      `/organizations/${orgId}/members/${membershipId}/accept` as const, // POST
+    trackspaces: (orgId: string) => `/organizations/${orgId}/trackspaces` as const, // GET
+    trackspaceById: (orgId: string, trackspaceId: string) =>
+      `/organizations/${orgId}/trackspaces/${trackspaceId}` as const, // PATCH
+    entitlements: (orgId: string) => `/organizations/${orgId}/entitlements` as const, // GET
+  },
+  plansAdmin: {
+    base: '/admin/plans' as const, // GET
+    byId: (id: string) => `/admin/plans/${id}` as const, // PATCH
+    entitlement: (planId: string, entitlementId: string) =>
+      `/admin/plans/${planId}/entitlements/${entitlementId}` as const, // PUT
+    capabilities: (planId: string) => `/admin/plans/${planId}/capabilities` as const, // PUT
+    entitlementsCatalog: '/admin/entitlements' as const, // GET
+  },
+  subscriptionsAdmin: {
+    base: '/admin/subscriptions' as const, // GET
+    byId: (id: string) => `/admin/subscriptions/${id}` as const, // PATCH
+  },
   staff: {
     permissions: '/staff/permissions' as const, // GET
     roles: {

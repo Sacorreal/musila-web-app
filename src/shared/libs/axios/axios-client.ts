@@ -28,6 +28,15 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // Contexto de organización activa (workspace B2B): el backend NUNCA confía
+    // en este header — valida la membership ACTIVE en BD (AuthorizationGuard).
+    const { useOrganizationStore } = require("@/src/domains/organizations/store/use-organization-store");
+    const activeOrganizationId = useOrganizationStore.getState().activeOrganizationId;
+
+    if (activeOrganizationId && config.headers && !config.headers["x-organization-id"]) {
+      config.headers["x-organization-id"] = activeOrganizationId;
+    }
+
     return config;
   },
   (error) => {
