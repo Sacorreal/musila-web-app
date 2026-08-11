@@ -15,7 +15,10 @@ export interface CreateOrganizationInput {
   slug: string
   type: OrganizationType
   planKey?: string
-  adminUserId?: string
+  /** Email del Organization Admin inicial (obligatorio). */
+  adminEmail: string
+  /** Nombre del Organization Admin, para personalizar el correo (opcional). */
+  adminName?: string
 }
 
 export interface UpdateOrganizationInput {

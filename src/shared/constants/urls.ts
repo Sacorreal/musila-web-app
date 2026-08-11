@@ -8,6 +8,7 @@ export const apiURLs = {
     resetPassword: '/auth/reset-password' as const,
     verifyEmail: `${BASE_API_URL}/auth/verify-email` as const,
     resendVerification: `${BASE_API_URL}/auth/resend-verification` as const,
+    registerOrgAdmin: `${BASE_API_URL}/auth/register/org-admin` as const,
   },
   users: {
     base: '/users' as const,
@@ -281,6 +282,7 @@ export const apiURLs = {
   organizations: {
     adminBase: '/admin/organizations' as const, // GET, POST
     adminById: (id: string) => `/admin/organizations/${id}` as const, // GET, PATCH
+    invitePublic: (token: string) => `${BASE_API_URL}/organization-invites/${token}` as const, // GET (público)
     roles: (orgId: string) => `/organizations/${orgId}/roles` as const, // GET, POST
     roleById: (orgId: string, roleId: string) => `/organizations/${orgId}/roles/${roleId}` as const, // GET, PATCH, DELETE
     roleCapabilities: (orgId: string, roleId: string) =>

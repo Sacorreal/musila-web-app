@@ -1,14 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Loader2 } from 'lucide-react'
 import { adminOrganizationsHooks } from '@/src/domains/admin/organizations/organizations.hooks'
 import { adminPlansHooks } from '@/src/domains/admin/plans/plans.hooks'
-import { AdminEntitySelect } from '@/src/domains/admin/shared/AdminEntitySelect'
-import { fetchUserOptions } from '@/src/domains/admin/shared/fetch-user-options'
 import { Button } from '@/src/shared/components/UI/button'
 import { Input } from '@/src/shared/components/UI/input'
 import { Field, FieldLabel, FieldError } from '@/src/shared/components/UI/field'
@@ -45,7 +43,8 @@ const schema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Solo minúsculas, números y guiones'),
   type: z.enum(['LABEL', 'PUBLISHER', 'MANAGEMENT', 'AGENCY', 'MUSIC_LIBRARY', 'OTHER']),
   planKey: z.string().optional(),
-  adminUserId: z.string().optional(),
+  adminEmail: z.string().min(1, 'El email es obligatorio').email('Email inválido'),
+  adminName: z.string().max(150).optional(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -58,7 +57,6 @@ interface OrganizationFormDialogProps {
 export function OrganizationFormDialog({ isOpen, onClose }: OrganizationFormDialogProps) {
   const { mutate: createOrganization, isPending } = adminOrganizationsHooks.useCreateOrganization()
   const { data: plans } = adminPlansHooks.usePlans()
-  const [adminUserId, setAdminUserId] = useState<string | null>(null)
 
   const organizationPlans = (plans ?? []).filter((plan) => plan.subjectType === 'ORGANIZATION')
 
@@ -75,8 +73,14 @@ export function OrganizationFormDialog({ isOpen, onClose }: OrganizationFormDial
 
   useEffect(() => {
     if (isOpen) {
-      reset({ name: '', slug: '', type: 'LABEL', planKey: undefined, adminUserId: undefined })
-      setAdminUserId(null)
+      reset({
+        name: '',
+        slug: '',
+        type: 'LABEL',
+        planKey: undefined,
+        adminEmail: '',
+        adminName: '',
+      })
     }
   }, [isOpen, reset])
 
@@ -87,7 +91,8 @@ export function OrganizationFormDialog({ isOpen, onClose }: OrganizationFormDial
         slug: values.slug,
         type: values.type,
         planKey: values.planKey || undefined,
-        adminUserId: adminUserId ?? undefined,
+        adminEmail: values.adminEmail,
+        adminName: values.adminName?.trim() || undefined,
       },
       { onSuccess: onClose },
     )
@@ -164,14 +169,27 @@ export function OrganizationFormDialog({ isOpen, onClose }: OrganizationFormDial
             </Field>
           )}
 
-          <Field>
-            <FieldLabel>Organization Admin inicial (opcional)</FieldLabel>
-            <AdminEntitySelect
-              value={adminUserId}
-              onChange={setAdminUserId}
-              fetchOptions={fetchUserOptions}
-              placeholder="Buscar usuario por nombre o email..."
+          <Field data-invalid={!!errors.adminEmail}>
+            <FieldLabel htmlFor="org-admin-email">Email del Organization Admin</FieldLabel>
+            <Input
+              id="org-admin-email"
+              type="email"
+              placeholder="admin@sonymusic.com"
+              {...register('adminEmail')}
             />
+            {errors.adminEmail ? (
+              <FieldError errors={[{ message: errors.adminEmail.message! }]} />
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Si ya tiene cuenta se le asigna el rol; si no, recibe una invitación por email para
+                registrarse.
+              </p>
+            )}
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="org-admin-name">Nombre del admin (opcional)</FieldLabel>
+            <Input id="org-admin-name" placeholder="Ana Ruiz" {...register('adminName')} />
           </Field>
 
           <DialogFooter>
