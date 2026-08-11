@@ -1,7 +1,12 @@
 import { hasAnyCapability } from '@/src/domains/admin/authorization/capability-gate'
 import { AdminAccessDenied } from '@/src/domains/admin/components/AdminAccessDenied'
 
-const REQUIRED_CAPABILITIES = ['platform.billing.view', 'platform.billing.manage', 'platform.settings.manage']
+const REQUIRED_CAPABILITIES = [
+  'platform.billing.view',
+  'platform.billing.manage',
+  'platform.settings.manage',
+  'platform.plans.manage',
+]
 
 export default async function AdminPlansLayout({ children }: { children: React.ReactNode }) {
   if (!(await hasAnyCapability(REQUIRED_CAPABILITIES))) {

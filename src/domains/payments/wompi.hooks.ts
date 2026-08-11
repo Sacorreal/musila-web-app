@@ -8,10 +8,12 @@ import {
   checkoutResponseSchema,
   licenseCheckoutResponseSchema,
   licenseInstallmentCheckoutResponseSchema,
+  licenseQuoteSchema,
   type CheckoutInput,
   type CheckoutResponse,
   type LicenseCheckoutResponse,
   type LicenseInstallmentCheckoutResponse,
+  type LicenseQuote,
 } from './wompi.schema';
 import { apiClient } from '@shared/libs/axios/axios-client';
 
@@ -85,9 +87,29 @@ export function useLicenseCheckout(options: UseLicenseCheckoutOptions = {}) {
         reference: checkout.externalReference,
         licensePrice: checkout.licensePrice,
         commission: checkout.commission,
+        commissionRate: checkout.commissionRate,
         total: checkout.total,
       };
     },
+  });
+}
+
+/**
+ * Preview del desglose de comisión de una licencia (§18). Usa `apiClient`, que
+ * inyecta `x-organization-id` desde el store: si el comprador actúa como
+ * organización B2B, devuelve la comisión real configurada por su plan.
+ */
+async function fetchLicenseQuote(requestedTrackId: string): Promise<LicenseQuote> {
+  const { data } = await apiClient.get<LicenseQuote>(apiURLs.payments.licenseQuote(requestedTrackId));
+  return licenseQuoteSchema.parse(data);
+}
+
+export function useLicenseQuote(requestedTrackId: string | null, enabled = true) {
+  return useQuery({
+    queryKey: ['license-quote', requestedTrackId],
+    enabled: Boolean(requestedTrackId) && enabled,
+    queryFn: () => fetchLicenseQuote(requestedTrackId as string),
+    staleTime: 60 * 1000,
   });
 }
 

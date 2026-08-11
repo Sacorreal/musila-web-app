@@ -31,7 +31,18 @@ export const checkoutResponseSchema = z.object({
 export const licenseCheckoutResponseSchema = checkoutResponseSchema.extend({
   licensePrice: z.number(),
   commission: z.number(),
+  commissionRate: z.number().optional(),
   total: z.number(),
+});
+
+/** Preview del desglose de comisión antes de pagar (§18). */
+export const licenseQuoteSchema = z.object({
+  licensePrice: z.number(),
+  commission: z.number(),
+  commissionRate: z.number(),
+  currency: z.string().min(1),
+  total: z.number(),
+  isB2B: z.boolean(),
 });
 
 export const licenseInstallmentCheckoutResponseSchema = checkoutResponseSchema.extend({
@@ -44,6 +55,7 @@ export type CheckoutInput = z.infer<typeof checkoutInputSchema>;
 export type WidgetParams = z.infer<typeof widgetParamsSchema>;
 export type CheckoutResponse = z.infer<typeof checkoutResponseSchema>;
 export type LicenseCheckoutResponse = z.infer<typeof licenseCheckoutResponseSchema>;
+export type LicenseQuote = z.infer<typeof licenseQuoteSchema>;
 export type LicenseInstallmentCheckoutResponse = z.infer<typeof licenseInstallmentCheckoutResponseSchema>;
 export type WompiPlanType = z.infer<typeof paymentPlanTypeSchema>;
 export type WompiBillingPeriod = z.infer<typeof billingPeriodSchema>;

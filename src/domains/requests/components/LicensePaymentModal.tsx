@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/src/shared/c
 import { Button } from "@/src/shared/components/UI/button";
 import { CheckCircle2, CreditCard, Loader2, Music, XCircle } from "lucide-react";
 import { TrackRequest } from "../types/request.types";
-import { useLicenseCheckout, useLicensePaymentStatusPolling } from "@/src/domains/payments/payments.hooks";
+import { useLicenseCheckout, useLicenseQuote, useLicensePaymentStatusPolling } from "@/src/domains/payments/payments.hooks";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { OtpVerificationStep } from "@/src/shared/components/otp/OtpVerificationStep";
@@ -27,6 +27,7 @@ const fmtCOP = (amount: number) =>
 interface CheckoutBreakdown {
   licensePrice: number;
   commission: number;
+  commissionRate?: number;
   total: number;
 }
 
@@ -47,6 +48,12 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
     step === "polling" ? reference : null
   );
 
+  // §18: el comprador debe conocer el fee real (según su plan/organización)
+  // antes de pagar. Se resuelve sin efectos secundarios al abrir el modal.
+  const { data: quote, isLoading: isQuoteLoading } = useLicenseQuote(
+    isOpen ? request.id : null,
+  );
+
   useEffect(() => {
     if (step !== "polling" || !statusData) return;
     if (statusData.status === "approved") {
@@ -62,7 +69,12 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
     setStep("processing");
     startCheckout(request.id, {
       onSuccess: (data) => {
-        setBreakdown({ licensePrice: data.licensePrice, commission: data.commission, total: data.total });
+        setBreakdown({
+          licensePrice: data.licensePrice,
+          commission: data.commission,
+          commissionRate: data.commissionRate,
+          total: data.total,
+        });
         setReference(data.reference);
         setStep("polling");
       },
@@ -89,9 +101,13 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
     setBreakdown(null);
   };
 
-  const licensePrice = Number(request.licensePrice || 0);
-  const commission = breakdown?.commission ?? Math.round(licensePrice * 0.10);
-  const total = breakdown?.total ?? (licensePrice + commission);
+  // Preferimos el desglose ya confirmado por el checkout; si no, el preview
+  // real (§18); solo como último recurso mostramos el precio base.
+  const source = breakdown ?? quote ?? null;
+  const licensePrice = source?.licensePrice ?? Number(request.licensePrice || 0);
+  const commission = source?.commission ?? null;
+  const commissionRate = source?.commissionRate ?? null;
+  const total = source?.total ?? null;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -129,7 +145,7 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
                 exit={{ opacity: 0, y: -8 }}
                 className="flex flex-col gap-5"
               >
-                {/* Desglose de precios */}
+                {/* Desglose de precios (§18: el fee real antes de pagar) */}
                 <div className="rounded-2xl border border-border/50 overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 bg-muted/20">
                     <span className="text-sm text-muted-foreground">Precio de la licencia</span>
@@ -137,14 +153,22 @@ export function LicensePaymentModal({ isOpen, request, onClose, onSuccess }: Pro
                   </div>
                   <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border-t border-border/30">
                     <span className="text-sm text-muted-foreground">
-                      Comisión Musila
-                      <span className="ml-1.5 text-xs font-bold text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded-full">10%</span>
+                      Comisión de servicio Musila
+                      {commissionRate !== null && (
+                        <span className="ml-1.5 text-xs font-bold text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded-full">
+                          {commissionRate}%
+                        </span>
+                      )}
                     </span>
-                    <span className="text-sm font-bold text-foreground">{fmtCOP(commission)}</span>
+                    <span className="text-sm font-bold text-foreground">
+                      {commission !== null ? fmtCOP(commission) : isQuoteLoading ? "…" : "—"}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between px-4 py-3.5 bg-primary/5 border-t border-primary/20">
                     <span className="text-sm font-black uppercase tracking-wider text-primary">Total a pagar</span>
-                    <span className="text-xl font-black text-primary">{fmtCOP(total)}</span>
+                    <span className="text-xl font-black text-primary">
+                      {total !== null ? fmtCOP(total) : isQuoteLoading ? "…" : fmtCOP(licensePrice)}
+                    </span>
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground text-center">

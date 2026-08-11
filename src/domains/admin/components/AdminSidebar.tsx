@@ -120,6 +120,12 @@ const navGroups: NavGroup[] = [
         requiredPermissions: ['platform.billing.view', 'platform.settings.manage'],
       },
       {
+        href: '/admin/plans/transaction-fees',
+        icon: Percent,
+        label: 'Comisión Marketplace',
+        requiredPermissions: ['platform.plans.manage'],
+      },
+      {
         href: '/admin/subscriptions',
         icon: CreditCard,
         label: 'Subscriptions',

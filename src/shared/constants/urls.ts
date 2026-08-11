@@ -92,6 +92,8 @@ export const apiURLs = {
   payments: {
     checkout: `${BASE_API_URL}/payments/checkout` as const,
     licenseCheckout: `${BASE_API_URL}/payments/license-checkout` as const,
+    licenseQuote: (requestedTrackId: string) =>
+      `${BASE_API_URL}/payments/license-quote/${requestedTrackId}` as const,
     licenseStatus: (reference: string) => `${BASE_API_URL}/payments/license-status/${reference}` as const,
     paymentSources: `${BASE_API_URL}/payments/payment-sources` as const,
     paymentSourceMe: `${BASE_API_URL}/payments/payment-sources/me` as const,
@@ -304,6 +306,10 @@ export const apiURLs = {
       `/admin/plans/${planId}/entitlements/${entitlementId}` as const, // PUT
     capabilities: (planId: string) => `/admin/plans/${planId}/capabilities` as const, // PUT
     entitlementsCatalog: '/admin/entitlements' as const, // GET
+    transactionFees: '/admin/plans/transaction-fees' as const, // GET (matriz completa §6)
+    transactionFee: (planId: string) => `/admin/plans/${planId}/transaction-fee` as const, // GET, PUT
+    transactionFeeHistory: (planId: string) =>
+      `/admin/plans/${planId}/transaction-fee/history` as const, // GET
   },
   subscriptionsAdmin: {
     base: '/admin/subscriptions' as const, // GET

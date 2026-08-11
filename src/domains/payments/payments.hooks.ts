@@ -6,6 +6,7 @@ export {
   useWompiCheckout,
   usePaymentStatusPolling,
   useLicenseCheckout,
+  useLicenseQuote,
   useLicensePaymentStatusPolling,
   useLicenseInstallmentCheckout,
 } from './wompi.hooks';
