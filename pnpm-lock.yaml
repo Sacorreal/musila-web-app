@@ -92,6 +92,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: 1.1.6
         version: 1.1.6(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@simplewebauthn/browser':
+        specifier: ^13.3.0
+        version: 13.3.0
       '@tanstack/react-query':
         specifier: ^5.90.21
         version: 5.90.21(react@19.2.0)
@@ -2159,6 +2162,9 @@ packages:
 
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
+
+  '@simplewebauthn/browser@13.3.0':
+    resolution: {integrity: sha512-BE/UWv6FOToAdVk0EokzkqQQDOWtNydYlY6+OrmiZ5SCNmb41VehttboTetUM3T/fr6EAFYVXjz4My2wg230rQ==}
 
   '@sinclair/typebox@0.34.48':
     resolution: {integrity: sha512-kKJTNuK3AQOrgjjotVxMrCn1sUJwM76wMszfq1kdU4uYVJjvEWuFQ6HgvLt4Xz3fSmZlTOxJ/Ie13KnIcWQXFA==}
@@ -6639,6 +6645,8 @@ snapshots:
   '@radix-ui/rect@1.1.0': {}
 
   '@radix-ui/rect@1.1.1': {}
+
+  '@simplewebauthn/browser@13.3.0': {}
 
   '@sinclair/typebox@0.34.48': {}
 

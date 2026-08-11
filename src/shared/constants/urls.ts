@@ -10,6 +10,30 @@ export const apiURLs = {
     resendVerification: `${BASE_API_URL}/auth/resend-verification` as const,
     registerOrgAdmin: `${BASE_API_URL}/auth/register/org-admin` as const,
   },
+  security: {
+    passkeys: {
+      base: `${BASE_API_URL}/auth/passkeys` as const,
+      registerOptions: `${BASE_API_URL}/auth/passkeys/register/options` as const,
+      registerVerify: `${BASE_API_URL}/auth/passkeys/register/verify` as const,
+      loginOptions: `${BASE_API_URL}/auth/passkeys/login/options` as const,
+      loginVerify: `${BASE_API_URL}/auth/passkeys/login/verify` as const,
+      byId: (id: string) => `${BASE_API_URL}/auth/passkeys/${id}` as const,
+      rename: (id: string) => `${BASE_API_URL}/auth/passkeys/${id}/rename` as const,
+    },
+    mfa: {
+      status: `${BASE_API_URL}/auth/mfa/status` as const,
+      totpSetup: `${BASE_API_URL}/auth/mfa/totp/setup` as const,
+      totpConfirm: `${BASE_API_URL}/auth/mfa/totp/confirm` as const,
+      totpDisable: `${BASE_API_URL}/auth/mfa/totp` as const,
+      stepUpChallenge: `${BASE_API_URL}/auth/mfa/step-up/challenge` as const,
+      stepUp: `${BASE_API_URL}/auth/mfa/step-up` as const,
+    },
+    recoveryCodes: {
+      regenerate: `${BASE_API_URL}/auth/recovery-codes/regenerate` as const,
+    },
+    organizationPolicy: (orgId: string) =>
+      `${BASE_API_URL}/organizations/${orgId}/security-policy` as const,
+  },
   users: {
     base: '/users' as const,
     roles: '/users/roles' as const,

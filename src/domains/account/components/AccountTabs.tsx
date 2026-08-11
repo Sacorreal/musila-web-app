@@ -9,14 +9,16 @@ const ProfileTab    = lazy(() => import('./tabs/ProfileTab').then(m => ({ defaul
 const PlanTab       = lazy(() => import('./tabs/PlanTab').then(m => ({ default: m.PlanTab })));
 const PaymentsTab   = lazy(() => import('./tabs/PaymentsTab').then(m => ({ default: m.PaymentsTab })));
 const BillingTab    = lazy(() => import('./tabs/BillingTab').then(m => ({ default: m.BillingTab })));
+const SecurityTab   = lazy(() => import('./tabs/SecurityTab').then(m => ({ default: m.SecurityTab })));
 
-type Tab = 'perfil' | 'plan' | 'pagos' | 'facturacion';
+type Tab = 'perfil' | 'plan' | 'pagos' | 'facturacion' | 'seguridad';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'perfil',      label: 'Perfil' },
   { id: 'plan',        label: 'Mi Plan' },
   { id: 'pagos',       label: 'Pagos' },
   { id: 'facturacion', label: 'Facturación' },
+  { id: 'seguridad',   label: 'Seguridad' },
 ];
 
 interface AccountTabsProps {
@@ -58,6 +60,7 @@ export function AccountTabs({ activeTab }: AccountTabsProps) {
         {activeTab === 'plan'        && <PlanTab />}
         {activeTab === 'pagos'       && <PaymentsTab />}
         {activeTab === 'facturacion' && <BillingTab />}
+        {activeTab === 'seguridad'   && <SecurityTab />}
       </Suspense>
     </div>
   );

@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { LoginInput } from "../types/auth.types";
 import { useAuth } from "../hooks/use-auth";
+import { PasskeyLoginButton } from "@domains/security/components/PasskeyLoginButton";
 
 export function LoginForm() {
   const router = useRouter();
@@ -102,6 +103,12 @@ export function LoginForm() {
           "Iniciar sesión"
         )}
       </Button>
+
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" /> o <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <PasskeyLoginButton />
     </form>
   );
 }
