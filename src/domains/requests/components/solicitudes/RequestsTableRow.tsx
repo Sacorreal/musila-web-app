@@ -15,6 +15,8 @@ import Link from "next/link";
 import { Button } from "@/src/shared/components/UI/button";
 import { RequestStatus, TrackRequest } from "../../types/request.types";
 import { StatusBadge } from "./StatusBadge";
+import { LicensePipelineCompact } from "../pipeline/LicensePipelineCompact";
+import { useCanUseLicensePipeline } from "../../hooks/use-license-pipeline-access.hook";
 
 interface Props {
   request: TrackRequest;
@@ -43,6 +45,7 @@ export function RequestsTableRow({
   onDownload,
   onClick,
 }: Props) {
+  const canUsePipeline = useCanUseLicensePipeline();
   const authorsArr = (request.track as any)?.authors as any[] | undefined;
   const authorName = Array.isArray(authorsArr) && authorsArr.length > 0
     ? authorsArr.map((a) => `${a.name ?? ""} ${a.lastName ?? ""}`.trim()).join(", ")
@@ -116,8 +119,9 @@ export function RequestsTableRow({
 
       {/* Estado */}
       <td className="px-3 sm:px-5 md:px-8 py-3 sm:py-4 md:py-5">
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-2">
           <StatusBadge status={request.status} />
+          {canUsePipeline && <LicensePipelineCompact request={request} />}
         </div>
       </td>
 

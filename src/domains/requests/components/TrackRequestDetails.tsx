@@ -24,6 +24,8 @@ import { cn } from "@/src/shared/libs/cn";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
 import { LicenseContractSection } from "@/src/domains/license-contracts/components/LicenseContractSection";
+import { LicensePipeline } from "./pipeline/LicensePipeline";
+import { useCanUseLicensePipeline } from "../hooks/use-license-pipeline-access.hook";
 // import { LicensePaymentModal } from "./LicensePaymentModal"; // PRECIO DE LICENCIA — EN PAUSA
 
 interface Props {
@@ -56,6 +58,7 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
   */
 
   const user = useAuthStore((s) => s.user);
+  const canUsePipeline = useCanUseLicensePipeline();
   const isRequester = user?.id === request.requester?.id;
   const canCancel = isRequester && request.status === RequestStatus.PENDIENTE;
   const canOwnerApproveDirectly = isOwner;
@@ -150,6 +153,9 @@ export function TrackRequestDetails({ request, isOwner, onClose }: Props) {
           </p>
         </div>
       </div>
+
+      {/* Pipeline de la licencia (publishers y planes autor/360) */}
+      {canUsePipeline && <LicensePipeline request={request} />}
 
       {/* Description */}
       <div className="bg-muted/30 p-6 rounded-[1.5rem] border border-border/50">
