@@ -266,11 +266,11 @@ export const apiURLs = {
     policy: (orgId: string) => `/organizations/${orgId}/commission-policy` as const,
     roster: (orgId: string) => `/organizations/${orgId}/commission-policy/roster` as const,
   },
-  // ✍️ Coautoría por defecto de la publisher sobre su roster
-  publisherCoauthor: {
-    policy: (orgId: string) => `/organizations/${orgId}/coauthor-defaults` as const,
-    roster: (orgId: string) => `/organizations/${orgId}/coauthor-defaults/roster` as const,
-    mine: () => `/users/me/publisher-coauthors` as const,
+  // 💰 Publisher's Share de la publisher sobre su roster (metadata informativa)
+  publisherShare: {
+    policy: (orgId: string) => `/organizations/${orgId}/publisher-shares` as const,
+    roster: (orgId: string) => `/organizations/${orgId}/publisher-shares/roster` as const,
+    mine: () => `/users/me/publisher-shares` as const,
   },
   blog: {
     articles: {

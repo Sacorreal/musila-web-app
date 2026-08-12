@@ -82,15 +82,8 @@ export function TrackSplitsSection({ track }: Props) {
             {split.authors.map((author) => (
               <div key={author.id} className="flex items-center justify-between gap-4 rounded-xl border bg-muted/10 p-4">
                 <div className="min-w-0">
-                  <p className="flex items-center gap-2 truncate font-semibold text-foreground">
-                    {author.organization
-                      ? author.organization.name
-                      : `${author.user?.name ?? ""} ${author.user?.lastName ?? ""}`}
-                    {author.organization && (
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
-                        Publisher
-                      </span>
-                    )}
+                  <p className="truncate font-semibold text-foreground">
+                    {`${author.user?.name ?? ""} ${author.user?.lastName ?? ""}`}
                   </p>
                   <p className="text-xs text-muted-foreground">{COAUTHOR_ROLE_LABELS[author.role]}</p>
                   {author.status === SplitAuthorStatus.REJECTED && author.rejectionReason && (
@@ -104,6 +97,26 @@ export function TrackSplitsSection({ track }: Props) {
               </div>
             ))}
           </div>
+
+          {split.publisherShares && split.publisherShares.length > 0 && (
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+              <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
+                Publisher&apos;s Share
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-primary">
+                  informativo
+                </span>
+              </p>
+              {split.publisherShares.map((share) => (
+                <div key={share.organizationId} className="flex items-center justify-between gap-4 py-1">
+                  <span className="truncate text-sm font-medium text-foreground">{share.organizationName}</span>
+                  <span className="shrink-0 font-bold text-foreground">{Number(share.percentage)}%</span>
+                </div>
+              ))}
+              <p className="mt-2 text-xs text-muted-foreground">
+                Dato de referencia para el expediente del track. No forma parte del reparto entre coautores.
+              </p>
+            </div>
+          )}
 
           {myAuthorEntry?.status === SplitAuthorStatus.PENDING && (
             <Button onClick={() => setApprovalAuthor(myAuthorEntry)} className="w-full gap-2">

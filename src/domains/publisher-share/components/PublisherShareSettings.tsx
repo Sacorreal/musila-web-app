@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, PenLine, Users } from 'lucide-react';
+import { Loader2, Percent, Users } from 'lucide-react';
 
 import { Button } from '@shared/components/UI/button';
 import { Input } from '@shared/components/UI/input';
@@ -16,16 +16,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@shared/components/UI/card';
-import { COAUTHOR_ROLE_LABELS, CoauthorRole } from '@/src/domains/splits/types/splits.types';
 
+import { usePublisherSharePolicy, useUpdatePublisherShares } from '../publisher-share.hooks';
 import {
-  usePublisherCoauthorPolicy,
-  useUpdateRosterCoauthorDefaults,
-} from '../publisher-coauthor.hooks';
-import {
-  rosterCoauthorDefaultsFormSchema,
-  type RosterCoauthorDefaultsFormValues,
-} from '../publisher-coauthor.schema';
+  publisherSharesFormSchema,
+  type PublisherSharesFormValues,
+} from '../publisher-share.schema';
 
 function initials(name: string): string {
   return name
@@ -37,18 +33,19 @@ function initials(name: string): string {
 }
 
 /**
- * Configuración de la coautoría por defecto de una publisher: por cada miembro
- * del roster, si la editorial se inyecta como coautora en toda canción que ese
- * usuario publique, con qué rol y qué porcentaje. La autorización la resuelve el
- * backend (motor RBAC); este componente solo edita la configuración.
+ * Configuración del Publisher's Share de una publisher: por cada miembro del
+ * roster, el porcentaje que la editorial declara en toda canción que ese autor
+ * publique. Es metadata informativa del expediente del track (para notificar a
+ * entidades externas): no consume porcentaje de los coautores ni interviene en
+ * ningún cálculo. La autorización la resuelve el backend (motor RBAC).
  */
-export function PublisherCoauthorSettings({ organizationId }: { organizationId: string }) {
-  const { data: policy, isLoading } = usePublisherCoauthorPolicy(organizationId);
-  const updateRoster = useUpdateRosterCoauthorDefaults(organizationId);
+export function PublisherShareSettings({ organizationId }: { organizationId: string }) {
+  const { data: policy, isLoading } = usePublisherSharePolicy(organizationId);
+  const updateShares = useUpdatePublisherShares(organizationId);
 
   const { control, register, handleSubmit, reset, watch, formState } =
-    useForm<RosterCoauthorDefaultsFormValues>({
-      resolver: zodResolver(rosterCoauthorDefaultsFormSchema),
+    useForm<PublisherSharesFormValues>({
+      resolver: zodResolver(publisherSharesFormSchema),
       defaultValues: { items: [] },
     });
   const { fields } = useFieldArray({ control, name: 'items' });
@@ -59,7 +56,6 @@ export function PublisherCoauthorSettings({ organizationId }: { organizationId: 
         items: policy.roster.map((m) => ({
           userId: m.userId,
           enabled: m.enabled,
-          role: m.role,
           percentage: m.percentage,
         })),
       });
@@ -68,21 +64,21 @@ export function PublisherCoauthorSettings({ organizationId }: { organizationId: 
 
   const items = watch('items');
 
-  const onSubmit = (values: RosterCoauthorDefaultsFormValues) => {
-    updateRoster.mutate(values.items);
+  const onSubmit = (values: PublisherSharesFormValues) => {
+    updateShares.mutate(values.items);
   };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <PenLine className="h-5 w-5 text-primary" />
-          Coautoría por defecto
+          <Percent className="h-5 w-5 text-primary" />
+          Publisher&apos;s Share
         </CardTitle>
         <CardDescription>
-          Al activarla para un autor de tu roster, tu editorial queda automáticamente como coautora
-          —con el rol y porcentaje que definas— en toda canción que ese autor publique. Los demás
-          coautores repartirán el porcentaje restante.
+          Al activarlo para un autor de tu roster, tu editorial declara un porcentaje en toda canción
+          que ese autor publique. Es un dato informativo que viaja en el expediente del track (para
+          notificar a entidades externas); no afecta el reparto entre coautores.
         </CardDescription>
       </CardHeader>
 
@@ -121,25 +117,6 @@ export function PublisherCoauthorSettings({ organizationId }: { organizationId: 
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <Controller
-                          control={control}
-                          name={`items.${index}.role`}
-                          render={({ field: f }) => (
-                            <select
-                              {...f}
-                              disabled={!enabled}
-                              aria-label={`Rol de la publisher para ${member?.name}`}
-                              className="h-10 w-40 rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              {Object.values(CoauthorRole).map((role) => (
-                                <option key={role} value={role}>
-                                  {COAUTHOR_ROLE_LABELS[role]}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        />
-
                         <div className="flex items-center gap-1.5">
                           <Input
                             type="number"
@@ -148,7 +125,7 @@ export function PublisherCoauthorSettings({ organizationId }: { organizationId: 
                             max={100}
                             disabled={!enabled}
                             className="w-20 text-right"
-                            aria-label={`Porcentaje de la publisher para ${member?.name}`}
+                            aria-label={`Publisher's Share para ${member?.name}`}
                             {...register(`items.${index}.percentage`, { valueAsNumber: true })}
                           />
                           <span className="text-sm text-muted-foreground">%</span>
@@ -161,7 +138,7 @@ export function PublisherCoauthorSettings({ organizationId }: { organizationId: 
                             <Switch
                               checked={f.value}
                               onCheckedChange={f.onChange}
-                              aria-label={`Activar coautoría por defecto para ${member?.name}`}
+                              aria-label={`Activar Publisher's Share para ${member?.name}`}
                             />
                           )}
                         />
@@ -174,14 +151,14 @@ export function PublisherCoauthorSettings({ organizationId }: { organizationId: 
 
             {formState.errors.items && (
               <p className="text-xs text-destructive">
-                Revisa la configuración: para activar la coautoría el porcentaje debe ser mayor a 0.
+                Revisa la configuración: para activar el Publisher&apos;s Share el porcentaje debe ser mayor a 0.
               </p>
             )}
 
             {fields.length > 0 && (
               <div className="flex justify-end">
-                <Button type="submit" disabled={updateRoster.isPending || !formState.isDirty}>
-                  {updateRoster.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Button type="submit" disabled={updateShares.isPending || !formState.isDirty}>
+                  {updateShares.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Guardar configuración
                 </Button>
               </div>

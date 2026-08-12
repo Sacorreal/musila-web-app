@@ -35,18 +35,10 @@ export interface CoauthorSearchResult {
   musilaCreatorId: string;
 }
 
-/** Publisher coautora del split (participa sin firmar). */
-export interface SplitOrganizationDto {
-  id: string;
-  name: string;
-}
-
 export interface SplitAuthorDto {
   id: string;
-  /** Presente cuando el coautor es una persona; ausente si es una publisher. */
+  /** El coautor de un split siempre es una persona que firma su participación. */
   user?: CoauthorSearchResult;
-  /** Presente cuando el coautor es una publisher inyectada por defecto. */
-  organization?: SplitOrganizationDto;
   percentage: number;
   role: CoauthorRole;
   status: SplitAuthorStatus;
@@ -54,11 +46,23 @@ export interface SplitAuthorDto {
   signedAt?: string;
 }
 
+/**
+ * Publisher's Share de una publisher aplicado al track: metadata informativa
+ * (no es coautor y no participa del reparto).
+ */
+export interface SplitPublisherShareDto {
+  organizationId: string;
+  organizationName: string;
+  percentage: number;
+}
+
 export interface SplitResponse {
   id: string;
   status: SplitStatus;
   createdBy: { id: string; name: string; lastName: string };
   authors: SplitAuthorDto[];
+  /** Publisher's Share informativo resuelto para el creador (no persistido en el split). */
+  publisherShares?: SplitPublisherShareDto[];
   createdAt: string;
   updatedAt: string;
 }

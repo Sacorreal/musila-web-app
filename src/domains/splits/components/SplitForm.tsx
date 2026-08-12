@@ -9,7 +9,7 @@ import { Switch } from "@/src/shared/components/UI/switch";
 import { Field, FieldError, FieldLabel } from "@/src/shared/components/UI/field";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/src/shared/components/UI/input-group";
 import { cn } from "@/src/shared/libs/cn";
-import { useMyPublisherCoauthors } from "@/src/domains/publisher-coauthor/publisher-coauthor.hooks";
+import { useMyPublisherShares } from "@/src/domains/publisher-share/publisher-share.hooks";
 import { CoauthorSearchInput } from "./CoauthorSearchInput";
 import { createSplitSchema, CreateSplitFormValues, distributeEqualPercentages } from "../schema/splits.schema";
 import { useCreateSplit, useUpdateSplit } from "../hooks/splits.hooks";
@@ -48,27 +48,25 @@ export function SplitForm({ trackId, existingSplit, onDone }: Props) {
   const { fields, append, remove } = useFieldArray({ control, name: "authors" });
   const authors = watch("authors");
 
-  const { data: publisherCoauthors } = useMyPublisherCoauthors();
-  const publisherTotal = (publisherCoauthors ?? []).reduce((acc, c) => acc + Number(c.percentage), 0);
-  const publisherTotalRounded = Math.round(publisherTotal * 100) / 100;
-  // Objetivo dinámico: los coautores humanos reparten lo que no toma la publisher.
-  const humanTarget = Math.round((100 - publisherTotalRounded) * 100) / 100;
+  const { data: publisherShares } = useMyPublisherShares();
 
   const { mutate: createSplit, isPending: isCreating } = useCreateSplit(trackId);
   const { mutate: updateSplit, isPending: isUpdating } = useUpdateSplit(trackId);
   const isSaving = isCreating || isUpdating;
 
+  // Los coautores humanos siempre reparten el 100%. El % de la publisher coautora
+  // es informativo (metadata del expediente) y no recorta el objetivo.
   const sum = authors.reduce((acc, a) => acc + (Number(a.percentage) || 0), 0);
   const sumRounded = Math.round(sum * 100) / 100;
-  const sumIsValid = sumRounded === humanTarget;
+  const sumIsValid = sumRounded === 100;
 
   useEffect(() => {
     if (!equalSplit || fields.length === 0) return;
-    const percentages = distributeEqualPercentages(fields.length, humanTarget);
+    const percentages = distributeEqualPercentages(fields.length);
     percentages.forEach((p, i) => setValue(`authors.${i}.percentage`, p, { shouldValidate: true }));
-    // Solo recalcular cuando cambia la cantidad de coautores o el objetivo mientras el switch está activo
+    // Solo recalcular cuando cambia la cantidad de coautores mientras el switch está activo
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [equalSplit, fields.length, humanTarget]);
+  }, [equalSplit, fields.length]);
 
   const onSubmit = (values: CreateSplitFormValues) => {
     const payload = {
@@ -98,17 +96,17 @@ export function SplitForm({ trackId, existingSplit, onDone }: Props) {
         }}
       />
 
-      {publisherCoauthors && publisherCoauthors.length > 0 && (
+      {publisherShares && publisherShares.length > 0 && (
         <div className="flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4">
           <PenLine className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <div className="text-sm">
-            {publisherCoauthors.map((c) => (
-              <p key={c.organizationId} className="font-medium text-foreground">
-                {c.organizationName} participa como coautora ({COAUTHOR_ROLE_LABELS[c.role]}) con {Number(c.percentage)}%.
+            {publisherShares.map((s) => (
+              <p key={s.organizationId} className="font-medium text-foreground">
+                {s.organizationName} declara un Publisher&apos;s Share del {Number(s.percentage)}%.
               </p>
             ))}
             <p className="mt-1 text-muted-foreground">
-              Se agrega automáticamente al crear el split. Reparte el {humanTarget}% restante entre los coautores.
+              Es un dato informativo para el expediente del track y no afecta el reparto: los coautores deben sumar 100%.
             </p>
           </div>
         </div>
@@ -117,7 +115,7 @@ export function SplitForm({ trackId, existingSplit, onDone }: Props) {
       <div className="flex items-center justify-between rounded-xl border bg-muted/20 p-4">
         <div>
           <p className="text-sm font-semibold text-foreground">Dividir en partes iguales</p>
-          <p className="text-xs text-muted-foreground">Reparte {humanTarget}% entre los coautores agregados</p>
+          <p className="text-xs text-muted-foreground">Reparte 100% entre los coautores agregados</p>
         </div>
         <Switch checked={equalSplit} onCheckedChange={setEqualSplit} disabled={isSaving} />
       </div>
@@ -205,7 +203,7 @@ export function SplitForm({ trackId, existingSplit, onDone }: Props) {
           )}
         >
           {sumIsValid ? <CheckCircle2 className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-          Suma de porcentajes: {sumRounded}%{humanTarget !== 100 ? ` (objetivo: ${humanTarget}%)` : ""}
+          Suma de porcentajes: {sumRounded}% (objetivo: 100%)
         </div>
       )}
 

@@ -14,9 +14,9 @@ export const splitAuthorEntrySchema = z.object({
   role: z.nativeEnum(CoauthorRole, { errorMap: () => ({ message: "Selecciona un rol" }) }),
 });
 
-// La suma exacta se valida en el componente contra un objetivo dinámico
-// (100 − % de la publisher coautora), por lo que el schema solo garantiza la
-// forma de cada coautor y que haya al menos uno.
+// La suma exacta (100%) se valida en el componente para poder mostrar el
+// indicador en vivo; el schema solo garantiza la forma de cada coautor y que
+// haya al menos uno. El % de la publisher coautora es informativo y no cuenta.
 export const createSplitSchema = z.object({
   authors: z.array(splitAuthorEntrySchema).min(1, "Debes agregar al menos un coautor"),
 });

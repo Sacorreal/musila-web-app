@@ -26,7 +26,7 @@ const NAV_ITEMS: { segment: string; icon: typeof ShieldCheck; label: string; cap
   { segment: 'promociones', icon: Megaphone, label: 'Pautas' },
   { segment: 'wallet', icon: Wallet, label: 'Wallet', capability: 'organization.settings.manage' },
   { segment: 'settings/comisiones', icon: Percent, label: 'Comisiones', capability: 'organization.settings.manage' },
-  { segment: 'settings/coautoria', icon: PenLine, label: 'Coautoría', capability: 'organization.settings.manage' },
+  { segment: 'settings/publisher-share', icon: PenLine, label: "Publisher's Share", capability: 'organization.settings.manage' },
   { segment: 'settings/roles', icon: ShieldCheck, label: 'Roles', capability: 'organization.roles.view' },
   { segment: 'settings/members', icon: Users, label: 'Miembros', capability: 'organization.members.view' },
   { segment: 'settings/workspace', icon: Settings2, label: 'Workspace', capability: 'organization.settings.manage' },
