@@ -233,6 +233,26 @@ export const apiURLs = {
       reject: (id: string) => `/wallet/admin/withdrawals/${id}/reject` as const,
     },
   },
+  // 💰 Wallet a nivel organización (publisher)
+  publisherWallet: {
+    balance: (orgId: string) => `/organizations/${orgId}/wallet/balance` as const,
+    earnings: (orgId: string) => `/organizations/${orgId}/wallet/earnings` as const,
+    withdrawals: (orgId: string) => `/organizations/${orgId}/wallet/withdrawals` as const,
+    withdrawalById: (orgId: string, id: string) =>
+      `/organizations/${orgId}/wallet/withdrawals/${id}` as const,
+    bankAccount: (orgId: string) => `/organizations/${orgId}/wallet/bank-account` as const,
+  },
+  // 💸 Comisión por anticipo de licencia (publisher)
+  publisherCommission: {
+    policy: (orgId: string) => `/organizations/${orgId}/commission-policy` as const,
+    roster: (orgId: string) => `/organizations/${orgId}/commission-policy/roster` as const,
+  },
+  // ✍️ Coautoría por defecto de la publisher sobre su roster
+  publisherCoauthor: {
+    policy: (orgId: string) => `/organizations/${orgId}/coauthor-defaults` as const,
+    roster: (orgId: string) => `/organizations/${orgId}/coauthor-defaults/roster` as const,
+    mine: () => `/users/me/publisher-coauthors` as const,
+  },
   blog: {
     articles: {
       base: '/blog/articles' as const, // GET (list, público)

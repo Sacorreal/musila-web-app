@@ -52,11 +52,14 @@ export function LicenseTermsForm({ requestedTrackId, trackId, existingContract, 
   const { data: split } = useSplitByTrack(trackId);
   const coauthors = useMemo(
     () =>
-      (split?.authors ?? []).map((a) => ({
-        userId: a.user.id,
-        name: `${a.user.name} ${a.user.lastName}`,
-        royaltyPercentage: Number(a.percentage),
-      })),
+      // Solo coautores persona: la publisher coautora no firma el contrato.
+      (split?.authors ?? [])
+        .filter((a) => a.user)
+        .map((a) => ({
+          userId: a.user!.id,
+          name: `${a.user!.name} ${a.user!.lastName}`,
+          royaltyPercentage: Number(a.percentage),
+        })),
     [split],
   );
   const hasCoauthors = coauthors.length > 1;

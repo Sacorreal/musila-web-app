@@ -38,7 +38,7 @@ export function TrackSplitsSection({ track }: Props) {
 
   if (!isTrackAuthor) return null;
 
-  const myAuthorEntry = split?.authors.find((a) => a.user.id === user?.id);
+  const myAuthorEntry = split?.authors.find((a) => a.user?.id === user?.id);
 
   return (
     <section id="split" className="mt-8 rounded-2xl border bg-card p-6 md:p-8 shadow-sm space-y-6 scroll-mt-24">
@@ -82,8 +82,15 @@ export function TrackSplitsSection({ track }: Props) {
             {split.authors.map((author) => (
               <div key={author.id} className="flex items-center justify-between gap-4 rounded-xl border bg-muted/10 p-4">
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-foreground">
-                    {author.user.name} {author.user.lastName}
+                  <p className="flex items-center gap-2 truncate font-semibold text-foreground">
+                    {author.organization
+                      ? author.organization.name
+                      : `${author.user?.name ?? ""} ${author.user?.lastName ?? ""}`}
+                    {author.organization && (
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                        Publisher
+                      </span>
+                    )}
                   </p>
                   <p className="text-xs text-muted-foreground">{COAUTHOR_ROLE_LABELS[author.role]}</p>
                   {author.status === SplitAuthorStatus.REJECTED && author.rejectionReason && (

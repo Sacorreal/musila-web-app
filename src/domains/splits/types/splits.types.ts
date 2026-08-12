@@ -35,9 +35,18 @@ export interface CoauthorSearchResult {
   musilaCreatorId: string;
 }
 
+/** Publisher coautora del split (participa sin firmar). */
+export interface SplitOrganizationDto {
+  id: string;
+  name: string;
+}
+
 export interface SplitAuthorDto {
   id: string;
-  user: CoauthorSearchResult;
+  /** Presente cuando el coautor es una persona; ausente si es una publisher. */
+  user?: CoauthorSearchResult;
+  /** Presente cuando el coautor es una publisher inyectada por defecto. */
+  organization?: SplitOrganizationDto;
   percentage: number;
   role: CoauthorRole;
   status: SplitAuthorStatus;

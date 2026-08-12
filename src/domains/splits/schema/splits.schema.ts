@@ -14,20 +14,12 @@ export const splitAuthorEntrySchema = z.object({
   role: z.nativeEnum(CoauthorRole, { errorMap: () => ({ message: "Selecciona un rol" }) }),
 });
 
-export const createSplitSchema = z
-  .object({
-    authors: z.array(splitAuthorEntrySchema).min(1, "Debes agregar al menos un coautor"),
-  })
-  .refine(
-    (data) => {
-      const sum = data.authors.reduce((acc, author) => acc + (author.percentage || 0), 0);
-      return Math.round(sum * 100) / 100 === PERCENTAGE_TOTAL;
-    },
-    {
-      message: "La suma de los porcentajes debe ser exactamente 100%",
-      path: ["authors"],
-    },
-  );
+// La suma exacta se valida en el componente contra un objetivo dinámico
+// (100 − % de la publisher coautora), por lo que el schema solo garantiza la
+// forma de cada coautor y que haya al menos uno.
+export const createSplitSchema = z.object({
+  authors: z.array(splitAuthorEntrySchema).min(1, "Debes agregar al menos un coautor"),
+});
 
 export type SplitAuthorEntry = z.infer<typeof splitAuthorEntrySchema>;
 export type CreateSplitFormValues = z.infer<typeof createSplitSchema>;
@@ -41,12 +33,12 @@ export const rejectSplitSchema = z.object({
 
 export type RejectSplitFormValues = z.infer<typeof rejectSplitSchema>;
 
-/** Reparte 100% entre `count` coautores, ajustando el residuo en el último para que la suma sea exacta. */
-export function distributeEqualPercentages(count: number): number[] {
+/** Reparte `total`% (por defecto 100) entre `count` coautores, ajustando el residuo en el último para que la suma sea exacta. */
+export function distributeEqualPercentages(count: number, total: number = PERCENTAGE_TOTAL): number[] {
   if (count <= 0) return [];
-  const base = Math.floor((PERCENTAGE_TOTAL / count) * 100) / 100;
+  const base = Math.floor((total / count) * 100) / 100;
   const percentages = Array(count).fill(base);
-  const remainder = Math.round((PERCENTAGE_TOTAL - base * count) * 100) / 100;
+  const remainder = Math.round((total - base * count) * 100) / 100;
   percentages[count - 1] = Math.round((base + remainder) * 100) / 100;
   return percentages;
 }
