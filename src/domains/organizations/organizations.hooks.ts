@@ -3,7 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import {
+  fetchAccessRequests,
   fetchCapabilityCatalog,
+  fetchInviteLink,
   fetchMyMemberships,
   fetchMyOrgCapabilities,
   fetchOrgMembers,
@@ -12,15 +14,27 @@ import {
 } from './organizations.actions'
 import {
   acceptMembership,
+  approveAccessRequest,
+  changeMemberStatus,
   createOrgRole,
   deleteOrgRole,
   inviteOrgMember,
+  regenerateInviteLink,
+  rejectAccessRequest,
+  revokeInviteLink,
   setOrgMemberRoles,
   setOrgRoleCapabilities,
   updateOrgRole,
   updateOrgTrackspace,
 } from './organizations.client'
-import type { CreateOrgRoleInput, MembershipType } from './organizations.types'
+import type {
+  AccessRequestStatus,
+  ApproveAccessRequestInput,
+  CreateInviteLinkInput,
+  CreateOrgRoleInput,
+  MembershipStatus,
+  MembershipType,
+} from './organizations.types'
 
 export function useMyMemberships() {
   return useQuery({ queryKey: ['organizations', 'my-memberships'], queryFn: () => fetchMyMemberships() })
@@ -165,6 +179,96 @@ export function useAcceptMembership() {
   })
 }
 
+export function useInviteLink(organizationId?: string) {
+  return useQuery({
+    queryKey: ['organizations', organizationId, 'invite-link'],
+    queryFn: () => fetchInviteLink(organizationId!),
+    enabled: !!organizationId,
+  })
+}
+
+export function useRegenerateInviteLink(organizationId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: CreateInviteLinkInput = {}) => regenerateInviteLink(organizationId, input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['organizations', organizationId, 'invite-link'] })
+      toast.success('Enlace de invitación regenerado')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al regenerar el enlace'),
+  })
+}
+
+export function useRevokeInviteLink(organizationId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: () => revokeInviteLink(organizationId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['organizations', organizationId, 'invite-link'] })
+      toast.success('Enlace de invitación revocado')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al revocar el enlace'),
+  })
+}
+
+/**
+ * Solicitudes de acceso del workspace. Refresca cada 4 s para reflejar en la UI
+ * las nuevas solicitudes con latencia < 5 s (§ requisito de tiempo real).
+ */
+export function useAccessRequests(organizationId?: string, status?: AccessRequestStatus) {
+  return useQuery({
+    queryKey: ['organizations', organizationId, 'access-requests', status ?? 'all'],
+    queryFn: () => fetchAccessRequests(organizationId!, status),
+    enabled: !!organizationId,
+    refetchInterval: 4000,
+  })
+}
+
+export function useApproveAccessRequest(organizationId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ requestId, input }: { requestId: string; input: ApproveAccessRequestInput }) =>
+      approveAccessRequest(organizationId, requestId, input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['organizations', organizationId, 'access-requests'] })
+      qc.invalidateQueries({ queryKey: ['organizations', organizationId, 'members'] })
+      toast.success('Solicitud aprobada')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al aprobar la solicitud'),
+  })
+}
+
+export function useRejectAccessRequest(organizationId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ requestId, reason }: { requestId: string; reason?: string }) =>
+      rejectAccessRequest(organizationId, requestId, reason),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['organizations', organizationId, 'access-requests'] })
+      toast.success('Solicitud rechazada')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al rechazar la solicitud'),
+  })
+}
+
+export function useChangeMemberStatus(organizationId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ membershipId, status }: { membershipId: string; status: MembershipStatus }) =>
+      changeMemberStatus(organizationId, membershipId, status),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['organizations', organizationId, 'members'] })
+      toast.success('Miembro actualizado')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al actualizar el miembro'),
+  })
+}
+
 export function useUpdateOrgTrackspace(organizationId: string) {
   const qc = useQueryClient()
   return useMutation({
@@ -199,4 +303,11 @@ export const organizationsHooks = {
   useSetOrgMemberRoles,
   useAcceptMembership,
   useUpdateOrgTrackspace,
+  useInviteLink,
+  useRegenerateInviteLink,
+  useRevokeInviteLink,
+  useAccessRequests,
+  useApproveAccessRequest,
+  useRejectAccessRequest,
+  useChangeMemberStatus,
 }

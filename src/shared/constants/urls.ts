@@ -9,6 +9,7 @@ export const apiURLs = {
     verifyEmail: `${BASE_API_URL}/auth/verify-email` as const,
     resendVerification: `${BASE_API_URL}/auth/resend-verification` as const,
     registerOrgAdmin: `${BASE_API_URL}/auth/register/org-admin` as const,
+    registerWorkspaceGuest: `${BASE_API_URL}/auth/register/workspace-guest` as const,
   },
   security: {
     passkeys: {
@@ -307,6 +308,17 @@ export const apiURLs = {
     adminBase: '/admin/organizations' as const, // GET, POST
     adminById: (id: string) => `/admin/organizations/${id}` as const, // GET, PATCH
     invitePublic: (token: string) => `${BASE_API_URL}/organization-invites/${token}` as const, // GET (público)
+    workspaceInvitePublic: (token: string) =>
+      `${BASE_API_URL}/workspace-invites/${token}` as const, // GET (público)
+    inviteLink: (orgId: string) => `/organizations/${orgId}/invite-link` as const, // GET
+    inviteLinkRegenerate: (orgId: string) =>
+      `/organizations/${orgId}/invite-link/regenerate` as const, // POST
+    inviteLinkRevoke: (orgId: string) => `/organizations/${orgId}/invite-link/revoke` as const, // POST
+    accessRequests: (orgId: string) => `/organizations/${orgId}/access-requests` as const, // GET ?status=
+    accessRequestApprove: (orgId: string, requestId: string) =>
+      `/organizations/${orgId}/access-requests/${requestId}/approve` as const, // POST
+    accessRequestReject: (orgId: string, requestId: string) =>
+      `/organizations/${orgId}/access-requests/${requestId}/reject` as const, // POST
     roles: (orgId: string) => `/organizations/${orgId}/roles` as const, // GET, POST
     roleById: (orgId: string, roleId: string) => `/organizations/${orgId}/roles/${roleId}` as const, // GET, PATCH, DELETE
     roleCapabilities: (orgId: string, roleId: string) =>

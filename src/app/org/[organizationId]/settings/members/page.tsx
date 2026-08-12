@@ -1,16 +1,17 @@
 'use client'
 
 import { use, useEffect, useState } from 'react'
-import { ShieldCheck, UserPlus } from 'lucide-react'
+import { MoreVertical, ShieldCheck, UserPlus, Users } from 'lucide-react'
 import { organizationsHooks } from '@/src/domains/organizations/organizations.hooks'
 import type {
   MembershipDto,
+  MembershipStatus,
   MembershipType,
   RoleDto,
 } from '@/src/domains/organizations/organizations.types'
+import { AccessRequestsPanel } from '@/src/domains/organizations/components/AccessRequestsPanel'
+import { InviteLinkDialog } from '@/src/domains/organizations/components/InviteLinkDialog'
 import { AdminDataTable, type ColumnDef } from '@/src/domains/admin/components/AdminDataTable'
-import { AdminEntitySelect } from '@/src/domains/admin/shared/AdminEntitySelect'
-import { fetchUserOptions } from '@/src/domains/admin/shared/fetch-user-options'
 import { Badge } from '@/src/shared/components/UI/badge'
 import { Button } from '@/src/shared/components/UI/button'
 import { Checkbox } from '@/src/shared/components/UI/checkbox'
@@ -24,6 +25,100 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/src/shared/components/UI/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/src/shared/components/UI/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/src/shared/components/UI/alert-dialog'
+
+const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+  ACTIVE: 'default',
+  SUSPENDED: 'secondary',
+  REMOVED: 'destructive',
+  INVITED: 'outline',
+  PENDING: 'outline',
+}
+
+function MemberActions({
+  organizationId,
+  member,
+  onManageRoles,
+}: {
+  organizationId: string
+  member: MembershipDto
+  onManageRoles: (member: MembershipDto) => void
+}) {
+  const { mutate: changeStatus, isPending } =
+    organizationsHooks.useChangeMemberStatus(organizationId)
+  const [confirmRevoke, setConfirmRevoke] = useState(false)
+
+  const setStatus = (status: MembershipStatus) =>
+    changeStatus({ membershipId: member.id, status })
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" aria-label="Acciones del miembro" disabled={isPending}>
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => onManageRoles(member)}>
+            <ShieldCheck className="mr-2 h-4 w-4" />
+            Editar roles
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          {member.status === 'ACTIVE' && (
+            <DropdownMenuItem onClick={() => setStatus('SUSPENDED')}>Suspender</DropdownMenuItem>
+          )}
+          {member.status === 'SUSPENDED' && (
+            <DropdownMenuItem onClick={() => setStatus('ACTIVE')}>Reactivar</DropdownMenuItem>
+          )}
+          <DropdownMenuItem
+            className="text-red-500 focus:text-red-600"
+            onClick={() => setConfirmRevoke(true)}
+          >
+            Revocar acceso
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog open={confirmRevoke} onOpenChange={setConfirmRevoke}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Revocar el acceso de este miembro?</AlertDialogTitle>
+            <AlertDialogDescription>
+              El miembro perderá acceso al workspace de inmediato. Podrás volver a incorporarlo más
+              adelante mediante una nueva invitación.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => setStatus('REMOVED')}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              Revocar acceso
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  )
+}
 
 function MembersTable({
   organizationId,
@@ -34,18 +129,13 @@ function MembersTable({
 }) {
   const { data, isLoading, error } = organizationsHooks.useOrgMembers(organizationId, membershipType)
   const { data: roles } = organizationsHooks.useOrgRoles(organizationId)
-  const { mutate: invite, isPending: isInviting } =
-    organizationsHooks.useInviteOrgMember(organizationId)
   const { mutate: setRoles, isPending: isSettingRoles } =
     organizationsHooks.useSetOrgMemberRoles(organizationId)
 
-  const [showInvite, setShowInvite] = useState(false)
-  const [inviteUserId, setInviteUserId] = useState<string | null>(null)
   const [rolesTarget, setRolesTarget] = useState<MembershipDto | null>(null)
   const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([])
 
-  const expectedRoleType = membershipType === 'ORGANIZATION' ? 'ORGANIZATION' : 'ROSTER'
-  const assignableRoles = (roles ?? []).filter((role: RoleDto) => role.type === expectedRoleType)
+  const assignableRoles = (roles ?? []).filter((role: RoleDto) => role.type === membershipType)
 
   useEffect(() => {
     if (!rolesTarget) setSelectedRoleIds([])
@@ -71,36 +161,25 @@ function MembersTable({
       header: 'Estado',
       width: '130px',
       render: (member) => (
-        <Badge variant={member.status === 'ACTIVE' ? 'default' : 'secondary'}>{member.status}</Badge>
+        <Badge variant={STATUS_VARIANT[member.status] ?? 'secondary'}>{member.status}</Badge>
       ),
     },
     {
       key: 'actions',
       header: '',
-      width: '120px',
+      width: '60px',
       render: (member) => (
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-1"
-          onClick={() => setRolesTarget(member)}
-        >
-          <ShieldCheck className="h-3.5 w-3.5" />
-          Roles
-        </Button>
+        <MemberActions
+          organizationId={organizationId}
+          member={member}
+          onManageRoles={setRolesTarget}
+        />
       ),
     },
   ]
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button size="sm" className="gap-2" onClick={() => setShowInvite(true)}>
-          <UserPlus className="h-4 w-4" />
-          Invitar
-        </Button>
-      </div>
-
       <AdminDataTable
         columns={columns}
         data={data ?? []}
@@ -111,41 +190,6 @@ function MembersTable({
         }
         keyExtractor={(row) => row.id}
       />
-
-      {/* Invitación */}
-      <Dialog open={showInvite} onOpenChange={(open) => !open && setShowInvite(false)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Invitar {membershipType === 'ROSTER' ? 'al roster' : 'al staff'}</DialogTitle>
-            <DialogDescription>
-              El usuario queda INVITED hasta que acepte la invitación.
-            </DialogDescription>
-          </DialogHeader>
-          <AdminEntitySelect
-            value={inviteUserId}
-            onChange={setInviteUserId}
-            fetchOptions={fetchUserOptions}
-            placeholder="Buscar usuario..."
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowInvite(false)} disabled={isInviting}>
-              Cancelar
-            </Button>
-            <Button
-              disabled={!inviteUserId || isInviting}
-              onClick={() =>
-                inviteUserId &&
-                invite(
-                  { type: membershipType, userId: inviteUserId },
-                  { onSuccess: () => { setShowInvite(false); setInviteUserId(null) } },
-                )
-              }
-            >
-              Enviar invitación
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* Asignación multi-rol */}
       <Dialog open={!!rolesTarget} onOpenChange={(open) => !open && setRolesTarget(null)}>
@@ -209,19 +253,42 @@ export default function OrgMembersPage({
   params: Promise<{ organizationId: string }>
 }) {
   const { organizationId } = use(params)
+  const [showInviteLink, setShowInviteLink] = useState(false)
+  const { data: pendingRequests } = organizationsHooks.useAccessRequests(organizationId, 'PENDING')
+  const pendingCount = pendingRequests?.length ?? 0
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Miembros"
-        description="Staff de la organización y roster de artistas administrados. Toda incorporación pasa por invitación y aceptación."
-      />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <PageHeader
+          title="Miembros"
+          description="Staff de la organización y roster de artistas. Invita con un enlace, aprueba solicitudes y gestiona el acceso de cada miembro."
+        />
+        <Button className="gap-2" onClick={() => setShowInviteLink(true)}>
+          <UserPlus className="h-4 w-4" />
+          Invitar usuarios
+        </Button>
+      </div>
 
-      <Tabs defaultValue="staff" className="space-y-4">
+      <Tabs defaultValue={pendingCount > 0 ? 'requests' : 'staff'} className="space-y-4">
         <TabsList>
-          <TabsTrigger value="staff">Staff</TabsTrigger>
+          <TabsTrigger value="requests" className="gap-2">
+            Solicitudes
+            {pendingCount > 0 && (
+              <Badge variant="secondary" className="px-1.5">
+                {pendingCount}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="staff" className="gap-2">
+            <Users className="h-3.5 w-3.5" />
+            Staff
+          </TabsTrigger>
           <TabsTrigger value="roster">Roster</TabsTrigger>
         </TabsList>
+        <TabsContent value="requests">
+          <AccessRequestsPanel organizationId={organizationId} />
+        </TabsContent>
         <TabsContent value="staff">
           <MembersTable organizationId={organizationId} membershipType="ORGANIZATION" />
         </TabsContent>
@@ -229,6 +296,12 @@ export default function OrgMembersPage({
           <MembersTable organizationId={organizationId} membershipType="ROSTER" />
         </TabsContent>
       </Tabs>
+
+      <InviteLinkDialog
+        organizationId={organizationId}
+        open={showInviteLink}
+        onOpenChange={setShowInviteLink}
+      />
     </div>
   )
 }

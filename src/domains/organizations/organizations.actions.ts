@@ -3,12 +3,15 @@
 import { getServerApiClient } from '@/src/shared/libs/axios/axios-server'
 import { apiURLs } from '@/src/shared/constants/urls'
 import type {
+  AccessRequestDto,
+  AccessRequestStatus,
   CapabilityDto,
   MembershipDto,
   MembershipType,
   MyMembershipsResponse,
   RoleDto,
   TrackspaceDto,
+  WorkspaceInviteLinkDto,
 } from './organizations.types'
 
 export async function fetchMyMemberships(): Promise<MyMembershipsResponse> {
@@ -64,6 +67,30 @@ export async function fetchOrgTrackspaces(organizationId: string): Promise<Track
   const client = await getServerApiClient()
   const response = await client.get<TrackspaceDto[]>(
     apiURLs.organizations.trackspaces(organizationId),
+  )
+  return response.data
+}
+
+/** Enlace de invitación reutilizable activo del workspace (lo crea si no existe). */
+export async function fetchInviteLink(
+  organizationId: string,
+): Promise<WorkspaceInviteLinkDto> {
+  const client = await getServerApiClient()
+  const response = await client.get<WorkspaceInviteLinkDto>(
+    apiURLs.organizations.inviteLink(organizationId),
+  )
+  return response.data
+}
+
+/** Solicitudes de acceso del workspace, filtrables por estado. */
+export async function fetchAccessRequests(
+  organizationId: string,
+  status?: AccessRequestStatus,
+): Promise<AccessRequestDto[]> {
+  const client = await getServerApiClient()
+  const response = await client.get<AccessRequestDto[]>(
+    apiURLs.organizations.accessRequests(organizationId),
+    { params: status ? { status } : undefined },
   )
   return response.data
 }

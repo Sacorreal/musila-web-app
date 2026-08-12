@@ -3,12 +3,17 @@
 import { apiClient } from '@/src/shared/libs/axios/axios-client'
 import { apiURLs } from '@/src/shared/constants/urls'
 import type {
+  AccessRequestDto,
+  ApproveAccessRequestInput,
+  CreateInviteLinkInput,
   CreateOrgRoleInput,
   MembershipDto,
   MembershipRoleDto,
+  MembershipStatus,
   MembershipType,
   RoleDto,
   TrackspaceDto,
+  WorkspaceInviteLinkDto,
 } from './organizations.types'
 
 export async function createOrgRole(
@@ -88,6 +93,57 @@ export async function updateOrgTrackspace(
   const response = await apiClient.patch<TrackspaceDto>(
     apiURLs.organizations.trackspaceById(organizationId, trackspaceId),
     input,
+  )
+  return response.data
+}
+
+export async function regenerateInviteLink(
+  organizationId: string,
+  input: CreateInviteLinkInput = {},
+): Promise<WorkspaceInviteLinkDto> {
+  const response = await apiClient.post<WorkspaceInviteLinkDto>(
+    apiURLs.organizations.inviteLinkRegenerate(organizationId),
+    input,
+  )
+  return response.data
+}
+
+export async function revokeInviteLink(organizationId: string): Promise<void> {
+  await apiClient.post(apiURLs.organizations.inviteLinkRevoke(organizationId))
+}
+
+export async function approveAccessRequest(
+  organizationId: string,
+  requestId: string,
+  input: ApproveAccessRequestInput,
+): Promise<AccessRequestDto> {
+  const response = await apiClient.post<AccessRequestDto>(
+    apiURLs.organizations.accessRequestApprove(organizationId, requestId),
+    input,
+  )
+  return response.data
+}
+
+export async function rejectAccessRequest(
+  organizationId: string,
+  requestId: string,
+  reason?: string,
+): Promise<AccessRequestDto> {
+  const response = await apiClient.post<AccessRequestDto>(
+    apiURLs.organizations.accessRequestReject(organizationId, requestId),
+    { reason },
+  )
+  return response.data
+}
+
+export async function changeMemberStatus(
+  organizationId: string,
+  membershipId: string,
+  status: MembershipStatus,
+): Promise<MembershipDto> {
+  const response = await apiClient.patch<MembershipDto>(
+    apiURLs.organizations.memberStatus(organizationId, membershipId),
+    { status },
   )
   return response.data
 }
