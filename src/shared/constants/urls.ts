@@ -55,6 +55,25 @@ export const apiURLs = {
     certificate: (id: string) => `/tracks/${id}/certificate` as const, // GET status
     certificateDownload: (id: string) => `/tracks/${id}/certificate/download` as const, // GET binary
     certificateRegenerate: (id: string) => `/tracks/${id}/certificate/regenerate` as const, // POST
+    play: (id: string) => `/tracks/${id}/play` as const, // POST (registra reproducción)
+  },
+  authorDashboard: {
+    overview: '/author-dashboard/overview' as const,
+    songById: (id: string) => `/author-dashboard/tracks/${id}` as const,
+    rightsIntelligence: '/author-dashboard/rights-intelligence' as const,
+    rightsCompliance: '/author-dashboard/rights-compliance' as const,
+    financial: '/author-dashboard/financial' as const,
+  },
+  // 📊 Dashboard de la publisher (catálogo del roster)
+  publisherDashboard: {
+    overview: (orgId: string) => `/organizations/${orgId}/publisher-dashboard/overview` as const,
+    songById: (orgId: string, id: string) =>
+      `/organizations/${orgId}/publisher-dashboard/tracks/${id}` as const,
+    rightsIntelligence: (orgId: string) =>
+      `/organizations/${orgId}/publisher-dashboard/rights-intelligence` as const,
+    rightsCompliance: (orgId: string) =>
+      `/organizations/${orgId}/publisher-dashboard/rights-compliance` as const,
+    financial: (orgId: string) => `/organizations/${orgId}/publisher-dashboard/financial` as const,
   },
   storage: {   
     presignedUrls: '/storage/upload-url' as const,

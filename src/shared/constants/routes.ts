@@ -40,6 +40,13 @@ export const navItems: NavItems = [
     },
 
     {
+        href: "/music/dashboard",
+        icon: DashboardIcon,
+        label: "Dashboard",
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360],
+    },
+
+    {
         href: '/music/chat',
         icon: ChatIcon,
         label: "Chat",

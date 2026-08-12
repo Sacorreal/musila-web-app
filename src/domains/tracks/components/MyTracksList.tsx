@@ -191,6 +191,11 @@ export function MyTracksList() {
                           Editar
                         </Badge>
                       </Link>
+                      <Link href={`/music/tracks/${track.id}/dashboard`}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-muted text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap">
+                          Estadísticas
+                        </Badge>
+                      </Link>
                       <CertificateCell
                         trackId={track.id}
                         trackTitle={track.title}
