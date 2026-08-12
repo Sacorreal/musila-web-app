@@ -34,6 +34,7 @@ import {
   Tags,
   UserCog,
   ShieldCheck,
+  Megaphone,
 } from 'lucide-react'
 import { cn } from '@/src/shared/libs/cn'
 import { MusilaLogo } from '@/src/shared/components/Icons/icons'
@@ -126,6 +127,11 @@ const navGroups: NavGroup[] = [
         requiredPermissions: ['platform.plans.manage'],
       },
       {
+        href: '/admin/plans/promotion-pricing',
+        icon: Megaphone,
+        label: 'Precios de Pautas',
+      },
+      {
         href: '/admin/subscriptions',
         icon: CreditCard,
         label: 'Subscriptions',
@@ -156,6 +162,7 @@ const navGroups: NavGroup[] = [
     icon: Activity,
     items: [
       { href: '/admin/requests', icon: FileText, label: 'Solicitudes' },
+      { href: '/admin/promotions', icon: Megaphone, label: 'Pautas' },
       { href: '/admin/playlists', icon: ListMusic, label: 'Playlists' },
       { href: '/admin/chat', icon: MessageSquare, label: 'Chats' },
       { href: '/admin/notifications', icon: Bell, label: 'Notificaciones' },

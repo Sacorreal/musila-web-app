@@ -2,8 +2,8 @@
 
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store"
 import { UserPlanType } from "@/src/domains/users/types/user.types"
-import { ArtistsCarousel } from "@/src/domains/artists/components/ArtistsCarousel"
-import { FeaturedTracksCarousel } from "@/src/domains/tracks/components/FeaturedTracksCarousel"
+import { FeaturedComposersSection } from "@/src/domains/promotions/components/FeaturedComposersSection"
+import { FeaturedTracksSection } from "@/src/domains/promotions/components/FeaturedTracksSection"
 import { GenreList } from "@/src/domains/musical-genre/components/GenreList"
 import { MyTracksList } from "@/src/domains/tracks/components/MyTracksList"
 
@@ -25,8 +25,8 @@ export default function AppHomePage() {
         <MyTracksList />
       )}
       <GenreList />
-      <ArtistsCarousel />
-      <FeaturedTracksCarousel />
+      <FeaturedComposersSection />
+      <FeaturedTracksSection />
     </main>
   );
 }

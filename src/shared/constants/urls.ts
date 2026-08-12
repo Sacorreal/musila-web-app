@@ -371,6 +371,29 @@ export const apiURLs = {
       export: '/staff/audit-log/export' as const, // GET (binary)
     },
   },
+  // 📢 Pautas publicitarias (publisher)
+  promotions: {
+    base: '/promotions' as const, // POST (crear)
+    pricing: '/promotions/pricing' as const, // GET (precios vigentes)
+    promotable: '/promotions/promotable' as const, // GET (recursos del roster)
+    mine: '/promotions/mine' as const, // GET (mis pautas)
+    checkout: (id: string) => `/promotions/${id}/checkout` as const, // POST
+    withdraw: (id: string) => `/promotions/${id}/withdraw` as const, // POST
+  },
+  // 📢 Pautas (admin)
+  promotionsAdmin: {
+    base: '/admin/promotions' as const, // GET (listar con filtros)
+    approve: (id: string) => `/admin/promotions/${id}/approve` as const, // POST
+    reject: (id: string) => `/admin/promotions/${id}/reject` as const, // POST
+    withdraw: (id: string) => `/admin/promotions/${id}/withdraw` as const, // POST
+    pricing: '/admin/promotions/pricing' as const, // GET, PUT
+    pricingHistory: '/admin/promotions/pricing/history' as const, // GET
+  },
+  // 📢 Destacados públicos
+  featured: {
+    tracks: '/featured/tracks' as const, // GET
+    composers: '/featured/composers' as const, // GET
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;
