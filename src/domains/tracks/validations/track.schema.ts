@@ -9,6 +9,16 @@ const externalIdSchema = z.object({
 export const createTrackSchema = z.object({
   title: z.string().min(1, 'El título es obligatorio').trim(),
 
+  // Títulos alternativos de la obra (opcional): metadato con uno o varios nombres.
+  // Se normaliza descartando entradas vacías o duplicadas.
+  alternativeTitles: z
+    .array(z.string().trim())
+    .optional()
+    .default([])
+    .transform((titles) =>
+      Array.from(new Set(titles.map((t) => t.trim()).filter(Boolean))),
+    ),
+
   // Para la UI basta con que haya un género seleccionado (id string)
   genreId: z.string().min(1, 'Debes seleccionar un género musical'),
   

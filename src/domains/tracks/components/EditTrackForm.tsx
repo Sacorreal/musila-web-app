@@ -35,6 +35,7 @@ import { GenreSelector } from "@domains/musical-genre/components/GenreSelector";
 import { MoodMultiSelect } from "@domains/moods/components/MoodMultiSelect";
 import { ThemeSelector } from "@domains/themes/components/ThemeSelector";
 import { LanguageSelector } from "../components/LanguageSelector";
+import { AlternativeTitlesField } from "../components/AlternativeTitlesField";
 
 interface EditTrackFormProps {
   trackId: string;
@@ -52,6 +53,7 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
     resolver: zodResolver(updateTrackSchema),
     defaultValues: {
       title: "",
+      alternativeTitles: [],
       genreId: "",
       ritmo: "",
       language: "",
@@ -72,6 +74,7 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
     if (track) {
       reset({
         title: track.title,
+        alternativeTitles: track.alternativeTitles ?? [],
         genreId: track.genre || "", // Puede requerir lógica adicional si genre es el string y necesitas el ID
         ritmo: track.ritmo || "",
         language: track.language || "",
@@ -96,6 +99,7 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
       // Excluimos campos que no se pueden actualizar directamente sin lógica extra como audio/IP
       const payload = {
         title: data.title,
+        alternativeTitles: data.alternativeTitles,
         genreId: data.genreId,
         ritmo: data.ritmo,
         language: data.language,
@@ -186,6 +190,25 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                       <Field data-invalid={fieldState.invalid}>
                         <FieldLabel>Título</FieldLabel>
                         <Input placeholder="Ej: La casa en el cielo" {...field} />
+                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    name="alternativeTitles"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>Títulos alternativos (Opcional)</FieldLabel>
+                        <AlternativeTitlesField
+                          value={field.value ?? []}
+                          onChange={field.onChange}
+                          disabled={isPending}
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Otros nombres con los que se conoce la obra.
+                        </p>
                         {fieldState.error && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}

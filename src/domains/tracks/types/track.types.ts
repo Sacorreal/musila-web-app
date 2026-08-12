@@ -41,6 +41,7 @@ export interface IntellectualPropertyInput {
 
 export interface CreateTrackInput {
   title: string;
+  alternativeTitles?: string[];
   genreId: string;
   ritmo?: string;
   language: string;
@@ -104,6 +105,7 @@ export interface TracksResponseDto {
 export interface TrackResponse {
   id: string;
   title: string;
+  alternativeTitles?: string[];
   genre: string;
   ritmo: string;
   coverUrl: string;
