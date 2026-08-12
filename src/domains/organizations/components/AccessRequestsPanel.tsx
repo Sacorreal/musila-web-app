@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Check, Clock, Loader2, UserCheck, X } from 'lucide-react'
 import { organizationsHooks } from '../organizations.hooks'
 import type {
@@ -66,20 +66,22 @@ export function AccessRequestsPanel({ organizationId }: Props) {
   const [roleId, setRoleId] = useState<string>('')
   const [reason, setReason] = useState('')
 
-  useEffect(() => {
-    if (approveTarget) {
-      setMembershipType('ORGANIZATION')
-      setRoleId('')
-    }
-  }, [approveTarget])
-
-  useEffect(() => {
+  const openApprove = (request: AccessRequestDto) => {
+    setMembershipType('ORGANIZATION')
     setRoleId('')
-  }, [membershipType])
+    setApproveTarget(request)
+  }
 
-  useEffect(() => {
-    if (!rejectTarget) setReason('')
-  }, [rejectTarget])
+  const openReject = (request: AccessRequestDto) => {
+    setReason('')
+    setRejectTarget(request)
+  }
+
+  // Al cambiar el tipo, el rol seleccionado deja de ser válido para el nuevo tipo.
+  const changeMembershipType = (value: MembershipType) => {
+    setMembershipType(value)
+    setRoleId('')
+  }
 
   const assignableRoles = (roles ?? []).filter((role: RoleDto) => role.type === membershipType)
 
@@ -149,12 +151,12 @@ export function AccessRequestsPanel({ organizationId }: Props) {
                 variant="outline"
                 size="sm"
                 className="gap-1 text-red-500 hover:text-red-600"
-                onClick={() => setRejectTarget(request)}
+                onClick={() => openReject(request)}
               >
                 <X className="h-3.5 w-3.5" />
                 Rechazar
               </Button>
-              <Button size="sm" className="gap-1" onClick={() => setApproveTarget(request)}>
+              <Button size="sm" className="gap-1" onClick={() => openApprove(request)}>
                 <UserCheck className="h-3.5 w-3.5" />
                 Aprobar
               </Button>
@@ -179,7 +181,7 @@ export function AccessRequestsPanel({ organizationId }: Props) {
               <Label htmlFor="membership-type">Tipo de usuario</Label>
               <Select
                 value={membershipType}
-                onValueChange={(value) => setMembershipType(value as MembershipType)}
+                onValueChange={(value) => changeMembershipType(value as MembershipType)}
               >
                 <SelectTrigger id="membership-type">
                   <SelectValue />

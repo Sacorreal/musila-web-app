@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import {
@@ -87,8 +87,7 @@ export function WorkspaceGuestRegisterForm({ token, organizationName }: Props) {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<WorkspaceGuestRegisterInput>({
     resolver: zodResolver(workspaceGuestRegisterSchema),
@@ -103,8 +102,6 @@ export function WorkspaceGuestRegisterForm({ token, organizationName }: Props) {
       repeatPassword: '',
     },
   })
-
-  const documentType = watch('typeCitizenID')
 
   const onSubmit = handleSubmit(async (values) => {
     try {
@@ -156,23 +153,24 @@ export function WorkspaceGuestRegisterForm({ token, organizationName }: Props) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <div className="space-y-1.5">
           <Label htmlFor="typeCitizenID">Tipo de documento</Label>
-          <Select
-            value={documentType}
-            onValueChange={(value) =>
-              setValue('typeCitizenID', value, { shouldValidate: true, shouldDirty: true })
-            }
-          >
-            <SelectTrigger id="typeCitizenID" aria-label="Tipo de documento">
-              <SelectValue placeholder="Selecciona" />
-            </SelectTrigger>
-            <SelectContent>
-              {DOCUMENT_TYPES.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Controller
+            control={control}
+            name="typeCitizenID"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id="typeCitizenID" aria-label="Tipo de documento">
+                  <SelectValue placeholder="Selecciona" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DOCUMENT_TYPES.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
           <FieldError message={errors.typeCitizenID?.message} />
         </div>
         <div className="space-y-1.5">

@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { use, useState } from 'react'
 import { MoreVertical, ShieldCheck, UserPlus, Users } from 'lucide-react'
 import { organizationsHooks } from '@/src/domains/organizations/organizations.hooks'
 import type {
@@ -137,9 +137,11 @@ function MembersTable({
 
   const assignableRoles = (roles ?? []).filter((role: RoleDto) => role.type === membershipType)
 
-  useEffect(() => {
-    if (!rolesTarget) setSelectedRoleIds([])
-  }, [rolesTarget])
+  // Abre el diálogo de roles partiendo de una selección limpia.
+  const openRoles = (member: MembershipDto) => {
+    setSelectedRoleIds([])
+    setRolesTarget(member)
+  }
 
   const columns: ColumnDef<MembershipDto>[] = [
     {
@@ -172,7 +174,7 @@ function MembersTable({
         <MemberActions
           organizationId={organizationId}
           member={member}
-          onManageRoles={setRolesTarget}
+          onManageRoles={openRoles}
         />
       ),
     },
