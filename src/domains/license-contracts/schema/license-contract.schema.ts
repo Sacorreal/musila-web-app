@@ -98,6 +98,20 @@ export const confirmRecordingSchema = z.object({
     .string()
     .min(1, "El ISRC es obligatorio")
     .max(15, "El ISRC no puede superar 15 caracteres"),
+  upc: z
+    .string()
+    .max(20, "El UPC no puede superar 20 caracteres")
+    .optional()
+    .or(z.literal("")),
+  mainArtistName: z
+    .string()
+    .min(1, "El nombre del artista principal es obligatorio")
+    .max(255, "El nombre no puede superar 255 caracteres"),
+  albumOrEpName: z
+    .string()
+    .min(1, "El nombre del álbum o EP es obligatorio")
+    .max(255, "El nombre no puede superar 255 caracteres"),
+  releaseDate: z.string().min(1, "La fecha de lanzamiento es obligatoria"),
 });
 
 export type ConfirmRecordingFormValues = z.infer<typeof confirmRecordingSchema>;

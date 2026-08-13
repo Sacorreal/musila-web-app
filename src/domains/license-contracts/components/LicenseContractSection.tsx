@@ -159,12 +159,12 @@ export function LicenseContractSection({ request, isOwner }: Props) {
           {contract.status === LicenseContractStatus.EXPIRED && (
             <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-amber-400/50 bg-amber-500/5 p-6 text-center">
               <p className="text-sm text-amber-700 dark:text-amber-400">
-                La vigencia de esta licencia venció sin ISRC registrado. Si la canción ya fue grabada, confirma el
-                ISRC para dar la licencia por cumplida; de lo contrario, el compositor puede cancelar la solicitud y
-                ofrecerla a otro intérprete.
+                La vigencia de esta licencia venció sin grabación registrada. Si la canción ya fue lanzada, completa
+                los datos del fonograma para dar la licencia por cumplida; de lo contrario, el compositor puede
+                cancelar la solicitud y ofrecerla a otro intérprete.
               </p>
               <Button variant="outline" onClick={() => setConfirmRecordingOpen(true)} className="gap-2">
-                Confirmar ISRC
+                Confirmar grabación
               </Button>
             </div>
           )}

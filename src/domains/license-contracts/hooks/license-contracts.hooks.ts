@@ -13,6 +13,7 @@ import {
   upsertLicenseContractTermsAction,
 } from "../services/license-contracts.actions";
 import { UpsertLicenseContractTermsInput } from "../types/license-contract.types";
+import { ConfirmRecordingFormValues } from "../schema/license-contract.schema";
 
 export const LICENSE_CONTRACT_QUERY_KEY = "license-contract";
 export const LICENSE_CONTRACT_INSTALLMENTS_QUERY_KEY = "license-contract-installments";
@@ -100,8 +101,8 @@ export function useConfirmLicenseRecording(requestedTrackId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ contractId, isrc }: { contractId: string; isrc: string }) =>
-      confirmLicenseRecordingAction(contractId, isrc),
+    mutationFn: ({ contractId, ...recording }: { contractId: string } & ConfirmRecordingFormValues) =>
+      confirmLicenseRecordingAction(contractId, recording),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [LICENSE_CONTRACT_QUERY_KEY, requestedTrackId] });
       toast.success("ISRC confirmado. La licencia quedó cumplida.");

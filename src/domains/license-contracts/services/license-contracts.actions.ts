@@ -7,6 +7,7 @@ import {
   LicenseContractDto,
   UpsertLicenseContractTermsInput,
 } from "../types/license-contract.types";
+import { ConfirmRecordingFormValues } from "../schema/license-contract.schema";
 
 export async function getLicenseContractByRequestedTrackAction(
   requestedTrackId: string,
@@ -65,12 +66,12 @@ export async function rejectLicenseContractSignatoryAction(
 
 export async function confirmLicenseRecordingAction(
   contractId: string,
-  isrc: string,
+  recording: ConfirmRecordingFormValues,
 ): Promise<LicenseContractDto> {
   const client = await getServerApiClient();
   const response = await client.post<LicenseContractDto>(
     apiURLs.licenseContracts.confirmRecording(contractId),
-    { isrc },
+    recording,
   );
   return response.data;
 }

@@ -16,6 +16,17 @@ interface Props {
   contractId: string;
 }
 
+const EMPTY_VALUES: ConfirmRecordingFormValues = {
+  isrc: "",
+  upc: "",
+  mainArtistName: "",
+  albumOrEpName: "",
+  releaseDate: "",
+};
+
+const INPUT_CLASSES =
+  "flex h-11 w-full rounded-xl border border-input bg-background px-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50";
+
 export function ConfirmRecordingDialog({ isOpen, onClose, requestedTrackId, contractId }: Props) {
   const { mutate, isPending } = useConfirmLicenseRecording(requestedTrackId);
 
@@ -27,17 +38,17 @@ export function ConfirmRecordingDialog({ isOpen, onClose, requestedTrackId, cont
   } = useForm<ConfirmRecordingFormValues>({
     resolver: zodResolver(confirmRecordingSchema),
     mode: "onChange",
-    defaultValues: { isrc: "" },
+    defaultValues: EMPTY_VALUES,
   });
 
   const handleClose = () => {
     if (isPending) return;
-    reset({ isrc: "" });
+    reset(EMPTY_VALUES);
     onClose();
   };
 
   const onSubmit = (values: ConfirmRecordingFormValues) => {
-    mutate({ contractId, isrc: values.isrc }, { onSuccess: handleClose });
+    mutate({ contractId, ...values }, { onSuccess: handleClose });
   };
 
   return (
@@ -46,13 +57,13 @@ export function ConfirmRecordingDialog({ isOpen, onClose, requestedTrackId, cont
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Disc3 className="h-5 w-5 text-primary" />
-            Confirmar ISRC de la grabación
+            Confirmar datos de la grabación
           </DialogTitle>
         </DialogHeader>
 
         <p className="text-sm text-muted-foreground">
-          La vigencia de esta licencia venció. Si la canción ya fue grabada y tiene ISRC asignado (por ejemplo, con
-          tu distribuidor), ingrésalo aquí para dar la licencia por cumplida.
+          La vigencia de esta licencia venció. Si la canción ya fue lanzada, completa los datos del fonograma para
+          dar la licencia por cumplida. Esta información se registra en el expediente del track.
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
@@ -62,10 +73,55 @@ export function ConfirmRecordingDialog({ isOpen, onClose, requestedTrackId, cont
               {...register("isrc")}
               placeholder="US-ABC-27-00001"
               disabled={isPending}
-              className="flex h-11 w-full rounded-xl border border-input bg-background px-4 text-sm font-semibold uppercase focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+              className={`${INPUT_CLASSES} font-semibold uppercase`}
             />
             <FieldDescription>Código único asignado a la grabación resultante.</FieldDescription>
             {errors.isrc && <FieldError errors={[errors.isrc]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.upc}>
+            <FieldLabel>UPC (opcional)</FieldLabel>
+            <input
+              {...register("upc")}
+              placeholder="0885150000000"
+              disabled={isPending}
+              className={`${INPUT_CLASSES} font-semibold`}
+            />
+            <FieldDescription>Código universal del lanzamiento. Puede omitirse en sencillos sin álbum.</FieldDescription>
+            {errors.upc && <FieldError errors={[errors.upc]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.mainArtistName}>
+            <FieldLabel>Nombre del artista principal</FieldLabel>
+            <input
+              {...register("mainArtistName")}
+              placeholder="Ej. Karol G"
+              disabled={isPending}
+              className={INPUT_CLASSES}
+            />
+            {errors.mainArtistName && <FieldError errors={[errors.mainArtistName]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.albumOrEpName}>
+            <FieldLabel>Nombre del álbum o EP</FieldLabel>
+            <input
+              {...register("albumOrEpName")}
+              placeholder="Ej. Mañana Será Bonito"
+              disabled={isPending}
+              className={INPUT_CLASSES}
+            />
+            {errors.albumOrEpName && <FieldError errors={[errors.albumOrEpName]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.releaseDate}>
+            <FieldLabel>Fecha de lanzamiento</FieldLabel>
+            <input
+              {...register("releaseDate")}
+              type="date"
+              disabled={isPending}
+              className={INPUT_CLASSES}
+            />
+            {errors.releaseDate && <FieldError errors={[errors.releaseDate]} />}
           </Field>
 
           <div className="flex gap-3">
@@ -74,7 +130,7 @@ export function ConfirmRecordingDialog({ isOpen, onClose, requestedTrackId, cont
             </Button>
             <Button type="submit" disabled={isPending} className="flex-1 gap-2 rounded-xl font-bold">
               <CheckCircle2 className="h-4 w-4" />
-              Confirmar ISRC
+              Confirmar grabación
             </Button>
           </div>
         </form>

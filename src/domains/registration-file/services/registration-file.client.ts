@@ -111,6 +111,10 @@ export interface PhonogramPayload {
   hasRecording: boolean
   recordingType?: RecordingType
   isrc?: string
+  upc?: string
+  mainArtistName?: string
+  albumOrEpName?: string
+  releaseDate?: string
   phonogramProducer?: string
   phonogramOwner?: string
   recordingDate?: string

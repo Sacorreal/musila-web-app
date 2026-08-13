@@ -35,6 +35,10 @@ export function PhonogramStep({ registrationFile, onNext }: Props) {
       hasRecording: data?.hasRecording ?? false,
       recordingType: data?.recordingType ?? undefined,
       isrc: data?.isrc ?? '',
+      upc: data?.upc ?? '',
+      mainArtistName: data?.mainArtistName ?? '',
+      albumOrEpName: data?.albumOrEpName ?? '',
+      releaseDate: data?.releaseDate ?? '',
       phonogramProducer: data?.phonogramProducer ?? '',
       phonogramOwner: data?.phonogramOwner ?? '',
       recordingDate: data?.recordingDate ?? '',
@@ -48,6 +52,10 @@ export function PhonogramStep({ registrationFile, onNext }: Props) {
       hasRecording: data?.hasRecording ?? false,
       recordingType: data?.recordingType ?? undefined,
       isrc: data?.isrc ?? '',
+      upc: data?.upc ?? '',
+      mainArtistName: data?.mainArtistName ?? '',
+      albumOrEpName: data?.albumOrEpName ?? '',
+      releaseDate: data?.releaseDate ?? '',
       phonogramProducer: data?.phonogramProducer ?? '',
       phonogramOwner: data?.phonogramOwner ?? '',
       recordingDate: data?.recordingDate ?? '',
@@ -99,6 +107,30 @@ export function PhonogramStep({ registrationFile, onNext }: Props) {
             <FieldLabel>ISRC</FieldLabel>
             <Input {...register('isrc')} />
             {errors.isrc && <FieldError errors={[errors.isrc]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.upc}>
+            <FieldLabel>UPC</FieldLabel>
+            <Input {...register('upc')} />
+            {errors.upc && <FieldError errors={[errors.upc]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.mainArtistName}>
+            <FieldLabel>Artista principal</FieldLabel>
+            <Input {...register('mainArtistName')} />
+            {errors.mainArtistName && <FieldError errors={[errors.mainArtistName]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.albumOrEpName}>
+            <FieldLabel>Álbum o EP</FieldLabel>
+            <Input {...register('albumOrEpName')} />
+            {errors.albumOrEpName && <FieldError errors={[errors.albumOrEpName]} />}
+          </Field>
+
+          <Field data-invalid={!!errors.releaseDate}>
+            <FieldLabel>Fecha de lanzamiento</FieldLabel>
+            <Input type="date" {...register('releaseDate')} />
+            {errors.releaseDate && <FieldError errors={[errors.releaseDate]} />}
           </Field>
 
           <Field data-invalid={!!errors.phonogramOwner}>
