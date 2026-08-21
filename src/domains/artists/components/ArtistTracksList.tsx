@@ -11,6 +11,7 @@ import { PlaylistIcon } from "@/src/shared/components/Icons/icons";
 import { AddToPlaylistModal } from "@/src/domains/playlists/components/AddToPlaylistModal";
 import { RequestTrackModal } from "@/src/domains/requests/components/RequestTrackModal";
 import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
+import { usePlayTrack } from "@/src/domains/player/hooks/use-play-track";
 import { PlayAllButton } from "@/src/domains/player/components/PlayAllButton";
 import { TrackDuration } from "@/src/shared/components/UI/TrackDuration";
 import {
@@ -33,6 +34,7 @@ interface ArtistTracksListProps {
 }
 
 export function ArtistTracksList({ tracks, artistId, artistName, artistLastName }: ArtistTracksListProps) {
+  const { playTrack } = usePlayTrack();
   // Filter out plain string IDs and inject artist data
   const populatedTracks = (
     tracks as Array<TrackResponse | AuthorTrackDetailDto | string>
@@ -127,7 +129,7 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
               key={track.id}
               onClick={() => {
                 usePlayerStore.getState().setQueue(filteredTracks.slice(index + 1) as unknown as TrackResponse[]);
-                usePlayerStore.getState().play(track as unknown as TrackResponse);
+                playTrack(track as unknown as TrackResponse);
                 router.push(`/music/tracks/${track.id}`);
               }}
               className="group flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-800 rounded-2xl md:rounded-[2.5rem] border border-slate-200 dark:border-white/5 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl relative overflow-hidden"

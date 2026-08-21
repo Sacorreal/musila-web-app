@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { notifyIfLegalIdentityRequired } from "@/src/shared/libs/errors/legal-identity-error";
 import {
   approveSplitAction,
   createSplitAction,
@@ -63,6 +64,7 @@ export function useApproveSplit(trackId: string) {
       toast.success("Aprobaste tu participación en el split");
     },
     onError: (error: any) => {
+      if (notifyIfLegalIdentityRequired(error)) return;
       toast.error(error?.response?.data?.message ?? "No se pudo aprobar el split");
     },
   });

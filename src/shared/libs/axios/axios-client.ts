@@ -67,6 +67,14 @@ apiClient.interceptors.response.use(
       }
     }
 
+    // HTTP 403 — identidad legal no verificada (firma de splits / reproducción de terceros)
+    if (error.response?.status === 403 && isInternalRequest) {
+      const data = error.response?.data ?? {};
+      if (data.code === 'LEGAL_IDENTITY_REQUIRED' && typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('legal-identity:required'));
+      }
+    }
+
     // Solo manejamos 401 para peticiones a NUESTRO backend
     if (error.response?.status === 401 && isInternalRequest) {
       console.warn("Sesión expirada o token inválido.");

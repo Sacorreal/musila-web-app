@@ -17,6 +17,7 @@ import { ProfileAvatarCard } from "@/src/domains/users/components/ProfileAvatarC
 import { ProfilePersonalInfoSection } from "@/src/domains/users/components/ProfilePersonalInfoSection";
 import { ProfileContactSection } from "@/src/domains/users/components/ProfileContactSection";
 import { ProfileSecuritySection } from "@/src/domains/users/components/ProfileSecuritySection";
+import { LegalIdentityStatusCard } from "@/src/domains/legal-identity/components/LegalIdentityStatusCard";
 
 export function ProfileForm() {
   const { user, setUser } = useAuthStore();
@@ -158,6 +159,8 @@ export function ProfileForm() {
             <ProfileSecuritySection register={register} errors={errors} />
           </div>
         </form>
+
+        <LegalIdentityStatusCard />
       </motion.div>
     </div>
   );

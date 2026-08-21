@@ -24,6 +24,8 @@ export type UserJWTResponse = {
     plan?: 'free' | 'pro'
     /** Estado de verificación al momento de emitir el token — solo para UI (banner), no confiar para autorización. */
     isVerified?: boolean
+    /** Identidad legal verificada (Ley 527) — solo informativo para decidir si mostrar el bloqueo de UI antes de reproducir/firmar; el backend siempre re-valida. */
+    identidadLegalVerificada?: boolean
     /** Rol descriptivo (disciplina musical). No viaja en el JWT firmado; se resuelve vía /users/me. */
     role?: MusicRole
     secondName?: string

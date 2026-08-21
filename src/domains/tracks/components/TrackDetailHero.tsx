@@ -10,7 +10,7 @@ import { AddToPlaylistModal } from '@/src/domains/playlists/components/AddToPlay
 import { Button } from '@/src/shared/components/UI/button';
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 import { PlaylistIcon } from '@/src/shared/components/Icons/icons';
-import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
+import { usePlayTrack } from '@/src/domains/player/hooks/use-play-track';
 import { ShareButton } from '@/src/domains/sharing/components/ShareButton';
 import { ShareResourceType } from '@/src/domains/sharing/types/sharing.types';
 import { Play, FolderPlus } from 'lucide-react';
@@ -30,6 +30,7 @@ function resolveGenreName(genre?: MusicalGenreDto | string): string {
 export function TrackDetailHero({ track }: TrackDetailHeroProps) {
   const genreName = resolveGenreName(track.genre);
   const userId = useAuthStore((s) => s.user?.id);
+  const { playTrack } = usePlayTrack();
 
   // Ocultar "Solicitar Uso" si el usuario autenticado es uno de los autores del track
   const isAuthor = track.authors?.some((a) => a.id === userId) ?? false;
@@ -116,7 +117,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-1">
             <Button
               size="lg"
-              onClick={() => usePlayerStore.getState().play(track)}
+              onClick={() => playTrack(track)}
               className="gap-2 rounded-full font-black uppercase tracking-tight px-5 sm:px-8 bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 h-10 sm:h-12"
             >
               <Play className="w-5 h-5 fill-current" />

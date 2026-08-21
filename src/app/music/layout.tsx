@@ -3,6 +3,7 @@ import { AppSidebar } from '@/src/shared/components/Layout/sidebar/AppSidebar'
 import { PlanLimitWatcher } from "@/src/shared/components/UI/plan-limit-watcher"
 import { MusicPlayer } from '@/src/domains/player/components/MusicPlayer'
 import { EmailVerificationBanner } from '@/src/domains/auth/components/EmailVerificationBanner'
+import { LegalIdentityRequiredWatcher } from '@/src/domains/legal-identity/components/LegalIdentityRequiredWatcher'
 import type React from "react"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           {/* Modal global de límite de plan */}
           <PlanLimitWatcher />
+
+          {/* Modal global de identidad legal requerida */}
+          <LegalIdentityRequiredWatcher />
 
         </div>
   )

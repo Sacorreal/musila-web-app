@@ -8,6 +8,7 @@ import { RequestTrackModal } from "@/src/domains/requests/components/RequestTrac
 import { AddToPlaylistModal } from "@/src/domains/playlists/components/AddToPlaylistModal";
 import { TrackDuration } from "@/src/shared/components/UI/TrackDuration";
 import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
+import { usePlayTrack } from "@/src/domains/player/hooks/use-play-track";
 import { TrackResponse, TracksResponseDto } from "@/src/domains/tracks/types/track.types";
 import { GenrePagination } from "@/src/domains/musical-genre/components/GenrePagination";
 
@@ -19,6 +20,7 @@ interface GenreTracksTableProps {
 
 export function GenreTracksTable({ tracks, genreName, genreSlug }: GenreTracksTableProps) {
   const router = useRouter();
+  const { playTrack } = usePlayTrack();
 
   return (
     <div className="bg-card dark:bg-slate-900/20 rounded-[2.5rem] overflow-hidden border border-slate-300 dark:border-white/5 backdrop-blur-sm shadow-xl">
@@ -42,7 +44,7 @@ export function GenreTracksTable({ tracks, genreName, genreSlug }: GenreTracksTa
                 key={track.id}
                 onClick={() => {
                   usePlayerStore.getState().setQueue(tracks.slice(index + 1) as unknown as TrackResponse[]);
-                  usePlayerStore.getState().play(track as unknown as TrackResponse);
+                  playTrack(track as unknown as TrackResponse);
                   router.push(`/music/tracks/${track.id}`);
                 }}
                 className="group hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-all duration-300 cursor-pointer"

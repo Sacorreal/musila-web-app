@@ -11,6 +11,8 @@ import { Textarea } from "@/src/shared/components/UI/textarea";
 import { Field, FieldError, FieldLabel } from "@/src/shared/components/UI/field";
 import { OtpVerificationStep } from "@/src/shared/components/otp/OtpVerificationStep";
 import { OtpPurpose } from "@/src/domains/otp/types/otp.types";
+import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import { LEGAL_IDENTITY_REQUIRED_EVENT } from "@/src/shared/libs/errors/legal-identity-error";
 import { rejectSplitSchema, RejectSplitFormValues } from "../schema/splits.schema";
 import { useApproveSplit, useRejectSplit } from "../hooks/splits.hooks";
 import { COAUTHOR_ROLE_LABELS, SplitAuthorDto } from "../types/splits.types";
@@ -49,6 +51,16 @@ export function SplitApprovalDialog({ isOpen, trackId, splitId, splitAuthor, onC
 
   const handleApprove = () => {
     approveSplit(splitId, { onSuccess: handleClose });
+  };
+
+  const identidadLegalVerificada = useAuthStore((s) => s.user?.identidadLegalVerificada);
+
+  const handleApproveClick = () => {
+    if (!identidadLegalVerificada) {
+      window.dispatchEvent(new CustomEvent(LEGAL_IDENTITY_REQUIRED_EVENT));
+      return;
+    }
+    setStep("otp");
   };
 
   const onReject = (values: RejectSplitFormValues) => {
@@ -114,7 +126,7 @@ export function SplitApprovalDialog({ isOpen, trackId, splitId, splitAuthor, onC
                       Rechazar
                     </Button>
                     <Button
-                      onClick={() => setStep("otp")}
+                      onClick={handleApproveClick}
                       className="flex-1 rounded-xl h-12 bg-emerald-600 hover:bg-emerald-700 text-white font-black gap-2"
                     >
                       <CheckCircle2 size={16} />

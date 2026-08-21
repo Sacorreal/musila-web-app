@@ -43,6 +43,7 @@ export const apiURLs = {
     byCreatorId: (musilaCreatorId: string) => `/users/search/by-creator-id/${musilaCreatorId}` as const,
     me: '/users/me' as const,
     deleteMe: (id: string) => `/users/me/${id}` as const,
+    legalIdentity: '/users/me/legal-identity' as const,
   },
   follows: {
     byUserId: (userId: string) => `/users/${userId}/follow` as const,

@@ -2,7 +2,7 @@
 
 import { Music2, Play } from "lucide-react";
 import { TrackResponse } from "@/src/domains/tracks/types/track.types";
-import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
+import { usePlayTrack } from "@/src/domains/player/hooks/use-play-track";
 import { Button } from "@/src/shared/components/UI/button";
 
 interface PlaylistTrackListProps {
@@ -10,6 +10,8 @@ interface PlaylistTrackListProps {
 }
 
 export function PlaylistTrackList({ tracks }: PlaylistTrackListProps) {
+  const { playTrack } = usePlayTrack();
+
   if (tracks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 p-12 text-center rounded-2xl border border-dashed border-border">
@@ -43,7 +45,7 @@ export function PlaylistTrackList({ tracks }: PlaylistTrackListProps) {
             variant="ghost"
             size="icon"
             className="opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => usePlayerStore.getState().play(track)}
+            onClick={() => playTrack(track)}
             aria-label={`Reproducir ${track.title}`}
           >
             <Play className="w-4 h-4" />
