@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, X, Users, CheckCircle2, AlertCircle, Loader2, PenLine } from "lucide-react";
+import { Plus, X, Users, CheckCircle2, AlertCircle, Loader2, PenLine, Lock } from "lucide-react";
 import { Button } from "@/src/shared/components/UI/button";
 import { Switch } from "@/src/shared/components/UI/switch";
 import { Field, FieldError, FieldLabel } from "@/src/shared/components/UI/field";
@@ -15,14 +15,22 @@ import { createSplitSchema, CreateSplitFormValues, distributeEqualPercentages } 
 import { useCreateSplit, useUpdateSplit } from "../hooks/splits.hooks";
 import { COAUTHOR_ROLE_LABELS, CoauthorRole, SplitResponse } from "../types/splits.types";
 
+interface TrackAuthor {
+  id: string;
+  name: string;
+  lastName: string;
+}
+
 interface Props {
   trackId: string;
+  /** Autores registrados del track: siempre deben quedar en el split y firmarlo, tenga o no coautores adicionales. */
+  trackAuthors: TrackAuthor[];
   /** Presente en modo edición de un split bloqueado (rechazado). */
   existingSplit?: SplitResponse;
   onDone: () => void;
 }
 
-export function SplitForm({ trackId, existingSplit, onDone }: Props) {
+export function SplitForm({ trackId, trackAuthors, existingSplit, onDone }: Props) {
   const [equalSplit, setEqualSplit] = useState(false);
 
   const { control, handleSubmit, watch, setValue, formState: { errors, isValid } } =
@@ -47,6 +55,26 @@ export function SplitForm({ trackId, existingSplit, onDone }: Props) {
 
   const { fields, append, remove } = useFieldArray({ control, name: "authors" });
   const authors = watch("authors");
+
+  // La firma del split es obligatoria sin importar cuántos autores tenga el track:
+  // si nadie agregó coautores, precargamos a los autores del track (1 o N) con 100%
+  // repartido entre ellos, para que puedan firmar su propia participación.
+  useEffect(() => {
+    if (existingSplit || fields.length > 0 || trackAuthors.length === 0) return;
+    const percentages = distributeEqualPercentages(trackAuthors.length);
+    trackAuthors.forEach((author, index) => {
+      append({
+        userId: author.id,
+        musilaCreatorId: "",
+        name: `${author.name} ${author.lastName}`,
+        percentage: percentages[index],
+        role: CoauthorRole.COMPOSITOR,
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const isTrackAuthorRow = (userId: string) => trackAuthors.some((a) => a.id === userId);
 
   const { data: publisherShares } = useMyPublisherShares();
 
@@ -122,12 +150,18 @@ export function SplitForm({ trackId, existingSplit, onDone }: Props) {
 
       {fields.length > 0 && (
         <div className="space-y-3">
-          {fields.map((field, index) => (
+          {fields.map((field, index) => {
+            const locked = isTrackAuthorRow(field.userId);
+            return (
             <div key={field.id} className="flex flex-col gap-3 rounded-xl border bg-muted/10 p-4 sm:flex-row sm:items-end">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Coautor</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {locked ? "Autor del track" : "Coautor"}
+                </p>
                 <p className="truncate font-semibold text-foreground">{field.name}</p>
-                <p className="text-xs text-muted-foreground">{field.musilaCreatorId}</p>
+                {field.musilaCreatorId && (
+                  <p className="text-xs text-muted-foreground">{field.musilaCreatorId}</p>
+                )}
               </div>
 
               <Controller
@@ -177,17 +211,27 @@ export function SplitForm({ trackId, existingSplit, onDone }: Props) {
                 )}
               />
 
-              <button
-                type="button"
-                onClick={() => remove(index)}
-                disabled={isSaving}
-                className="flex h-9 w-9 shrink-0 items-center justify-center self-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all disabled:opacity-40"
-                aria-label="Eliminar coautor"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              {locked ? (
+                <div
+                  className="flex h-9 w-9 shrink-0 items-center justify-center self-center rounded-lg text-muted-foreground"
+                  title="Autor del track: su firma es obligatoria y no puede quitarse del split"
+                >
+                  <Lock className="h-4 w-4" />
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  disabled={isSaving}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center self-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all disabled:opacity-40"
+                  aria-label="Eliminar coautor"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

@@ -11,6 +11,8 @@ import { useState } from "react";
 // Stores & Hooks
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
 import { trackHooks } from "@/src/domains/tracks/hooks/use-tracks.hooks";
+import { useSplitByTrack } from "@/src/domains/splits/hooks/splits.hooks";
+import { SplitStatus } from "@/src/domains/splits/types/splits.types";
 
 // Validations
 import {
@@ -47,7 +49,12 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
 
   const { data: track, isLoading: isLoadingTrack } = trackHooks.useTrackById(trackId);
   const { mutateAsync: updateTrack, isPending } = trackHooks.useUpdateTrack();
+  const { data: split } = useSplitByTrack(trackId);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // El track solo puede publicarse una vez que el split de coautoría quede firmado
+  // (1 o N autores). Si ya estaba público de antes (dato histórico), no lo bloqueamos.
+  const canGoPublic = track?.isAvailable === true || split?.status === SplitStatus.COMPLETED;
 
   const methods = useForm<UpdateTrackFormValues>({
     resolver: zodResolver(updateTrackSchema),
@@ -313,9 +320,17 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                       <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                         <div className="space-y-0.5">
                           <p className="text-sm font-medium">Pública</p>
-                          <p className="text-xs text-muted-foreground">Visible para todos</p>
+                          <p className="text-xs text-muted-foreground">
+                            {canGoPublic
+                              ? "Visible para todos"
+                              : "Firma el split de coautoría para poder publicarla"}
+                          </p>
                         </div>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={canGoPublic && field.value}
+                          disabled={!canGoPublic}
+                          onCheckedChange={field.onChange}
+                        />
                       </div>
                     )}
                   />

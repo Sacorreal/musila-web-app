@@ -61,7 +61,7 @@ export function TrackSplitsSection({ track }: Props) {
         <div className="h-24 animate-pulse rounded-xl bg-muted/40" />
       ) : !split ? (
         showForm ? (
-          <SplitForm trackId={track.id} onDone={() => setShowForm(false)} />
+          <SplitForm trackId={track.id} trackAuthors={track.authors} onDone={() => setShowForm(false)} />
         ) : (
           <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed bg-muted/30 p-8 text-center">
             <Users className="h-8 w-8 text-muted-foreground opacity-50" />
@@ -75,7 +75,7 @@ export function TrackSplitsSection({ track }: Props) {
           </div>
         )
       ) : split.status === SplitStatus.BLOCKED && showForm ? (
-        <SplitForm trackId={track.id} existingSplit={split} onDone={() => setShowForm(false)} />
+        <SplitForm trackId={track.id} trackAuthors={track.authors} existingSplit={split} onDone={() => setShowForm(false)} />
       ) : (
         <div className="space-y-4">
           <div className="space-y-2">
