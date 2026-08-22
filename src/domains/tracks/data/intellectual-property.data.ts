@@ -20,6 +20,8 @@ export interface CmoOption {
   acronym: string;
   /** Nombre completo */
   originalName: string;
+  /** Código CISAC de la sociedad (ej: 84 para SAYCO) */
+  cisacCode: number | null;
   /** Código ISO del país */
   country: string;
   /** URL del logo */
@@ -37,7 +39,13 @@ const countriesMap = copyrightCmoData.countries as Record<
 
 const cmosMap = copyrightCmoData.cmos as Record<
   string,
-  { acronym: string; originalName: string; country: string; logo: string }
+  {
+    acronym: string;
+    originalName: string;
+    cisacCode: number | null;
+    country: string;
+    logo: string;
+  }
 >;
 
 /** Lista de Copyright Offices ordenadas por nombre de país */
@@ -57,6 +65,7 @@ export const cmoOptions: CmoOption[] = Object.values(cmosMap)
   .map((cmo) => ({
     acronym: cmo.acronym,
     originalName: cmo.originalName,
+    cisacCode: cmo.cisacCode,
     country: cmo.country,
     logo: cmo.logo,
   }))

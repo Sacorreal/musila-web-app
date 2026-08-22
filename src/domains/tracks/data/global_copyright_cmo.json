@@ -273,234 +273,280 @@
     "SAYCO": {
       "acronym": "SAYCO",
       "originalName": "Sociedad de Autores y Compositores de Colombia",
+      "cisacCode": 84,
       "country": "CO",
       "logo": "https://members.cisac.org/logos/logo_society_91.png"
     },
     "SACM": {
       "acronym": "SACM",
       "originalName": "Sociedad de Autores y Compositores de México",
+      "cisacCode": 59,
       "country": "MX",
       "logo": "https://members.cisac.org/logos/logo_society_100.png"
     },
     "SADAIC": {
       "acronym": "SADAIC",
       "originalName": "Sociedad Argentina de Autores y Compositores de Música",
+      "cisacCode": 61,
       "country": "AR",
       "logo": "https://members.cisac.org/logos/logo_society_98.jpg"
+    },
+    "ARGENTORES": {
+      "acronym": "ARGENTORES",
+      "originalName": "Argentores - Sociedad General de Autores de la Argentina",
+      "cisacCode": 14,
+      "country": "AR",
+      "logo": ""
     },
     "ABRAMUS": {
       "acronym": "ABRAMUS",
       "originalName": "Associação Brasileira de Música e Artes",
+      "cisacCode": 201,
       "country": "BR",
       "logo": "https://members.cisac.org/logos/logo_society_504.jpg"
     },
     "ACAM": {
       "acronym": "ACAM",
       "originalName": "Asociación de Compositores y Autores Musicales de Costa Rica",
+      "cisacCode": 107,
       "country": "CR",
       "logo": "https://members.cisac.org/logos/logo_society_4.jpg"
     },
     "ACCS": {
       "acronym": "ACCS",
       "originalName": "Association of Caribbean Copyright Societies",
+      "cisacCode": 306,
       "country": "TT",
       "logo": "https://members.cisac.org/logos/ACCS.png"
     },
     "ACDAM": {
       "acronym": "ACDAM",
       "originalName": "Agencia de Creadores Dramáticos, Audiovisuales y Musicales",
+      "cisacCode": 103,
       "country": "CU",
       "logo": "https://members.cisac.org/logos/logo_society_5.jpg"
     },
     "ADDAF": {
       "acronym": "ADDAF",
       "originalName": "Associação Defensora de Direitos Autorais",
+      "cisacCode": 2,
       "country": "BR",
       "logo": "https://members.cisac.org/logos/ADDAF.png"
     },
     "AEI-GUATEMALA": {
       "acronym": "AEI-GUATEMALA",
       "originalName": "Asociación de Autores, Editores e Intérpretes",
+      "cisacCode": 250,
       "country": "GT",
       "logo": "https://members.cisac.org/logos/AEI-GUATEMALA.png"
     },
     "AGADU": {
       "acronym": "AGADU",
       "originalName": "Asociación General de Autores del Uruguay",
+      "cisacCode": 4,
       "country": "UY",
       "logo": "https://members.cisac.org/logos/logo_society_13.jpg"
     },
     "AMAR-SOMBRÁS": {
       "acronym": "AMAR SOMBRÁS",
       "originalName": "Associação de Músicos Arranjadores e Regentes / Sociedade Musical Brasileira",
+      "cisacCode": 30,
       "country": "BR",
       "logo": "https://members.cisac.org/logos/logo_society_24.png"
     },
     "APA": {
       "acronym": "APA",
       "originalName": "Autores Paraguayos Asociados",
+      "cisacCode": 15,
       "country": "PY",
       "logo": "https://members.cisac.org/logos/logo_society_27.png"
     },
     "APDAYC": {
       "acronym": "APDAYC",
       "originalName": "Asociación Peruana de Autores Y Compositores",
+      "cisacCode": 7,
       "country": "PE",
       "logo": "https://members.cisac.org/logos/logo_society_194.png"
     },
     "ASSIM": {
       "acronym": "ASSIM",
       "originalName": "Associação de Intérpretes e Músicos",
+      "cisacCode": 219,
       "country": "BR",
       "logo": "https://members.cisac.org/logos/logo_society_953.jpg"
     },
     "COSCAP": {
       "acronym": "COSCAP",
       "originalName": "Copyright Society of Composers, Authors and Publishers Incorporated",
+      "cisacCode": 169,
       "country": "BB",
       "logo": "https://members.cisac.org/logos/logo_society_191.jpg"
     },
     "COTT": {
       "acronym": "COTT",
       "originalName": "Copyright Organisation of Trinidad and Tobago",
+      "cisacCode": 96,
       "country": "TT",
       "logo": "https://members.cisac.org/logos/COTT.png"
     },
     "ECCO": {
       "acronym": "ECCO",
       "originalName": "Eastern Caribbean Collective Organisation for Music Rights Inc.",
+      "cisacCode": 214,
       "country": "LC",
       "logo": "https://members.cisac.org/logos/ECCO.png"
     },
     "JACAP": {
       "acronym": "JACAP",
       "originalName": "Jamaica Association of Composers,Authors and Publishers Ltd",
+      "cisacCode": 176,
       "country": "JM",
       "logo": "https://members.cisac.org/logos/JACAP.png"
     },
     "SACIM-EGC": {
       "acronym": "SACIM-EGC",
       "originalName": "Salvadoreños Autores, Compositores e Interpretes Musicales, Entidad de Gestión Colectiva",
+      "cisacCode": 242,
       "country": "SV",
       "logo": "https://members.cisac.org/logos/logo_society_1333.jpg"
     },
     "SACVEN": {
       "acronym": "SACVEN",
       "originalName": "Sociedad de Autores y Compositores de Venezuela",
+      "cisacCode": 60,
       "country": "VE",
       "logo": "https://members.cisac.org/logos/logo_society_99.JPG"
     },
     "SAYCE": {
       "acronym": "SAYCE",
       "originalName": "Sociedad General de Autores y Compositores del Ecuador",
+      "cisacCode": 65,
       "country": "VE",
       "logo": "https://members.cisac.org/logos/logo_society_99.JPG"
     },
     "SBACEM": {
       "acronym": "SBACEM",
       "originalName": "Sociedade Brasileira de Autores, Compositores e Escritores de Musica",
+      "cisacCode": 66,
       "country": "BR",
       "logo": "https://members.cisac.org/logos/logo_society_89.jpg"
     },
     "SCD": {
       "acronym": "SCD",
       "originalName": "Sociedad Chilena de Autores e Intérpretes Musicales",
+      "cisacCode": 29,
       "country": "CL",
       "logo": "https://members.cisac.org/logos/logo_society_85.jpg"
     },
     "SGACEDOM": {
       "acronym": "SGACEDOM",
       "originalName": "Sociedad General de Autores, Compositores y Editores Dominicanos de Musica",
+      "cisacCode": 227,
       "country": "DO",
       "logo": "https://members.cisac.org/logos/SGACEDOM.png"
     },
     "SICAM": {
       "acronym": "SICAM",
       "originalName": "Sociedade Independente de Compositores e Autores Musicais",
+      "cisacCode": 86,
       "country": "BR",
       "logo": "https://members.cisac.org/logos/logo_society_174.png"
     },
     "SOBODAYCOM": {
       "acronym": "SOBODAYCOM",
       "originalName": "Sociedad Boliviana de Autores y Compositores de Música",
+      "cisacCode": 129,
       "country": "BO",
       "logo": "https://members.cisac.org/logos/SOBODAYCOM.png"
     },
     "SOCINPRO": {
       "acronym": "SOCINPRO",
       "originalName": "Sociedade Brasileira de Administração e Proteção de Direitos Intelectuais",
+      "cisacCode": 189,
       "country": "BR",
       "logo": "https://members.cisac.org/logos/logo_society_176.png"
     },
     "SPAC": {
       "acronym": "SPAC",
       "originalName": "Sociedad Panameña de Autores y Compositores",
+      "cisacCode": 146,
       "country": "PA",
       "logo": "https://members.cisac.org/logos/logo_society_64.png"
     },
     "UBC": {
       "acronym": "UBC",
       "originalName": "União Brasileira de Compositores",
+      "cisacCode": 93,
       "country": "PA",
       "logo": "https://members.cisac.org/logos/logo_society_53.png"
     },
     "AMRA": {
       "acronym": "AMRA",
       "originalName": "American Music Rights Association",
+      "cisacCode": 17,
       "country": "US",
       "logo": "https://members.cisac.org/logos/AMRA.png"
     },
     "ASCAP": {
       "acronym": "ASCAP",
       "originalName": "American Society of Composers,Authors and Publishers",
+      "cisacCode": 10,
       "country": "US",
       "logo": "https://members.cisac.org/logos/ASCAP.png"
     },
     "SOCAN": {
       "acronym": "SOCAN",
       "originalName": "Society of Composers, Authors and Music Publishers of Canada",
+      "cisacCode": 101,
       "country": "CA",
       "logo": "https://members.cisac.org/logos/SOCAN.png"
     },
     "SPACQ-AE": {
       "acronym": "SPACQ-AE",
       "originalName": "Société professionnelle des auteurs, compositeurs du Québec et des artistes entrepreneurs",
+      "cisacCode": 191,
       "country": "CA",
       "logo": "https://members.cisac.org/logos/logo_society_62.png"
     },
     "The MLC": {
       "acronym": "The MLC",
       "originalName": "Mechanical Licensing Collective",
+      "cisacCode": 708,
       "country": "US",
       "logo": "https://members.cisac.org/logos/logo_society_2344.png"
     },
     "BMI": {
       "acronym": "BMI",
       "originalName": "Broadcast Music, Inc.",
+      "cisacCode": 21,
       "country": "US",
       "logo": "https://www.bmi.com/frontend/images/logo.png"
     },
     "GMR": {
       "acronym": "GMR",
       "originalName": "Global Music Rights",
+      "cisacCode": 778,
       "country": "US",
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ZJzw79KziHJ543OU-O4Rpx7Q1stLWXjpiA&s"
     },
     "HFA": {
       "acronym": "HFA",
       "originalName": "The Harry Fox Agency",
+      "cisacCode": 34,
       "country": "US",
       "logo": "https://www.harryfox.com/wp-content/uploads/2026/02/Harry-Fox-Agency-Logo-White.png"
     },
     "MRI": {
       "acronym": "MRI",
       "originalName": "Music Reports",
+      "cisacCode": null,
       "country": "US",
       "logo": "https://www.musicreports.com/images/layout/logo-footer.svg"
     },
     "SESAC": {
       "acronym": "SESAC",
       "originalName": "Sociedad de Autores y Compositores Europeos",
+      "cisacCode": 71,
       "country": "US",
       "logo": "https://www.sesac.com/nitropack_static/JKciHVEhTdOzZJmdgyCcrerdCyXVXObc/assets/images/optimized/rev-aa861b1/www.sesac.com/wp-content/themes/sesac/assets/images/logo-sesac.svg"
     }
