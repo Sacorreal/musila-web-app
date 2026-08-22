@@ -8,11 +8,8 @@ import {
   getPublisherWalletEarningsAction,
   getPublisherWalletWithdrawalsAction,
 } from '../services/publisher-wallet.actions';
-import {
-  createPublisherWithdrawalAction,
-  updatePublisherBankAccountAction,
-} from '../services/publisher-wallet.client';
-import { BankAccountDto, CreateWithdrawalInput, WalletWithdrawalStatus } from '../types/wallet.types';
+import { updatePublisherBankAccountAction } from '../services/publisher-wallet.client';
+import { BankAccountDto, WalletWithdrawalStatus } from '../types/wallet.types';
 
 const keys = {
   balance: (orgId: string) => ['publisher-wallet', 'balance', orgId] as const,
@@ -55,21 +52,6 @@ export function usePublisherBankAccount(organizationId: string) {
     queryKey: keys.bankAccount(organizationId),
     queryFn: () => getPublisherBankAccountAction(organizationId),
     enabled: Boolean(organizationId),
-  });
-}
-
-export function useCreatePublisherWithdrawal(organizationId: string) {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: CreateWithdrawalInput) => createPublisherWithdrawalAction(organizationId, data),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: keys.balance(organizationId) });
-      qc.invalidateQueries({ queryKey: keys.withdrawals(organizationId) });
-      toast.success('Solicitud de retiro creada. Te avisaremos cuando sea procesada.');
-    },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message ?? 'No se pudo crear la solicitud de retiro');
-    },
   });
 }
 

@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { fetchAdminWithdrawals } from './admin-wallet.actions'
-import { payWithdrawal, processWithdrawal, rejectWithdrawal } from './admin-wallet.client'
+import { payWithdrawal, payWithdrawalsBatch, processWithdrawal, rejectWithdrawal } from './admin-wallet.client'
 import type { AdminWalletFilters } from './admin-wallet.types'
 
 export function useAdminWithdrawals(page = 1, limit = 10, filters: AdminWalletFilters = {}) {
@@ -37,6 +37,24 @@ export function usePayWithdrawal() {
   })
 }
 
+export function usePayWithdrawalsBatch() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (ids: string[]) => payWithdrawalsBatch(ids),
+    onSuccess: (result) => {
+      qc.invalidateQueries({ queryKey: ['admin', 'wallet', 'withdrawals'] })
+      if (result.failed.length === 0) {
+        toast.success(`${result.paid.length} retiro(s) marcado(s) como pagados`)
+      } else {
+        toast.warning(
+          `${result.paid.length} pagado(s), ${result.failed.length} no se pudieron marcar (ya estaban en un estado final)`,
+        )
+      }
+    },
+    onError: (error: any) => toast.error(error?.response?.data?.message ?? 'Error al pagar los retiros seleccionados'),
+  })
+}
+
 export function useRejectWithdrawal() {
   const qc = useQueryClient()
   return useMutation({
@@ -53,5 +71,6 @@ export const adminWalletHooks = {
   useAdminWithdrawals,
   useProcessWithdrawal,
   usePayWithdrawal,
+  usePayWithdrawalsBatch,
   useRejectWithdrawal,
 }

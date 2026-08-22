@@ -1,7 +1,12 @@
 import { CheckCircle2, Clock, XCircle } from 'lucide-react'
 import type { ColumnDef } from '@/src/domains/admin/components/AdminDataTable'
-import type { AdminWalletWithdrawalDto } from '@/src/domains/admin/wallet/admin-wallet.types'
+import { WalletWithdrawalOrigin, type AdminWalletWithdrawalDto } from '@/src/domains/admin/wallet/admin-wallet.types'
 import { WalletWithdrawalStatus } from '@/src/domains/wallet/types/wallet.types'
+
+const ORIGIN_LABELS: Record<WalletWithdrawalOrigin, string> = {
+  [WalletWithdrawalOrigin.SCHEDULED]: 'Automático (lunes)',
+  [WalletWithdrawalOrigin.MANUAL]: 'Manual (legado)',
+}
 
 const STATUS_COLORS: Record<WalletWithdrawalStatus, string> = {
   [WalletWithdrawalStatus.PENDING]: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
@@ -63,6 +68,14 @@ export function getWithdrawalColumns({ onProcess, onPay, onReject }: WithdrawalC
         <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_COLORS[row.status]}`}>
           {STATUS_LABELS[row.status]}
         </span>
+      ),
+    },
+    {
+      key: 'origin',
+      header: 'Origen',
+      width: '140px',
+      render: (row) => (
+        <span className="text-xs text-muted-foreground">{ORIGIN_LABELS[row.origin]}</span>
       ),
     },
     {

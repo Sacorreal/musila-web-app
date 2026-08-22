@@ -7,7 +7,7 @@ import { Button } from '@/src/shared/components/UI/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/shared/components/UI/tabs';
 import { WalletBalanceCard } from '@/src/domains/wallet/components/WalletBalanceCard';
 import { WithdrawalStatusBadge } from '@/src/domains/wallet/components/WithdrawalStatusBadge';
-import { PublisherWithdrawalDialog } from '@/src/domains/wallet/components/PublisherWithdrawalDialog';
+import { WalletWithdrawNoticeBanner } from '@/src/domains/wallet/components/WalletWithdrawNoticeBanner';
 import { PublisherBankAccountForm } from '@/src/domains/wallet/components/PublisherBankAccountForm';
 import {
   usePublisherWalletBalance,
@@ -188,11 +188,11 @@ export default function PublisherWalletPage({
     <div className="space-y-6">
       <PageHeader
         title="Wallet de la organización"
-        description="Consulta las comisiones acreditadas por las licencias de tu roster y gestiona los retiros."
-        actions={<PublisherWithdrawalDialog organizationId={organizationId} />}
+        description="Consulta las comisiones acreditadas por las licencias de tu roster y el estado de los pagos."
       />
 
       <WalletBalanceCard balance={balance} isLoading={isLoading} />
+      <WalletWithdrawNoticeBanner />
 
       <Tabs defaultValue="movimientos">
         <TabsList>

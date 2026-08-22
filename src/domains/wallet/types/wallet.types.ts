@@ -46,10 +46,6 @@ export interface WalletWithdrawalDto {
   createdAt: string;
 }
 
-export interface CreateWithdrawalInput {
-  amount: number;
-}
-
 export type PaginatedWalletEarnings = PaginatedResponse<WalletEarningDto>;
 export type PaginatedWalletWithdrawals = PaginatedResponse<WalletWithdrawalDto>;
 

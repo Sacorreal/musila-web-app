@@ -3,11 +3,17 @@ import { WalletWithdrawalStatus, BankAccountDto } from '@/src/domains/wallet/typ
 
 export { WalletWithdrawalStatus }
 
+export enum WalletWithdrawalOrigin {
+  MANUAL = 'manual',
+  SCHEDULED = 'scheduled',
+}
+
 export interface AdminWalletWithdrawalDto {
   id: string
   amount: number
   currency: string
   status: WalletWithdrawalStatus
+  origin: WalletWithdrawalOrigin
   bankAccountSnapshot: BankAccountDto
   rejectionReason: string | null
   inProcessAt: string | null
@@ -24,3 +30,8 @@ export interface AdminWalletFilters {
 }
 
 export type PaginatedAdminWithdrawals = PaginatedResponse<AdminWalletWithdrawalDto>
+
+export interface PayWithdrawalsBatchResult {
+  paid: AdminWalletWithdrawalDto[]
+  failed: { id: string; reason: string }[]
+}

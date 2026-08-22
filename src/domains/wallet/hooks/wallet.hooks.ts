@@ -8,8 +8,8 @@ import {
   getWalletEarningsAction,
   getWalletWithdrawalsAction,
 } from "../services/wallet.actions";
-import { createWithdrawalAction, updateBankAccountAction } from "../services/wallet.client";
-import { BankAccountDto, CreateWithdrawalInput, WalletEarningRole, WalletWithdrawalStatus } from "../types/wallet.types";
+import { updateBankAccountAction } from "../services/wallet.client";
+import { BankAccountDto, WalletEarningRole, WalletWithdrawalStatus } from "../types/wallet.types";
 
 export const WALLET_BALANCE_QUERY_KEY = "wallet-balance";
 export const WALLET_EARNINGS_QUERY_KEY = "wallet-earnings";
@@ -41,22 +41,6 @@ export function useBankAccount() {
   return useQuery({
     queryKey: [WALLET_BANK_ACCOUNT_QUERY_KEY],
     queryFn: () => getBankAccountAction(),
-  });
-}
-
-export function useCreateWithdrawal() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (data: CreateWithdrawalInput) => createWithdrawalAction(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [WALLET_BALANCE_QUERY_KEY] });
-      queryClient.invalidateQueries({ queryKey: [WALLET_WITHDRAWALS_QUERY_KEY] });
-      toast.success("Solicitud de retiro creada. Te avisaremos cuando sea procesada.");
-    },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message ?? "No se pudo crear la solicitud de retiro");
-    },
   });
 }
 

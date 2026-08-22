@@ -10,8 +10,9 @@ const PlanTab       = lazy(() => import('./tabs/PlanTab').then(m => ({ default: 
 const PaymentsTab   = lazy(() => import('./tabs/PaymentsTab').then(m => ({ default: m.PaymentsTab })));
 const BillingTab    = lazy(() => import('./tabs/BillingTab').then(m => ({ default: m.BillingTab })));
 const SecurityTab   = lazy(() => import('./tabs/SecurityTab').then(m => ({ default: m.SecurityTab })));
+const SocietyAffiliationsTab = lazy(() => import('./tabs/SocietyAffiliationsTab').then(m => ({ default: m.SocietyAffiliationsTab })));
 
-type Tab = 'perfil' | 'plan' | 'pagos' | 'facturacion' | 'seguridad';
+type Tab = 'perfil' | 'plan' | 'pagos' | 'facturacion' | 'seguridad' | 'sociedades';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'perfil',      label: 'Perfil' },
@@ -19,6 +20,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: 'pagos',       label: 'Pagos' },
   { id: 'facturacion', label: 'Facturación' },
   { id: 'seguridad',   label: 'Seguridad' },
+  { id: 'sociedades',  label: 'Derechos y Sociedades' },
 ];
 
 interface AccountTabsProps {
@@ -61,6 +63,7 @@ export function AccountTabs({ activeTab }: AccountTabsProps) {
         {activeTab === 'pagos'       && <PaymentsTab />}
         {activeTab === 'facturacion' && <BillingTab />}
         {activeTab === 'seguridad'   && <SecurityTab />}
+        {activeTab === 'sociedades'  && <SocietyAffiliationsTab />}
       </Suspense>
     </div>
   );

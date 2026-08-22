@@ -250,6 +250,7 @@ export const apiURLs = {
       withdrawalById: (id: string) => `/wallet/admin/withdrawals/${id}` as const,
       process: (id: string) => `/wallet/admin/withdrawals/${id}/process` as const,
       pay: (id: string) => `/wallet/admin/withdrawals/${id}/pay` as const,
+      payBatch: '/wallet/admin/withdrawals/pay-batch' as const,
       reject: (id: string) => `/wallet/admin/withdrawals/${id}/reject` as const,
     },
   },
@@ -433,6 +434,19 @@ export const apiURLs = {
   featured: {
     tracks: '/featured/tracks' as const, // GET
     composers: '/featured/composers' as const, // GET
+  },
+  // 🎼 Catálogo maestro de Sociedades de Gestión Colectiva (CMO/PRO)
+  referenceData: {
+    collectiveManagementSocieties: {
+      base: '/reference-data/collective-management-societies' as const, // GET (?country=, ?search=), POST
+      byId: (id: string) => `/reference-data/collective-management-societies/${id}` as const, // GET, PUT, DELETE
+    },
+  },
+  // 🎼 Afiliaciones del autor a Sociedades de Gestión Colectiva
+  societyAffiliations: {
+    base: (authorId: string) => `/authors/${authorId}/society-affiliations` as const, // GET, POST
+    byId: (authorId: string, id: string) => `/authors/${authorId}/society-affiliations/${id}` as const, // PATCH
+    end: (authorId: string, id: string) => `/authors/${authorId}/society-affiliations/${id}/end` as const, // POST
   },
 } as const;
 

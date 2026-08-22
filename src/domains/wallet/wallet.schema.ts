@@ -1,13 +1,5 @@
 import * as z from "zod";
 
-export const createWithdrawalSchema = z.object({
-  amount: z
-    .number({ invalid_type_error: "Ingresa un monto válido" })
-    .positive("El monto debe ser mayor a 0"),
-});
-
-export type CreateWithdrawalFormValues = z.infer<typeof createWithdrawalSchema>;
-
 export const bankAccountSchema = z.object({
   bankName: z.string().min(1, "El nombre del banco es obligatorio"),
   accountType: z.string().min(1, "El tipo de cuenta es obligatorio"),
