@@ -5,6 +5,7 @@ import { MusicPlayer } from '@/src/domains/player/components/MusicPlayer'
 import { EmailVerificationBanner } from '@/src/domains/auth/components/EmailVerificationBanner'
 import { LegalIdentityRequiredWatcher } from '@/src/domains/legal-identity/components/LegalIdentityRequiredWatcher'
 import { UsernameRequiredWatcher } from '@/src/domains/users/components/UsernameRequiredWatcher'
+import { BankInformationRequiredWatcher } from '@/src/domains/bank-information/components/BankInformationRequiredWatcher'
 import type React from "react"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -32,6 +33,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           {/* Modal bloqueante: usuarios migrados deben elegir su username definitivo */}
           <UsernameRequiredWatcher />
+
+          {/* Modal: configuración de información bancaria para cobro de anticipos */}
+          <BankInformationRequiredWatcher />
 
         </div>
   )

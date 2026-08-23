@@ -449,6 +449,14 @@ export const apiURLs = {
     byId: (authorId: string, id: string) => `/authors/${authorId}/society-affiliations/${id}` as const, // PATCH
     end: (authorId: string, id: string) => `/authors/${authorId}/society-affiliations/${id}/end` as const, // POST
   },
+  // 🏦 Información bancaria de cobro de anticipos de licencia
+  bankInformation: {
+    pending: '/bank-information/pending' as const, // GET
+    transferOptions: '/bank-information/transfer-options' as const, // GET
+    me: '/bank-information/me' as const, // GET
+    colombia: '/bank-information/colombia' as const, // POST
+    foreign: '/bank-information/foreign' as const, // POST
+  },
 } as const;
 
 export type ApiURLs = typeof apiURLs;
