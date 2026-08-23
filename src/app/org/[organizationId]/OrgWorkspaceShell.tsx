@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Building2, ShieldCheck, Users, Settings2, Megaphone, Percent, Wallet, PenLine, LayoutDashboard } from 'lucide-react'
+import { Building2, ShieldCheck, Users, Settings2, Megaphone, Percent, Wallet, PenLine, LayoutDashboard, Stethoscope } from 'lucide-react'
 import { organizationsHooks } from '@/src/domains/organizations/organizations.hooks'
 import { useOrganizationStore } from '@/src/domains/organizations/store/use-organization-store'
 import {
@@ -23,6 +23,7 @@ interface OrgWorkspaceShellProps {
 
 const NAV_ITEMS: { segment: string; icon: typeof ShieldCheck; label: string; capability?: string }[] = [
   { segment: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', capability: 'organization.members.view' },
+  { segment: 'editorial-command-center', icon: Stethoscope, label: 'Health Score', capability: 'editorial.command_center.view' },
   { segment: 'promociones', icon: Megaphone, label: 'Pautas' },
   { segment: 'wallet', icon: Wallet, label: 'Wallet', capability: 'organization.settings.manage' },
   { segment: 'settings/comisiones', icon: Percent, label: 'Comisiones', capability: 'organization.settings.manage' },

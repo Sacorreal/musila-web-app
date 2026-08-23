@@ -32,7 +32,6 @@ export function CreatePublishingContractDialog({ isOpen, onClose, initialData }:
     handleSubmit,
     reset,
     control,
-    setError,
     formState: { errors },
   } = useForm<PublishingContractFormValues>({ resolver: zodResolver(publishingContractSchema) })
 
@@ -40,6 +39,8 @@ export function CreatePublishingContractDialog({ isOpen, onClose, initialData }:
     if (isOpen) {
       reset({
         publisherName: initialData?.publisherName ?? '',
+        ipiNumber: initialData?.ipiNumber ?? '',
+        percentage: initialData?.percentage ?? undefined,
         startDate: initialData?.startDate?.slice(0, 10) ?? '',
         endDate: initialData?.endDate?.slice(0, 10) ?? '',
         documentFile: undefined,
@@ -53,11 +54,6 @@ export function CreatePublishingContractDialog({ isOpen, onClose, initialData }:
   }
 
   const onSubmit = async (data: PublishingContractFormValues) => {
-    if (!isEdit && !data.documentFile) {
-      setError('documentFile', { message: 'Debes adjuntar el PDF del contrato' })
-      return
-    }
-
     let documentKey: string | undefined
     let documentUrl: string | undefined
 
@@ -71,6 +67,8 @@ export function CreatePublishingContractDialog({ isOpen, onClose, initialData }:
 
     const payload = {
       publisherName: data.publisherName,
+      ipiNumber: data.ipiNumber,
+      percentage: data.percentage,
       startDate: data.startDate,
       endDate: data.endDate || undefined,
       ...(documentKey && documentUrl ? { documentKey, documentUrl } : {}),
@@ -79,7 +77,7 @@ export function CreatePublishingContractDialog({ isOpen, onClose, initialData }:
     if (isEdit && initialData) {
       await updateContract({ id: initialData.id, input: payload })
     } else {
-      await createContract(payload as Required<typeof payload>)
+      await createContract(payload)
     }
     handleClose()
   }
@@ -102,6 +100,20 @@ export function CreatePublishingContractDialog({ isOpen, onClose, initialData }:
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
+            <Field data-invalid={!!errors.ipiNumber}>
+              <FieldLabel>IPI de la editorial</FieldLabel>
+              <Input placeholder="00000000199" {...register('ipiNumber')} />
+              {errors.ipiNumber && <FieldError errors={[errors.ipiNumber]} />}
+            </Field>
+
+            <Field data-invalid={!!errors.percentage}>
+              <FieldLabel>Porcentaje de participación</FieldLabel>
+              <Input type="number" min={0} max={100} step="0.01" {...register('percentage')} />
+              {errors.percentage && <FieldError errors={[errors.percentage]} />}
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
             <Field data-invalid={!!errors.startDate}>
               <FieldLabel>Fecha inicio</FieldLabel>
               <Input type="date" {...register('startDate')} />
@@ -120,7 +132,7 @@ export function CreatePublishingContractDialog({ isOpen, onClose, initialData }:
             control={control}
             render={({ field: { onChange, ref, name, onBlur } }) => (
               <Field data-invalid={!!errors.documentFile}>
-                <FieldLabel>PDF del contrato</FieldLabel>
+                <FieldLabel>PDF del contrato (opcional)</FieldLabel>
                 <Input
                   type="file"
                   accept="application/pdf"

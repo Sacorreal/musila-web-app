@@ -17,6 +17,7 @@ export interface MyMembershipOrganization {
   slug: string
   type: string
   isActive: boolean
+  ipiNumber?: string | null
 }
 
 export interface MyMembership {
@@ -83,9 +84,17 @@ export interface AccessRequestDto {
   user?: AccessRequestUser
 }
 
+/** Confirmación de la relación editora-autor al incorporar un miembro del roster (Flow 2). */
+export interface EditorialRelationshipInput {
+  percentage: number
+  contractKey?: string
+  contractUrl?: string
+}
+
 export interface ApproveAccessRequestInput {
   membershipType: MembershipType
   roleId: string
+  editorialRelationship?: EditorialRelationshipInput
 }
 
 /** Respuesta pública de validación del enlace de invitación del workspace. */

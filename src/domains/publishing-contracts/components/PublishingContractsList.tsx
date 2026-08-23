@@ -65,6 +65,10 @@ export function PublishingContractsList() {
                     {formatDate(contract.startDate)}
                     {contract.endDate ? ` — ${formatDate(contract.endDate)}` : ' — indefinido'}
                   </p>
+                  <p className="text-xs text-muted-foreground">
+                    {contract.ipiNumber ? `IPI ${contract.ipiNumber}` : 'Sin IPI'}
+                    {contract.percentage !== null ? ` · ${contract.percentage}%` : ''}
+                  </p>
                 </div>
               </div>
 
@@ -72,11 +76,13 @@ export function PublishingContractsList() {
                 <Badge variant={finalized ? 'secondary' : 'default'}>
                   {finalized ? 'Finalizado' : 'Vigente'}
                 </Badge>
-                <a href={contract.documentUrl} target="_blank" rel="noreferrer">
-                  <Button variant="ghost" size="icon-sm" aria-label="Ver documento">
-                    <FileText className="h-4 w-4" />
-                  </Button>
-                </a>
+                {contract.documentUrl && (
+                  <a href={contract.documentUrl} target="_blank" rel="noreferrer">
+                    <Button variant="ghost" size="icon-sm" aria-label="Ver documento">
+                      <FileText className="h-4 w-4" />
+                    </Button>
+                  </a>
+                )}
                 <Button variant="ghost" size="icon-sm" aria-label="Editar" onClick={() => setEditTarget(contract)}>
                   <Pencil className="h-4 w-4" />
                 </Button>

@@ -47,6 +47,13 @@ export const navItems: NavItems = [
     },
 
     {
+        href: "/music/editorial-command-center",
+        icon: ExpedienteIcon,
+        label: "Health Score",
+        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360],
+    },
+
+    {
         href: '/music/chat',
         icon: ChatIcon,
         label: "Chat",

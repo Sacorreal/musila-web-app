@@ -77,6 +77,20 @@ export const apiURLs = {
       `/organizations/${orgId}/publisher-dashboard/rights-compliance` as const,
     financial: (orgId: string) => `/organizations/${orgId}/publisher-dashboard/financial` as const,
   },
+  // 📜 Relación Editora-Autor (historial unificado, Flow 3)
+  editorialRelationships: {
+    mine: '/users/me/editorial-relationships' as const,
+    forOrganization: (orgId: string) => `/organizations/${orgId}/editorial-relationships` as const,
+  },
+  // 🩺 Editorial Command Center (Health Score)
+  editorialCommandCenter: {
+    overview: '/editorial-command-center/overview' as const,
+    trackById: (id: string) => `/editorial-command-center/tracks/${id}` as const,
+    organizationOverview: (orgId: string) =>
+      `/organizations/${orgId}/editorial-command-center/overview` as const,
+    organizationTrackById: (orgId: string, id: string) =>
+      `/organizations/${orgId}/editorial-command-center/tracks/${id}` as const,
+  },
   storage: {   
     presignedUrls: '/storage/upload-url' as const,
     deleteBatch: '/storage/delete-batch' as const,

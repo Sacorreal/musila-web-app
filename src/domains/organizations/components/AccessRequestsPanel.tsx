@@ -11,6 +11,7 @@ import type {
 import { Badge } from '@/src/shared/components/UI/badge'
 import { Button } from '@/src/shared/components/UI/button'
 import { Label } from '@/src/shared/components/UI/label'
+import { Input } from '@/src/shared/components/UI/input'
 import { Textarea } from '@/src/shared/components/UI/textarea'
 import {
   Select,
@@ -27,6 +28,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/src/shared/components/UI/dialog'
+import { useUploadStorage } from '@/src/domains/storage/hooks/use-upload-storage'
+import { StorageFolder } from '@/src/domains/storage/types/storage.types'
 
 function displayName(request: AccessRequestDto): string {
   if (!request.user) return request.userId
@@ -55,21 +58,67 @@ export function AccessRequestsPanel({ organizationId }: Props) {
     'PENDING',
   )
   const { data: roles } = organizationsHooks.useOrgRoles(organizationId)
+  const { data: memberships } = organizationsHooks.useMyMemberships()
   const { mutate: approve, isPending: isApproving } =
     organizationsHooks.useApproveAccessRequest(organizationId)
   const { mutate: reject, isPending: isRejecting } =
     organizationsHooks.useRejectAccessRequest(organizationId)
+  const { mutateAsync: uploadFiles, isPending: isUploading } = useUploadStorage()
+
+  const organization = memberships?.organizationMemberships.find(
+    (m) => m.organizationId === organizationId,
+  )?.organization
+  const isPublisher = organization?.type === 'PUBLISHER'
 
   const [approveTarget, setApproveTarget] = useState<AccessRequestDto | null>(null)
   const [rejectTarget, setRejectTarget] = useState<AccessRequestDto | null>(null)
   const [membershipType, setMembershipType] = useState<MembershipType>('ORGANIZATION')
   const [roleId, setRoleId] = useState<string>('')
   const [reason, setReason] = useState('')
+  const [editorialPercentage, setEditorialPercentage] = useState('')
+  const [editorialFile, setEditorialFile] = useState<File | null>(null)
+  const [editorialError, setEditorialError] = useState<string | null>(null)
+
+  const requiresEditorialRelationship = membershipType === 'ROSTER' && isPublisher
 
   const openApprove = (request: AccessRequestDto) => {
     setMembershipType('ORGANIZATION')
     setRoleId('')
+    setEditorialPercentage('')
+    setEditorialFile(null)
+    setEditorialError(null)
     setApproveTarget(request)
+  }
+
+  const isApprovePending = isApproving || isUploading
+
+  const handleApprove = async () => {
+    if (!approveTarget) return
+
+    let editorialRelationship: { percentage: number; contractKey?: string; contractUrl?: string } | undefined
+
+    if (requiresEditorialRelationship) {
+      const percentage = Number(editorialPercentage)
+      if (!editorialPercentage || Number.isNaN(percentage) || percentage <= 0 || percentage > 100) {
+        setEditorialError('Ingresa un porcentaje válido entre 0 y 100')
+        return
+      }
+      setEditorialError(null)
+
+      editorialRelationship = { percentage }
+      if (editorialFile) {
+        const [uploaded] = await uploadFiles([
+          { field: 'publishingContractDoc', file: editorialFile, folder: StorageFolder.PUBLISHING_CONTRACT_DOCS },
+        ])
+        editorialRelationship.contractKey = uploaded.key
+        editorialRelationship.contractUrl = uploaded.publicUrl
+      }
+    }
+
+    approve(
+      { requestId: approveTarget.id, input: { membershipType, roleId, editorialRelationship } },
+      { onSuccess: () => setApproveTarget(null) },
+    )
   }
 
   const openReject = (request: AccessRequestDto) => {
@@ -215,24 +264,59 @@ export function AccessRequestsPanel({ organizationId }: Props) {
                 </SelectContent>
               </Select>
             </div>
+
+            {requiresEditorialRelationship && (
+              <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-3">
+                <p className="text-xs font-medium text-muted-foreground">Relación editora-autor</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label>Editora</Label>
+                    <p className="rounded-md border border-transparent bg-background px-2.5 py-1.5 text-sm">
+                      {organization?.name}
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <Label>IPI</Label>
+                    <p className="rounded-md border border-transparent bg-background px-2.5 py-1.5 text-sm">
+                      {organization?.ipiNumber || 'Sin IPI registrado'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="editorial-percentage">Porcentaje de participación</Label>
+                  <Input
+                    id="editorial-percentage"
+                    type="number"
+                    min={0}
+                    max={100}
+                    step="0.01"
+                    value={editorialPercentage}
+                    onChange={(e) => setEditorialPercentage(e.target.value)}
+                    placeholder="20"
+                  />
+                  {editorialError && <p className="text-xs text-destructive">{editorialError}</p>}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="editorial-contract">Contrato (PDF, opcional)</Label>
+                  <Input
+                    id="editorial-contract"
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => setEditorialFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setApproveTarget(null)} disabled={isApproving}>
+            <Button variant="outline" onClick={() => setApproveTarget(null)} disabled={isApprovePending}>
               Cancelar
             </Button>
-            <Button
-              className="gap-2"
-              disabled={isApproving || !roleId}
-              onClick={() =>
-                approveTarget &&
-                approve(
-                  { requestId: approveTarget.id, input: { membershipType, roleId } },
-                  { onSuccess: () => setApproveTarget(null) },
-                )
-              }
-            >
-              {isApproving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+            <Button className="gap-2" disabled={isApprovePending || !roleId} onClick={handleApprove}>
+              {isApprovePending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               Aprobar acceso
             </Button>
           </DialogFooter>
