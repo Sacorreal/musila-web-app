@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, UserX, Loader2 } from "lucide-react";
 import { Button } from "@/src/shared/components/UI/button";
 import { Field, FieldLabel } from "@/src/shared/components/UI/field";
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/src/shared/components/UI/input-group";
 import { useSearchCoauthor } from "../hooks/splits.hooks";
 import { CoauthorSearchResult } from "../types/splits.types";
 
@@ -13,22 +14,22 @@ interface Props {
 }
 
 export function CoauthorSearchInput({ onSelect, disabled }: Props) {
-  const [musilaCreatorId, setMusilaCreatorId] = useState("");
+  const [username, setUsername] = useState("");
   const [notFound, setNotFound] = useState(false);
   const { mutate, isPending } = useSearchCoauthor();
 
   const handleSearch = () => {
-    if (!musilaCreatorId.trim()) return;
+    if (!username.trim()) return;
     setNotFound(false);
 
-    mutate(musilaCreatorId.trim(), {
+    mutate(username.trim(), {
       onSuccess: (user) => {
         if (!user) {
           setNotFound(true);
           return;
         }
         onSelect(user);
-        setMusilaCreatorId("");
+        setUsername("");
       },
       onError: () => setNotFound(true),
     });
@@ -36,24 +37,28 @@ export function CoauthorSearchInput({ onSelect, disabled }: Props) {
 
   return (
     <Field>
-      <FieldLabel>Musila Creator ID del coautor</FieldLabel>
+      <FieldLabel>Nombre de usuario del coautor</FieldLabel>
       <div className="flex gap-2">
-        <input
-          value={musilaCreatorId}
-          onChange={(e) => {
-            setMusilaCreatorId(e.target.value);
-            setNotFound(false);
-          }}
-          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleSearch())}
-          disabled={disabled || isPending}
-          placeholder="Ej: MUS-1A2B3C"
-          className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        />
+        <InputGroup className="flex-1">
+          <InputGroupAddon>
+            <InputGroupText>@</InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setNotFound(false);
+            }}
+            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleSearch())}
+            disabled={disabled || isPending}
+            placeholder="Ej: Nombre123"
+          />
+        </InputGroup>
         <Button
           type="button"
           variant="outline"
           onClick={handleSearch}
-          disabled={disabled || isPending || !musilaCreatorId.trim()}
+          disabled={disabled || isPending || !username.trim()}
           className="shrink-0 gap-2"
         >
           {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}

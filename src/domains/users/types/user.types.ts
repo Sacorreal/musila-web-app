@@ -10,6 +10,10 @@ export interface UserDto {
     planType: UserPlanTypeRegister
     role: MusicRole
     email: string
+    /** Nombre de usuario único (sin @), 3 a 20 caracteres: letras, números y guion bajo. */
+    username: string
+    /** true cuando el username fue asignado automáticamente y aún no ha sido elegido por el usuario. */
+    usernameIsTemporary?: boolean
     password: string;
     countryCode: string;
     phone: string;
@@ -91,6 +95,7 @@ type BaseUser = Pick<
   | 'lastName'
   | 'planType'
   | 'role'
+  | 'username'
   | 'password'
   | 'repeatPassword'
   | 'countryCode'

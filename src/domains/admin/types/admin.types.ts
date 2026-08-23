@@ -93,6 +93,7 @@ export interface CreateAdminUserInput {
   name: string
   lastName: string
   email: string
+  username: string
   password: string
   citizenID?: string
   typeCitizenID?: string

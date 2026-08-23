@@ -44,7 +44,7 @@ export function SplitForm({ trackId, trackAuthors, existingSplit, onDone }: Prop
               .filter((a) => a.user)
               .map((a) => ({
                 userId: a.user!.id,
-                musilaCreatorId: a.user!.musilaCreatorId,
+                username: a.user!.username,
                 name: `${a.user!.name} ${a.user!.lastName}`,
                 percentage: Number(a.percentage),
                 role: a.role,
@@ -65,7 +65,7 @@ export function SplitForm({ trackId, trackAuthors, existingSplit, onDone }: Prop
     trackAuthors.forEach((author, index) => {
       append({
         userId: author.id,
-        musilaCreatorId: "",
+        username: "",
         name: `${author.name} ${author.lastName}`,
         percentage: percentages[index],
         role: CoauthorRole.COMPOSITOR,
@@ -116,7 +116,7 @@ export function SplitForm({ trackId, trackAuthors, existingSplit, onDone }: Prop
           if (fields.some((f) => f.userId === user.id)) return;
           append({
             userId: user.id,
-            musilaCreatorId: user.musilaCreatorId,
+            username: user.username,
             name: `${user.name} ${user.lastName}`,
             percentage: 0,
             role: CoauthorRole.COMPOSITOR,
@@ -159,8 +159,8 @@ export function SplitForm({ trackId, trackAuthors, existingSplit, onDone }: Prop
                   {locked ? "Autor del track" : "Coautor"}
                 </p>
                 <p className="truncate font-semibold text-foreground">{field.name}</p>
-                {field.musilaCreatorId && (
-                  <p className="text-xs text-muted-foreground">{field.musilaCreatorId}</p>
+                {field.username && (
+                  <p className="text-xs text-muted-foreground">@{field.username}</p>
                 )}
               </div>
 
@@ -254,7 +254,7 @@ export function SplitForm({ trackId, trackAuthors, existingSplit, onDone }: Prop
       {fields.length === 0 && (
         <div className="flex items-center gap-3 rounded-xl border border-dashed bg-muted/30 p-4 text-sm text-muted-foreground">
           <Users className="h-5 w-5 shrink-0 opacity-50" />
-          Busca coautores por su Musila Creator ID para agregarlos al split.
+          Busca coautores por su nombre de usuario para agregarlos al split.
         </div>
       )}
 

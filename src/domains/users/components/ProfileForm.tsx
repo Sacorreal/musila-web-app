@@ -40,6 +40,7 @@ export function ProfileForm() {
       secondName: "",
       lastName: "",
       secondLastName: "",
+      username: "",
       biography: "",
       phone: "",
       countryCode: "",
@@ -57,6 +58,7 @@ export function ProfileForm() {
         secondName: user.secondName || "",
         lastName: user.lastName || "",
         secondLastName: user.secondLastName || "",
+        username: user.username || "",
         biography: user.biography || "",
         phone: user.phone || "",
         countryCode: user.countryCode || "",
@@ -154,7 +156,13 @@ export function ProfileForm() {
           </div>
 
           <div className="lg:col-span-2 space-y-8">
-            <ProfilePersonalInfoSection register={register} control={control} errors={errors} email={user?.email} />
+            <ProfilePersonalInfoSection
+              register={register}
+              control={control}
+              errors={errors}
+              email={user?.email}
+              currentUsername={user?.username}
+            />
             <ProfileContactSection register={register} control={control} />
             <ProfileSecuritySection register={register} errors={errors} />
           </div>

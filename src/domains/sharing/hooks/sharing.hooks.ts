@@ -12,7 +12,7 @@ import {
   listShareAccessLogAction,
   revokeRecipientAction,
   revokeShareLinkAction,
-  searchUserByCreatorIdAction,
+  searchUserByUsernameAction,
 } from "../services/sharing.actions";
 import { ShareResourceType } from "../types/sharing.types";
 
@@ -71,7 +71,7 @@ export function useAuthorizeRecipient(shareLinkId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (musilaCreatorId: string) => authorizeRecipientAction(shareLinkId, musilaCreatorId),
+    mutationFn: (username: string) => authorizeRecipientAction(shareLinkId, username),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [SHARE_QUERY_KEY, "recipients", shareLinkId] });
       toast.success("Usuario autorizado. Se le notificó por email.");
@@ -105,8 +105,8 @@ export function useShareAccessLog(shareLinkId: string | undefined, pagination: {
   });
 }
 
-export function useSearchUserByCreatorId() {
+export function useSearchUserByUsername() {
   return useMutation({
-    mutationFn: (musilaCreatorId: string) => searchUserByCreatorIdAction(musilaCreatorId),
+    mutationFn: (username: string) => searchUserByUsernameAction(username),
   });
 }

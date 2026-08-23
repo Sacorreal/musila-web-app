@@ -36,7 +36,7 @@ export function AuthorizedRecipientsList({ shareLinkId }: AuthorizedRecipientsLi
           <Badge key={recipient.id} variant="secondary" className="gap-1.5 py-1.5 pl-2.5 pr-1">
             <ShieldCheck className="h-3 w-3 text-primary" />
             <span>{recipient.recipientName}</span>
-            <span className="text-muted-foreground">· {recipient.recipientMusilaCreatorId}</span>
+            <span className="text-muted-foreground">· @{recipient.recipientUsername}</span>
             <Button
               type="button"
               variant="ghost"

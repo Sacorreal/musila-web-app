@@ -4,20 +4,21 @@ import { useState } from "react";
 import { Search, UserPlus, UserX, Loader2 } from "lucide-react";
 import { Button } from "@/src/shared/components/UI/button";
 import { Field, FieldLabel } from "@/src/shared/components/UI/field";
-import { useAuthorizeRecipient, useSearchUserByCreatorId } from "../hooks/sharing.hooks";
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/src/shared/components/UI/input-group";
+import { useAuthorizeRecipient, useSearchUserByUsername } from "../hooks/sharing.hooks";
 
 interface RecipientSearchInputProps {
   shareLinkId: string;
 }
 
 export function RecipientSearchInput({ shareLinkId }: RecipientSearchInputProps) {
-  const [musilaCreatorId, setMusilaCreatorId] = useState("");
+  const [username, setUsername] = useState("");
   const [notFound, setNotFound] = useState(false);
-  const { mutate: search, isPending: isSearching } = useSearchUserByCreatorId();
+  const { mutate: search, isPending: isSearching } = useSearchUserByUsername();
   const { mutate: authorize, isPending: isAuthorizing } = useAuthorizeRecipient(shareLinkId);
 
   const handleSearch = () => {
-    const trimmed = musilaCreatorId.trim();
+    const trimmed = username.trim();
     if (!trimmed) return;
     setNotFound(false);
 
@@ -28,7 +29,7 @@ export function RecipientSearchInput({ shareLinkId }: RecipientSearchInputProps)
           return;
         }
         authorize(trimmed, {
-          onSuccess: () => setMusilaCreatorId(""),
+          onSuccess: () => setUsername(""),
         });
       },
       onError: () => setNotFound(true),
@@ -39,24 +40,28 @@ export function RecipientSearchInput({ shareLinkId }: RecipientSearchInputProps)
 
   return (
     <Field>
-      <FieldLabel>Autorizar por Musila Creator ID</FieldLabel>
+      <FieldLabel>Autorizar por nombre de usuario</FieldLabel>
       <div className="flex gap-2">
-        <input
-          value={musilaCreatorId}
-          onChange={(e) => {
-            setMusilaCreatorId(e.target.value.toUpperCase());
-            setNotFound(false);
-          }}
-          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleSearch())}
-          disabled={isPending}
-          placeholder="Ej: MC-1A2B3C"
-          className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        />
+        <InputGroup className="flex-1">
+          <InputGroupAddon>
+            <InputGroupText>@</InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setNotFound(false);
+            }}
+            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleSearch())}
+            disabled={isPending}
+            placeholder="Ej: Nombre123"
+          />
+        </InputGroup>
         <Button
           type="button"
           variant="outline"
           onClick={handleSearch}
-          disabled={isPending || !musilaCreatorId.trim()}
+          disabled={isPending || !username.trim()}
           className="shrink-0 gap-2"
         >
           {isPending ? (
@@ -73,7 +78,7 @@ export function RecipientSearchInput({ shareLinkId }: RecipientSearchInputProps)
       {notFound && (
         <p className="flex items-center gap-1.5 text-xs font-medium text-destructive">
           <UserX className="h-3.5 w-3.5" />
-          No existe ningún usuario con ese Musila Creator ID
+          No existe ningún usuario con ese nombre de usuario
         </p>
       )}
     </Field>

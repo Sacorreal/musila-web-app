@@ -39,12 +39,12 @@ export async function rejectSplitAction(splitId: string, reason: string): Promis
   return response.data;
 }
 
-export async function searchCoauthorByCreatorIdAction(
-  musilaCreatorId: string,
+export async function searchCoauthorByUsernameAction(
+  username: string,
 ): Promise<CoauthorSearchResult | null> {
   const client = await getServerApiClient();
   try {
-    const response = await client.get<CoauthorSearchResult>(apiURLs.users.byCreatorId(musilaCreatorId));
+    const response = await client.get<CoauthorSearchResult>(apiURLs.users.byUsername(username));
     return response.data;
   } catch (error: any) {
     if (error?.response?.status === 404) return null;

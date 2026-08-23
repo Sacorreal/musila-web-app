@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@shared/components/UI/select";
 import { SelectMusicRole } from "./SelectMusicRole";
+import { UsernameField } from "@/src/domains/users/components/UsernameField";
 
 import {
   registerSchema,
@@ -56,6 +57,7 @@ export function UserRegisterForm({ defaultPlanType, externalReference }: UserReg
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: '',
+      username: '',
       lastName: '',
       name: '',
       password: '',
@@ -242,6 +244,20 @@ export function UserRegisterForm({ defaultPlanType, externalReference }: UserReg
               />
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
+          )}
+        />
+
+        {/* Nombre de usuario (@Nombre123) */}
+        <Controller
+          name="username"
+          control={control}
+          render={({ field, fieldState }) => (
+            <UsernameField
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={fieldState.error?.message}
+            />
           )}
         />
 

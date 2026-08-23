@@ -30,6 +30,13 @@ export const registerSchema = z
             .min(1, "El email es obligatorio")
             .regex(/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-ñÑ]+\.[a-zA-Z]{2,}$/, "Debe proporcionar un email válido"),
 
+        username: z
+            .string()
+            .trim()
+            .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
+            .max(20, "El nombre de usuario no puede superar los 20 caracteres")
+            .regex(/^[A-Za-z0-9_]+$/, "Solo letras, números y guion bajo, sin espacios"),
+
         password: z
             .string()
             .min(6, "La contraseña debe tener al menos 6 caracteres"),

@@ -30,7 +30,7 @@ export interface AuthorizedRecipient {
   id: string;
   recipientUserId: string;
   recipientName: string;
-  recipientMusilaCreatorId: string;
+  recipientUsername: string;
   revokedAt?: string | null;
   createdAt: string;
 }
@@ -48,7 +48,7 @@ export interface ShareAccessLogEntry {
   resourceType?: ShareResourceType | null;
   resourceId?: string | null;
   accessorUserId?: string | null;
-  accessorMusilaCreatorId?: string | null;
+  accessorUsername?: string | null;
   granted: boolean;
   reason: ShareAccessReason;
   createdAt: string;
@@ -65,5 +65,5 @@ export interface CoauthorSearchResult {
   id: string;
   name: string;
   lastName: string;
-  musilaCreatorId: string;
+  username: string;
 }

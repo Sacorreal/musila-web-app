@@ -5,7 +5,7 @@ const PERCENTAGE_TOTAL = 100;
 
 export const splitAuthorEntrySchema = z.object({
   userId: z.string().min(1, "Selecciona un coautor"),
-  musilaCreatorId: z.string(),
+  username: z.string(),
   name: z.string(),
   percentage: z
     .number({ invalid_type_error: "El porcentaje es obligatorio" })

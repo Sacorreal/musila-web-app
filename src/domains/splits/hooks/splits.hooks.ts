@@ -8,7 +8,7 @@ import {
   createSplitAction,
   getSplitByTrackAction,
   rejectSplitAction,
-  searchCoauthorByCreatorIdAction,
+  searchCoauthorByUsernameAction,
   updateSplitAction,
 } from "../services/splits.actions";
 import { CreateSplitInput } from "../types/splits.types";
@@ -88,6 +88,6 @@ export function useRejectSplit(trackId: string) {
 
 export function useSearchCoauthor() {
   return useMutation({
-    mutationFn: (musilaCreatorId: string) => searchCoauthorByCreatorIdAction(musilaCreatorId),
+    mutationFn: (username: string) => searchCoauthorByUsernameAction(username),
   });
 }

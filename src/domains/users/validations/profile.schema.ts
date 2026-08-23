@@ -6,6 +6,12 @@ export const profileSchema = z
     name: z.string().min(2, "El nombre es demasiado corto"),
     secondName: z.string().optional(),
     lastName: z.string().min(2, "El apellido es demasiado corto"),
+    username: z
+      .string()
+      .trim()
+      .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
+      .max(20, "El nombre de usuario no puede superar los 20 caracteres")
+      .regex(/^[A-Za-z0-9_]+$/, "Solo letras, números y guion bajo, sin espacios"),
     secondLastName: z.string().optional(),
     biography: z.string().max(500, "La biografía no puede superar los 500 caracteres").optional(),
     phone: z.string().optional(),
@@ -32,3 +38,15 @@ export const profileSchema = z
   );
 
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+
+/** Usado por el modal bloqueante que fuerza a los usuarios migrados a elegir su username definitivo. */
+export const chooseUsernameSchema = z.object({
+  username: z
+    .string()
+    .trim()
+    .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
+    .max(20, "El nombre de usuario no puede superar los 20 caracteres")
+    .regex(/^[A-Za-z0-9_]+$/, "Solo letras, números y guion bajo, sin espacios"),
+});
+
+export type ChooseUsernameFormValues = z.infer<typeof chooseUsernameSchema>;

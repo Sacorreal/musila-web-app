@@ -102,8 +102,8 @@ function ShareLinkManageCard({ shareLinkId }: { shareLinkId: string }) {
                     <Badge variant={entry.granted ? "secondary" : "outline"} className="text-[10px]">
                       {entry.reason}
                     </Badge>
-                    {entry.accessorMusilaCreatorId && (
-                      <span className="font-mono text-muted-foreground">{entry.accessorMusilaCreatorId}</span>
+                    {entry.accessorUsername && (
+                      <span className="font-mono text-muted-foreground">@{entry.accessorUsername}</span>
                     )}
                   </li>
                 ))}

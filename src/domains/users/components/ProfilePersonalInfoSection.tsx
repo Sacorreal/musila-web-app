@@ -1,19 +1,59 @@
 import React from "react";
-import { User, Mail } from "lucide-react";
+import { User, Mail, CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { Controller, type Control, type UseFormRegister, type FieldErrors } from "react-hook-form";
 import { Input } from "@/src/shared/components/UI/input";
 import { Label } from "@/src/shared/components/UI/label";
 import type { ProfileFormValues } from "@/src/domains/users/validations/profile.schema";
 import { SelectMusicRole } from "@/src/domains/auth/components/SelectMusicRole";
+import { useUsernameAvailability } from "@/src/domains/users/hooks/users.hooks";
 
 interface ProfilePersonalInfoSectionProps {
   register: UseFormRegister<ProfileFormValues>;
   control: Control<ProfileFormValues>;
   errors: FieldErrors<ProfileFormValues>;
   email?: string;
+  currentUsername?: string;
 }
 
-export function ProfilePersonalInfoSection({ register, control, errors, email }: ProfilePersonalInfoSectionProps) {
+interface UsernameInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onBlur: () => void;
+  currentUsername?: string;
+}
+
+function UsernameInput({ value, onChange, onBlur, currentUsername }: UsernameInputProps) {
+  const { isChecking, isAvailable, isFormatValid } = useUsernameAvailability(value || "", currentUsername);
+  const showStatus = isFormatValid && (value || "").trim().length > 0;
+
+  return (
+    <div className="relative">
+      <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-muted-foreground">@</span>
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value.replace(/^@/, ""))}
+        onBlur={onBlur}
+        autoCapitalize="off"
+        autoCorrect="off"
+        placeholder="Nombre123"
+        className="h-14 pl-9 pr-12 rounded-2xl border-2 focus:ring-primary/20 bg-background/50 font-bold"
+      />
+      {showStatus && (
+        <span className="absolute right-4 top-1/2 -translate-y-1/2">
+          {isChecking ? (
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          ) : isAvailable === true ? (
+            <CheckCircle2 className="h-5 w-5 text-emerald-500" aria-label="Disponible" />
+          ) : isAvailable === false ? (
+            <XCircle className="h-5 w-5 text-destructive" aria-label="No disponible" />
+          ) : null}
+        </span>
+      )}
+    </div>
+  );
+}
+
+export function ProfilePersonalInfoSection({ register, control, errors, email, currentUsername }: ProfilePersonalInfoSectionProps) {
   return (
     <div className="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-10 shadow-xl space-y-8">
       <div className="flex items-center gap-3">
@@ -55,6 +95,23 @@ export function ProfilePersonalInfoSection({ register, control, errors, email }:
           />
         </div>
         <p className="text-[10px] text-muted-foreground italic ml-1">El correo electrónico no puede ser modificado por seguridad.</p>
+      </div>
+
+      <div className="space-y-2">
+        <Label className="text-[11px] font-black uppercase tracking-widest ml-1 opacity-60">Nombre de usuario</Label>
+        <Controller
+          name="username"
+          control={control}
+          render={({ field }) => (
+            <UsernameInput
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              currentUsername={currentUsername}
+            />
+          )}
+        />
+        {errors.username && <p className="text-xs text-red-500 font-bold ml-1">{errors.username.message}</p>}
       </div>
 
       <div className="space-y-2">

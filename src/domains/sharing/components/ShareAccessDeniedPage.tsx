@@ -12,7 +12,7 @@ const REASON_CONTENT: Record<ShareAccessReason, { icon: ReactNode; title: string
   [ShareAccessReason.NOT_AUTHORIZED]: {
     icon: <Lock className="w-10 h-10 text-destructive" />,
     title: "No tienes permiso para escuchar este contenido",
-    description: "Tu cuenta no está autorizada para acceder a este enlace. Pídele al creador que te autorice usando tu Musila Creator ID.",
+    description: "Tu cuenta no está autorizada para acceder a este enlace. Pídele al creador que te autorice usando tu nombre de usuario (@usuario).",
   },
   [ShareAccessReason.EXPIRED]: {
     icon: <Clock className="w-10 h-10 text-destructive" />,

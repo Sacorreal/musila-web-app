@@ -50,11 +50,11 @@ export async function revokeShareLinkAction(shareLinkId: string): Promise<{ mess
 
 export async function authorizeRecipientAction(
   shareLinkId: string,
-  musilaCreatorId: string,
+  username: string,
 ): Promise<AuthorizedRecipient> {
   const client = await getServerApiClient();
   const response = await client.post<AuthorizedRecipient>(apiURLs.sharing.recipients(shareLinkId), {
-    musilaCreatorId,
+    username,
   });
   return response.data;
 }
@@ -98,12 +98,12 @@ export async function listShareAccessLogAction(
   return response.data;
 }
 
-export async function searchUserByCreatorIdAction(
-  musilaCreatorId: string,
+export async function searchUserByUsernameAction(
+  username: string,
 ): Promise<CoauthorSearchResult | null> {
   const client = await getServerApiClient();
   try {
-    const response = await client.get<CoauthorSearchResult>(apiURLs.users.byCreatorId(musilaCreatorId));
+    const response = await client.get<CoauthorSearchResult>(apiURLs.users.byUsername(username));
     return response.data;
   } catch (error: any) {
     if (error?.response?.status === 404) return null;

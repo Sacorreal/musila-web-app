@@ -63,7 +63,7 @@ export function ShareModal({ open, onOpenChange, resourceType, resourceId, resou
           <DialogTitle>Compartir {resourceLabel}</DialogTitle>
           <DialogDescription>
             {requiresAuthorization
-              ? `Genera un enlace y autoriza a otros usuarios por su Musila Creator ID a escuchar "${resourceTitle}".`
+              ? `Genera un enlace y autoriza a otros usuarios por su nombre de usuario (@usuario) a escuchar "${resourceTitle}".`
               : `Comparte el enlace público de tu perfil para que otros usuarios puedan descubrirte y seguirte.`}
           </DialogDescription>
         </DialogHeader>

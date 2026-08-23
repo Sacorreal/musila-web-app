@@ -32,7 +32,7 @@ export interface CoauthorSearchResult {
   id: string;
   name: string;
   lastName: string;
-  musilaCreatorId: string;
+  username: string;
 }
 
 export interface SplitAuthorDto {

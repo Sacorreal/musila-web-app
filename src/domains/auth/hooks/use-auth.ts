@@ -41,6 +41,8 @@ export function useAuth() {
                 name: decoded.name,
                 plan: decoded.plan,
                 isVerified: decoded.isVerified,
+                username: decoded.username,
+                usernameIsTemporary: decoded.usernameIsTemporary,
             },
             token: newToken
         });
