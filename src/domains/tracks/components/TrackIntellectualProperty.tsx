@@ -47,7 +47,7 @@ export function TrackIntellectualProperty({ track }: TrackIntellectualPropertyPr
             : "bg-violet-500/10 text-violet-600 border-violet-200 dark:border-violet-500/30";
 
           const Icon = isCopyrightOffice ? Globe : isSplitSheet ? Users : Building2;
-          const badgeLabel = isCopyrightOffice ? "Copyright Office" : isSplitSheet ? "Split Sheet" : "CMO";
+          const badgeLabel = isCopyrightOffice ? "Copyright Office" : isSplitSheet ? "Split Sheet" : "Sociedad de Gestión Colectiva";
 
           return (
             <div

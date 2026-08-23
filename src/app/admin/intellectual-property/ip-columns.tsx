@@ -4,7 +4,7 @@ import type { AdminIntellectualPropertyDto } from '@/src/domains/admin/intellect
 
 const TYPE_LABELS: Record<string, string> = {
   copyrightOffice: 'Copyright Office',
-  cmo: 'CMO',
+  cmo: 'Sociedad de Gestión Colectiva',
   splitSheet: 'Split Sheet',
 }
 

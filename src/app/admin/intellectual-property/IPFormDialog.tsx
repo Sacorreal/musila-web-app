@@ -38,7 +38,7 @@ interface Props {
 
 const TYPE_LABELS: Record<string, string> = {
   copyrightOffice: 'Copyright Office',
-  cmo: 'CMO',
+  cmo: 'Sociedad de Gestión Colectiva',
   splitSheet: 'Split Sheet',
 }
 
@@ -89,7 +89,7 @@ export function IPFormDialog({ isOpen, onClose, initialData }: Props) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? 'Editar Registro' : 'Nuevo Registro de Propiedad Intelectual'}</DialogTitle>
-          <DialogDescription>Vincula un documento legal (CMO, copyright office o split sheet) a un track.</DialogDescription>
+          <DialogDescription>Vincula un documento legal (Sociedad de Gestión Colectiva, copyright office o split sheet) a un track.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
@@ -124,7 +124,7 @@ export function IPFormDialog({ isOpen, onClose, initialData }: Props) {
           </Field>
 
           <Field data-invalid={!!errors.key}>
-            <FieldLabel>Clave (país / acrónimo CMO)</FieldLabel>
+            <FieldLabel>Clave (país / acrónimo de la Sociedad de Gestión Colectiva)</FieldLabel>
             <Input placeholder="SAYCO" {...register('key')} />
             {errors.key && <FieldError errors={[errors.key]} />}
           </Field>

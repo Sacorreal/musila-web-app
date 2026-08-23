@@ -71,7 +71,7 @@ export function IntellectualPropertySection() {
           <div>
             <h2 className="text-lg font-semibold">Propiedad intelectual</h2>
             <p className="text-sm text-muted-foreground">
-              Registra los documentos de copyright y CMO (opcional)
+              Registra los documentos de copyright y de la Sociedad de Gestión Colectiva (opcional)
             </p>
           </div>
         </div>
@@ -115,7 +115,7 @@ export function IntellectualPropertySection() {
               onClick={() => addEntry("cmo")}
             >
               <Building2 className="h-4 w-4" />
-              Agregar CMO
+              Agregar Sociedad de Gestión Colectiva
             </Button>
           </div>
 
@@ -125,7 +125,7 @@ export function IntellectualPropertySection() {
               <ShieldCheck className="h-5 w-5 shrink-0 opacity-50" />
               <p>
                 Agrega las entidades ante las cuales registraste tu obra.
-                Puedes agregar múltiples Copyright Offices y CMOs.
+                Puedes agregar múltiples Copyright Offices y Sociedades de Gestión Colectiva.
               </p>
             </div>
           )}
@@ -163,7 +163,7 @@ function IntellectualPropertyRow({ index, type, onRemove }: RowProps) {
     <Building2 className="h-3.5 w-3.5" />
   );
 
-  const badgeLabel = isCopyrightOffice ? "Copyright Office" : "CMO";
+  const badgeLabel = isCopyrightOffice ? "Copyright Office" : "Sociedad de Gestión Colectiva";
 
   return (
     <div className="group relative rounded-xl border bg-muted/20 p-5 space-y-4 transition-colors hover:bg-muted/30">
@@ -194,7 +194,7 @@ function IntellectualPropertyRow({ index, type, onRemove }: RowProps) {
             <FieldLabel>
               {isCopyrightOffice
                 ? "País / Copyright Office"
-                : "Sociedad de Gestión Colectiva (CMO)"}
+                : "Sociedad de Gestión Colectiva"}
             </FieldLabel>
             <select
               {...field}
@@ -203,7 +203,7 @@ function IntellectualPropertyRow({ index, type, onRemove }: RowProps) {
               <option value="">
                 {isCopyrightOffice
                   ? "Seleccionar país..."
-                  : "Seleccionar CMO..."}
+                  : "Seleccionar Sociedad de Gestión Colectiva..."}
               </option>
               {isCopyrightOffice
                 ? copyrightOfficeOptions.map((opt) => (
