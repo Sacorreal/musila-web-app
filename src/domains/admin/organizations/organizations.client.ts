@@ -18,6 +18,21 @@ export async function createOrganization(input: CreateOrganizationInput): Promis
   return response.data
 }
 
+export async function approveOrganization(id: string): Promise<OrganizationDto> {
+  const response = await apiClient.post<OrganizationDto>(apiURLs.organizations.adminApprove(id))
+  return response.data
+}
+
+export async function rejectOrganization(id: string, reason: string): Promise<OrganizationDto> {
+  const response = await apiClient.post<OrganizationDto>(apiURLs.organizations.adminReject(id), { reason })
+  return response.data
+}
+
+export async function markOrganizationCreated(id: string): Promise<OrganizationDto> {
+  const response = await apiClient.post<OrganizationDto>(apiURLs.organizations.adminMarkCreated(id))
+  return response.data
+}
+
 export async function updateOrganization(
   id: string,
   input: UpdateOrganizationInput,

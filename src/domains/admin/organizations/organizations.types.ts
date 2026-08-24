@@ -1,5 +1,8 @@
 import type { CapabilityDto, CapabilityScope, OrganizationType } from '../authorization/authorization.types'
 
+/** Ciclo de vida de onboarding comercial B2B (§Registro Legal B2B). */
+export type OrganizationStatus = 'EN_TRAMITE' | 'APROBADA' | 'CREADA' | 'VERIFICADA' | 'RECHAZADA'
+
 export interface OrganizationDto {
   id: string
   tenantId: string
@@ -7,6 +10,15 @@ export interface OrganizationDto {
   type: OrganizationType
   slug: string
   isActive: boolean
+  status: OrganizationStatus
+  legalCountry?: string | null
+  documentType?: string | null
+  documentNumber?: string | null
+  phoneCountryCode?: string | null
+  phoneNumber?: string | null
+  planId?: string | null
+  rejectionReason?: string | null
+  verifiedAt?: string | null
   createdAt: string
 }
 

@@ -8,13 +8,16 @@ import type {
   MembershipRoleDto,
   MembershipType,
   OrganizationDto,
+  OrganizationStatus,
   RoleDto,
   TrackspaceDto,
 } from './organizations.types'
 
-export async function fetchOrganizations(): Promise<OrganizationDto[]> {
+export async function fetchOrganizations(status?: OrganizationStatus): Promise<OrganizationDto[]> {
   const client = await getServerApiClient()
-  const response = await client.get<OrganizationDto[]>(apiURLs.organizations.adminBase)
+  const response = await client.get<OrganizationDto[]>(apiURLs.organizations.adminBase, {
+    params: status ? { status } : undefined,
+  })
   return response.data
 }
 

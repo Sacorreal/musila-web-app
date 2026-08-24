@@ -12,9 +12,12 @@ import {
   fetchOrganizationTrackspaces,
 } from './organizations.actions'
 import {
+  approveOrganization,
   changeMembershipStatus,
   createOrganization,
   inviteOrganizationMember,
+  markOrganizationCreated,
+  rejectOrganization,
   setMembershipRoles,
   updateOrganization,
 } from './organizations.client'
@@ -22,11 +25,15 @@ import type {
   CreateOrganizationInput,
   MembershipStatus,
   MembershipType,
+  OrganizationStatus,
   UpdateOrganizationInput,
 } from './organizations.types'
 
-export function useOrganizations() {
-  return useQuery({ queryKey: ['admin', 'organizations'], queryFn: () => fetchOrganizations() })
+export function useOrganizations(status?: OrganizationStatus) {
+  return useQuery({
+    queryKey: ['admin', 'organizations', status ?? 'ALL'],
+    queryFn: () => fetchOrganizations(status),
+  })
 }
 
 export function useOrganization(id?: string) {
@@ -104,6 +111,45 @@ export function useUpdateOrganization() {
   })
 }
 
+export function useApproveOrganization() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => approveOrganization(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'organizations'] })
+      toast.success('Solicitud aprobada')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al aprobar la solicitud'),
+  })
+}
+
+export function useRejectOrganization() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => rejectOrganization(id, reason),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'organizations'] })
+      toast.success('Solicitud rechazada')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al rechazar la solicitud'),
+  })
+}
+
+export function useMarkOrganizationCreated() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => markOrganizationCreated(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'organizations'] })
+      toast.success('Organización marcada como creada')
+    },
+    onError: (error: any) =>
+      toast.error(error?.response?.data?.message ?? 'Error al marcar la organización como creada'),
+  })
+}
+
 export function useInviteOrganizationMember(organizationId: string) {
   const qc = useQueryClient()
   return useMutation({
@@ -161,6 +207,9 @@ export const adminOrganizationsHooks = {
   useOrganizationEntitlements,
   useCreateOrganization,
   useUpdateOrganization,
+  useApproveOrganization,
+  useRejectOrganization,
+  useMarkOrganizationCreated,
   useInviteOrganizationMember,
   useChangeMembershipStatus,
   useSetMembershipRoles,

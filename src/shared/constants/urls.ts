@@ -10,6 +10,7 @@ export const apiURLs = {
     resendVerification: `${BASE_API_URL}/auth/resend-verification` as const,
     registerOrgAdmin: `${BASE_API_URL}/auth/register/org-admin` as const,
     registerWorkspaceGuest: `${BASE_API_URL}/auth/register/workspace-guest` as const,
+    registerBusiness: `${BASE_API_URL}/auth/register/business` as const,
   },
   security: {
     passkeys: {
@@ -165,6 +166,11 @@ export const apiURLs = {
     receipt: (id: string) => `${BASE_API_URL}/payments/${id}/receipt` as const,
     pseBanks: `${BASE_API_URL}/payments/pse/banks` as const,
     psePay: `${BASE_API_URL}/payments/pse` as const,
+    // 🏢 Registro Legal B2B — cobro inicial de la organización
+    businessRegistrationCheckout: (orgId: string) =>
+      `${BASE_API_URL}/payments/business-registration/${orgId}/checkout` as const,
+    businessRegistrationPaymentSource: (orgId: string) =>
+      `${BASE_API_URL}/payments/business-registration/${orgId}/payment-source` as const,
   },
   me: {
     profile: `${BASE_API_URL}/users/me` as const,
@@ -392,6 +398,18 @@ export const apiURLs = {
     trackspaceById: (orgId: string, trackspaceId: string) =>
       `/organizations/${orgId}/trackspaces/${trackspaceId}` as const, // PATCH
     entitlements: (orgId: string) => `/organizations/${orgId}/entitlements` as const, // GET
+    // 🏢 Registro Legal B2B — panel admin (aprobar/rechazar/crear)
+    adminApprove: (id: string) => `/admin/organizations/${id}/approve` as const, // POST
+    adminReject: (id: string) => `/admin/organizations/${id}/reject` as const, // POST
+    adminMarkCreated: (id: string) => `/admin/organizations/${id}/mark-created` as const, // POST
+    // 🏢 Registro Legal B2B — autoservicio de la organización
+    mine: (orgId: string) => `/organizations/${orgId}` as const, // GET
+    activateAdmin: (orgId: string) => `/organizations/${orgId}/activate-admin` as const, // POST
+    checkVerification: (orgId: string) => `/organizations/${orgId}/check-verification` as const, // POST
+  },
+  plans: {
+    // 🏢 Planes B2B activos disponibles para createBusinessForm (público)
+    business: `${BASE_API_URL}/plans/business` as const,
   },
   plansAdmin: {
     base: '/admin/plans' as const, // GET
@@ -404,6 +422,8 @@ export const apiURLs = {
     transactionFee: (planId: string) => `/admin/plans/${planId}/transaction-fee` as const, // GET, PUT
     transactionFeeHistory: (planId: string) =>
       `/admin/plans/${planId}/transaction-fee/history` as const, // GET
+    price: (planId: string) => `/admin/plans/${planId}/price` as const, // GET, PUT
+    priceHistory: (planId: string) => `/admin/plans/${planId}/price/history` as const, // GET
   },
   subscriptionsAdmin: {
     base: '/admin/subscriptions' as const, // GET
