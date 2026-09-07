@@ -9,14 +9,14 @@ import { MusicNoteIcon } from '@/src/shared/components/Icons/icons';
 import { CreatePlaylistDialog } from './CreatePlaylistDialog';
 
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
-import { UserRole } from '@/src/domains/users/types/user.types';
+import { UserPlanType } from '@/src/domains/users/types/user.types';
 
 export function PlaylistGrid() {
   const { data, isLoading, isError, error } = usePlaylists();
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const user = useAuthStore((s) => s.user);
-  const isGuest = user?.role === UserRole.INVITADO;
+  const isGuest = user?.planType === UserPlanType.INVITADO;
 
   const playlists = data?.data || [];
   const selectedPlaylist = playlists.find(p => p.id === selectedPlaylistId) || null;

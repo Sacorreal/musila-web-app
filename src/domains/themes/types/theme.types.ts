@@ -1,0 +1,8 @@
+export interface ThemeDto {
+  id: string;
+  name: string;
+  slug?: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}

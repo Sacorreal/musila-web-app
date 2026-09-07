@@ -4,7 +4,7 @@ import { UserIcon } from "@/src/shared/components/Icons/icons"
 import { ThemeToggle } from "@/src/shared/components/Layout/theme-toggle"
 import { SearchBox } from "@/src/shared/components/Layout/SearchBox"
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store"
-import { UserRole } from "@/src/domains/users/types/user.types"
+import { UserPlanType } from "@/src/domains/users/types/user.types"
 import Link from "next/link"
 import { Zap } from "lucide-react"
 
@@ -14,8 +14,8 @@ import { VerifiedBadge } from "@/src/shared/components/UI/verified-badge"
 
 export function AppHeader() {
   const user = useAuthStore((s) => s.user)
-  const role = user?.role
-  const showSearch = role !== UserRole.AUTOR
+  const planType = user?.planType
+  const showSearch = planType !== UserPlanType.PLAN_AUTOR
   const isFree = user?.plan === 'free'
   
   return (

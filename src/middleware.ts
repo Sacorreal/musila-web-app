@@ -16,8 +16,8 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value
 
   // ── /admin protection ────────────────────────────────────────────────
-  // Note: role check here is for UX redirection only; real authorization
-  // happens in the backend via JWTAuthGuard + RolesGuard on every API call.
+  // Note: plan check here is for UX redirection only; real authorization
+  // happens in the backend via JWTAuthGuard + PlansGuard on every API call.
   if (pathname.startsWith('/admin')) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url))
@@ -37,8 +37,29 @@ export function middleware(request: NextRequest) {
       return response
     }
 
-    if (payload.role !== 'admin') {
+    if (payload.planType !== 'admin' && payload.planType !== 'superadmin') {
       return NextResponse.redirect(new URL('/music', request.url))
+    }
+
+    return NextResponse.next()
+  }
+
+  // ── /programa-afiliados/dashboard protection ─────────────────────────
+  // Cookie y secreto de JWT aislados del core (affiliate_access_token),
+  // para que un token de afiliado nunca coincida con /admin ni /music.
+  if (pathname.startsWith('/programa-afiliados/dashboard')) {
+    const affiliateToken = request.cookies.get('affiliate_access_token')?.value
+
+    if (!affiliateToken) {
+      return NextResponse.redirect(new URL('/programa-afiliados/login', request.url))
+    }
+
+    const payload = decodeJwtPayload(affiliateToken)
+    const now = Math.floor(Date.now() / 1000)
+    if (!payload || (payload.exp && payload.exp < now)) {
+      const response = NextResponse.redirect(new URL('/programa-afiliados/login', request.url))
+      response.cookies.delete('affiliate_access_token')
+      return response
     }
 
     return NextResponse.next()
@@ -73,5 +94,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/music/:path*', '/admin/:path*'],
+  matcher: ['/music/:path*', '/admin/:path*', '/programa-afiliados/dashboard/:path*'],
 }

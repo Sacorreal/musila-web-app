@@ -8,6 +8,7 @@ import { TrackDetailHero } from '@/src/domains/tracks/components/TrackDetailHero
 import { TrackLyrics } from '@/src/domains/tracks/components/TrackLyrics';
 import { TrackRequestsTable } from '@/src/domains/requests/components/TrackRequestsTable';
 import { TrackIntellectualProperty } from '@/src/domains/tracks/components/TrackIntellectualProperty';
+import { TrackSplitsSection } from '@/src/domains/splits/components/TrackSplitsSection';
 import { Metadata } from 'next';
 
 export async function generateMetadata({
@@ -82,6 +83,9 @@ export default async function TrackDetailPage({
 
         {/* Documentos de Propiedad Intelectual */}
         <TrackIntellectualProperty track={track} />
+
+        {/* Split de coautoría — visible solo para autores de la canción */}
+        <TrackSplitsSection track={track} />
 
         {/* Tabla de solicitudes — visible solo para autores de la canción */}
         <TrackRequestsTable trackId={id} authors={track.authors || []} />

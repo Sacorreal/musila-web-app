@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -25,6 +25,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@shared/components/UI/select";
+import { SelectMusicRole } from "./SelectMusicRole";
+import { UsernameField } from "@/src/domains/users/components/UsernameField";
 
 import {
   registerSchema,
@@ -33,24 +35,29 @@ import {
 import { useAuth } from "../hooks/use-auth";
 
 interface UserRegisterFormProps {
-  defaultRole?: string;
+  defaultPlanType?: string;
   externalReference?: string;
 }
 
-export function UserRegisterForm({ defaultRole, externalReference }: UserRegisterFormProps) {
+export function UserRegisterForm({ defaultPlanType, externalReference }: UserRegisterFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { registerUser} = useAuth()
+  // Trampa de tiempo anti-bot: cuándo se mostró el formulario. Un envío casi
+  // instantáneo (bot) se rechaza en el backend.
+  const formStartedAtRef = useRef(Date.now());
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     reset,
     control,
+    register,
   } = useForm<RegisterUsersFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: '',
+      username: '',
       lastName: '',
       name: '',
       password: '',
@@ -61,13 +68,14 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
       countryCode: "+57",
       typeCitizenID: '',
       citizenID: '',
-      role: defaultRole as RegisterUsersFormValues['role'] | undefined,
+      planType: defaultPlanType as RegisterUsersFormValues['planType'] | undefined,
+      companyWebsite: '',
     },
   });
 
   const onSubmit = async (data: RegisterUsersFormValues) => {
     try {
-      await registerUser({ ...data, externalReference });
+      await registerUser({ ...data, externalReference, formStartedAt: formStartedAtRef.current });
       toast.success("Cuenta creada con éxito");
       reset();
       router.push("/music");
@@ -239,6 +247,33 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
           )}
         />
 
+        {/* Nombre de usuario (@Nombre123) */}
+        <Controller
+          name="username"
+          control={control}
+          render={({ field, fieldState }) => (
+            <UsernameField
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={fieldState.error?.message}
+            />
+          )}
+        />
+
+        {/* Rol musical (descriptivo, no afecta permisos) */}
+        <Controller
+          name="role"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel>Rol</FieldLabel>
+              <SelectMusicRole value={field.value} onValueChange={field.onChange} />
+              {fieldState.error && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
         {/* Password */}
         <Controller
           name="password"
@@ -284,6 +319,16 @@ export function UserRegisterForm({ defaultRole, externalReference }: UserRegiste
           )}
         />
       </FieldGroup>
+
+      {/* Campo trampa anti-bot: invisible y fuera del tab order. Nunca debe completarse por un humano. */}
+      <input
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden"
+        {...register("companyWebsite")}
+      />
 
       <p className="text-xs text-muted-foreground leading-relaxed">
         Al hacer clic en "Crear cuenta", aceptas nuestros{" "}

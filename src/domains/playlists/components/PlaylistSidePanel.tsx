@@ -10,6 +10,7 @@ import { Button } from '@/src/shared/components/UI/button';
 import { MusicNoteIcon } from '@/src/shared/components/Icons/icons';
 import { PlayAllButton } from '@/src/domains/player/components/PlayAllButton';
 import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
+import { usePlayTrack } from '@/src/domains/player/hooks/use-play-track';
 import { PlaylistCollaboratorsManager } from './PlaylistCollaboratorsManager';
 
 interface PlaylistSidePanelProps {
@@ -22,6 +23,7 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const updatePlaylist = useUpdatePlaylist();
+  const { playTrack } = usePlayTrack();
 
   // Reset states when the playlist changes or panel opens
   useEffect(() => {
@@ -184,7 +186,7 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
                   onClick={() => {
                     if (playlist.tracks) {
                       usePlayerStore.getState().setQueue(playlist.tracks.slice(idx + 1) as any);
-                      usePlayerStore.getState().play(track as any);
+                      playTrack(track as any);
                     }
                   }}
                 >

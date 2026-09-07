@@ -1,4 +1,4 @@
-import { UserRole } from '@/src/domains/users/types/user.types'
+import { UserPlanType, MusicRole } from '@/src/domains/users/types/user.types'
 import { PaginatedResponse } from '@shared/types/shared.types'
 
 export interface AdminStatsDto {
@@ -18,14 +18,20 @@ export interface AdminUserDto {
   lastName: string
   secondLastName?: string
   email: string
-  role: UserRole
+  planType: UserPlanType
+  role: MusicRole
   avatarUrl?: string
   isVerified: boolean
-  isUserFree: boolean
+  plan: 'free' | 'pro'
+  planExpiresAt?: string | null
   citizenID?: string
   typeCitizenID?: string
   countryCode?: string
   phone?: string
+  biography?: string
+  fiscalName?: string
+  taxId?: string
+  fiscalAddress?: string
   createdAt: string
   deletedAt: string | null
 }
@@ -34,7 +40,7 @@ export interface AdminTrackDto {
   id: string
   title: string
   genre: string
-  subGenre?: string
+  ritmo?: string
   coverUrl?: string
   audioUrl?: string | null
   language: string
@@ -47,7 +53,22 @@ export interface AdminTrackDto {
 export interface AdminGenreDto {
   id: string
   genre: string
-  subGenre: string[]
+  ritmo: string[]
+  slug?: string
+  createdAt: string
+}
+
+export interface AdminMoodDto {
+  id: string
+  name: string
+  slug?: string
+  category?: string
+  createdAt: string
+}
+
+export interface AdminThemeDto {
+  id: string
+  name: string
   slug?: string
   createdAt: string
 }
@@ -58,6 +79,10 @@ export interface AdminRequestDto {
   licenseType: string
   approvedByRequester: boolean
   approvedByOwner: boolean
+  documentUrl?: string
+  licensePrice?: number | null
+  licensePaymentStatus: string
+  licensePaymentReference?: string | null
   createdAt: string
   requester?: { id: string; name: string; lastName: string; email: string }
   owner?: { id: string; name: string; lastName: string; email: string }
@@ -68,6 +93,7 @@ export interface CreateAdminUserInput {
   name: string
   lastName: string
   email: string
+  username: string
   password: string
   citizenID?: string
   typeCitizenID?: string
@@ -75,20 +101,37 @@ export interface CreateAdminUserInput {
 
 export interface CreateGenreInput {
   genre: string
-  subGenre?: string[]
+  ritmo?: string[]
   slug?: string
 }
 
 export interface UpdateGenreInput extends Partial<CreateGenreInput> {}
 
+export interface CreateMoodInput {
+  name: string
+  slug?: string
+  category?: string
+}
+
+export interface UpdateMoodInput extends Partial<CreateMoodInput> {}
+
+export interface CreateThemeInput {
+  name: string
+  slug?: string
+}
+
+export interface UpdateThemeInput extends Partial<CreateThemeInput> {}
+
 export type PaginatedAdminUsers = PaginatedResponse<AdminUserDto>
 export type PaginatedAdminTracks = PaginatedResponse<AdminTrackDto>
 export type PaginatedAdminGenres = PaginatedResponse<AdminGenreDto>
+export type PaginatedAdminMoods = PaginatedResponse<AdminMoodDto>
+export type PaginatedAdminThemes = PaginatedResponse<AdminThemeDto>
 export type PaginatedAdminRequests = PaginatedResponse<AdminRequestDto>
 
 export interface UserFilters {
   search?: string
-  role?: string
+  planType?: string
   isVerified?: boolean
 }
 
@@ -98,5 +141,5 @@ export interface TrackFilters {
   isAvailable?: boolean
   isGospel?: boolean
   genreId?: string
-  subGenre?: string
+  ritmo?: string
 }

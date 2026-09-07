@@ -31,6 +31,11 @@ export function Footer() {
                   {t.footer.uploadMusic}
                 </Link>
               </li>
+              <li>
+                <Link href="/programa-afiliados" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Programa de Afiliados
+                </Link>
+              </li>
             </ul>
           </div>
 

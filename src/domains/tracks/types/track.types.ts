@@ -1,6 +1,14 @@
 import { PaginatedResponse } from '@shared/types/shared.types'
 import { AuthorsResponseDto } from '@domains/artists/types/artist.types'
 import { PaginationInput } from '@shared/types/shared.types'
+import { CertificateStatusValue } from './certificate.types'
+import { RegistrationFileStatus } from '@domains/registration-file/types/registration-file.types'
+
+export interface RegistrationFileSummaryDto {
+  id: string
+  caseNumber: string
+  status: RegistrationFileStatus
+}
 
 
 export interface LanguageDto {
@@ -8,14 +16,24 @@ export interface LanguageDto {
   label: string; // ej: 'Español', 'Inglés'
 }
 
+export interface TrackMoodDto {
+  id: string;
+  name: string;
+}
+
+export interface TrackThemeDto {
+  id: string;
+  name: string;
+}
+
 export type AuthorTrackDto = Pick<
   AuthorsResponseDto,
-  | 'email' | 'id' | 'name' | 'role' | 'lastName'
+  | 'email' | 'id' | 'name' | 'planType' | 'lastName'
 >
 
 
 export interface IntellectualPropertyInput {
-  type: "copyrightOffice" | "cmo" | "splitSheet";
+  type: "copyrightOffice" | "cmo";
   key: string;
   documentKey: string;
   documentUrl: string;
@@ -23,17 +41,23 @@ export interface IntellectualPropertyInput {
 
 export interface CreateTrackInput {
   title: string;
+  alternativeTitles?: string[];
   genreId: string;
-  subGenre?: string;
+  ritmo?: string;
   language: string;
   lyric: string;
   authorsIds: string[];
+  moodsIds: string[];
+  themeId?: string;
+  isFeat?: boolean;
   isAvailable?: boolean;
   isGospel: boolean;
   audioKey: string;
   audioUrl: string;
   coverKey?: string;
   coverUrl?: string;
+  sheetMusicKey?: string;
+  sheetMusicUrl?: string;
   iswc?: string;
   intellectualProperties?: IntellectualPropertyInput[];
 }
@@ -42,8 +66,8 @@ export interface IntellectualPropertyDto {
   id: string;
   type: "copyrightOffice" | "cmo" | "splitSheet";
   key: string;
-  documentKey: string;
-  documentUrl: string;
+  documentKey?: string;
+  documentUrl?: string;
   createdAt: string;
 }
 
@@ -51,7 +75,7 @@ export interface TracksResponseDto {
   id: string;
   title: string;
   genre: string;
-  subGenre: string;
+  ritmo: string;
   coverUrl: string;
   audioUrl: string | null;
   year: number;
@@ -62,7 +86,12 @@ export interface TracksResponseDto {
   iswc?: string;
   isAvailable: boolean;
   isGospel: boolean;
+  moods: TrackMoodDto[];
+  theme: TrackThemeDto | null;
+  isFeat: boolean;
   coverKey: string | null;
+  sheetMusicKey: string | null;
+  sheetMusicUrl: string | null;
   authors: string[];
   intellectualProperties: IntellectualPropertyDto[];
 
@@ -76,8 +105,9 @@ export interface TracksResponseDto {
 export interface TrackResponse {
   id: string;
   title: string;
+  alternativeTitles?: string[];
   genre: string;
-  subGenre: string;
+  ritmo: string;
   coverUrl: string;
   audioUrl: string | null;
   year: number;
@@ -88,14 +118,20 @@ export interface TrackResponse {
   iswc?: string;
   isAvailable: boolean;
   isGospel: boolean;
+  moods: TrackMoodDto[];
+  theme: TrackThemeDto | null;
+  isFeat: boolean;
   coverKey: string | null;
+  sheetMusicKey: string | null;
+  sheetMusicUrl: string | null;
   intellectualProperties: IntellectualPropertyDto[];
   playlists: PlaylistTrackDto[];
   requestedTrack: string[];
   createdAt: string;
   updatedAt: string;
   authors: AuthorTrackDto[];
-
+  certificateStatus?: CertificateStatusValue | null;
+  registrationFile?: RegistrationFileSummaryDto | null;
 
 }
 
@@ -115,7 +151,7 @@ export type UpdateTrackInput = Partial<CreateTrackInput>
 export interface FilterTrackInput extends PaginationInput {
   isGospel?: boolean;
   genreId?: string;
-  subGenre?: string;
+  ritmo?: string;
   language?: string;
   isAvailable?: boolean;
 }

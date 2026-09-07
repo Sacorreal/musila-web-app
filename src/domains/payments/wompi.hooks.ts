@@ -4,7 +4,17 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiURLs } from '@shared/constants/urls';
 import { getPaymentStatus, getLicensePaymentStatus } from './payments.actions';
 import { openWompiWidget, type WompiWidgetResult } from './wompi.client';
-import { checkoutResponseSchema, licenseCheckoutResponseSchema, type CheckoutInput, type CheckoutResponse, type LicenseCheckoutResponse } from './wompi.schema';
+import {
+  checkoutResponseSchema,
+  licenseCheckoutResponseSchema,
+  licenseInstallmentCheckoutResponseSchema,
+  licenseQuoteSchema,
+  type CheckoutInput,
+  type CheckoutResponse,
+  type LicenseCheckoutResponse,
+  type LicenseInstallmentCheckoutResponse,
+  type LicenseQuote,
+} from './wompi.schema';
 import { apiClient } from '@shared/libs/axios/axios-client';
 
 interface UseWompiCheckoutOptions {
@@ -76,6 +86,53 @@ export function useLicenseCheckout(options: UseLicenseCheckoutOptions = {}) {
       return {
         reference: checkout.externalReference,
         licensePrice: checkout.licensePrice,
+        commission: checkout.commission,
+        commissionRate: checkout.commissionRate,
+        total: checkout.total,
+      };
+    },
+  });
+}
+
+/**
+ * Preview del desglose de comisión de una licencia (§18). Usa `apiClient`, que
+ * inyecta `x-organization-id` desde el store: si el comprador actúa como
+ * organización B2B, devuelve la comisión real configurada por su plan.
+ */
+async function fetchLicenseQuote(requestedTrackId: string): Promise<LicenseQuote> {
+  const { data } = await apiClient.get<LicenseQuote>(apiURLs.payments.licenseQuote(requestedTrackId));
+  return licenseQuoteSchema.parse(data);
+}
+
+export function useLicenseQuote(requestedTrackId: string | null, enabled = true) {
+  return useQuery({
+    queryKey: ['license-quote', requestedTrackId],
+    enabled: Boolean(requestedTrackId) && enabled,
+    queryFn: () => fetchLicenseQuote(requestedTrackId as string),
+    staleTime: 60 * 1000,
+  });
+}
+
+async function fetchLicenseInstallmentCheckoutParams(collectionId: string): Promise<LicenseInstallmentCheckoutResponse> {
+  const { data } = await apiClient.post('/payments/license-installment-checkout', { collectionId });
+  return licenseInstallmentCheckoutResponseSchema.parse(data);
+}
+
+interface UseLicenseInstallmentCheckoutOptions {
+  onResult?: (reference: string, result: WompiWidgetResult) => void;
+}
+
+/** Checkout de una cuota de anticipo de un contrato de licencia de primer uso generado en línea. */
+export function useLicenseInstallmentCheckout(options: UseLicenseInstallmentCheckoutOptions = {}) {
+  return useMutation({
+    mutationFn: async (collectionId: string) => {
+      const checkout = await fetchLicenseInstallmentCheckoutParams(collectionId);
+      openWompiWidget(checkout.widget, {
+        onResult: (result) => options.onResult?.(checkout.externalReference, result),
+      });
+      return {
+        reference: checkout.externalReference,
+        installmentAmount: checkout.installmentAmount,
         commission: checkout.commission,
         total: checkout.total,
       };

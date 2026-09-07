@@ -5,15 +5,17 @@ import { Input } from "@/src/shared/components/UI/input";
 import { Label } from "@/src/shared/components/UI/label";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { LoginInput } from "../types/auth.types";
 import { useAuth } from "../hooks/use-auth";
+import { PasskeyLoginButton } from "@domains/security/components/PasskeyLoginButton";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login} = useAuth()
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -30,7 +32,10 @@ export function LoginForm() {
       await login(data);
       toast.success("Bienvenido de vuelta");
       reset();
-      router.push("/music");
+
+      const returnUrl = searchParams.get("returnUrl");
+      const isSafeReturnUrl = !!returnUrl && returnUrl.startsWith("/") && !returnUrl.startsWith("//");
+      router.push(isSafeReturnUrl ? returnUrl : "/music");
     } catch (error) {
       toast.error("Error al iniciar sesión", {
         description:
@@ -98,6 +103,12 @@ export function LoginForm() {
           "Iniciar sesión"
         )}
       </Button>
+
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" /> o <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <PasskeyLoginButton />
     </form>
   );
 }

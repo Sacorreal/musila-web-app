@@ -11,12 +11,12 @@ import { cn } from '@/src/shared/libs/cn';
 import { getPseBanks, createPsePayment, type PseBank } from '@/src/domains/payments/pse.actions';
 import { CheckIcon, ChevronDownIcon, Loader2, SearchIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import type { PaymentRole } from '../payments.types';
+import type { PaymentPlanType } from '../payments.types';
 
 interface PseCheckoutModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  role: PaymentRole;
+  planType: PaymentPlanType;
   plan: 'pro';
   billingPeriod?: 'monthly' | 'annual';
   planName: string;
@@ -37,7 +37,7 @@ const ID_TYPE_LABELS: Record<IdType, string> = {
 export function PseCheckoutModal({
   open,
   onOpenChange,
-  role,
+  planType,
   plan,
   billingPeriod = 'monthly',
   planName,
@@ -96,7 +96,7 @@ export function PseCheckoutModal({
     startTransition(async () => {
       try {
         const { redirectUrl, externalReference } = await createPsePayment({
-          role,
+          planType,
           plan,
           billingPeriod,
           email,
@@ -108,7 +108,7 @@ export function PseCheckoutModal({
           financialInstitution: selectedBank!.id,
         });
         sessionStorage.setItem('mp_pending_ref', externalReference);
-        sessionStorage.setItem('mp_pending_role', role);
+        sessionStorage.setItem('mp_pending_role', planType);
         window.location.href = redirectUrl;
       } catch (err) {
         toast.error('No se pudo procesar el pago PSE', {

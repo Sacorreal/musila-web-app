@@ -4,6 +4,7 @@ import React from 'react';
 import { Play } from 'lucide-react';
 import { Button } from '@/src/shared/components/UI/button';
 import { usePlayerStore } from '../store/use-player-store';
+import { usePlayTrack } from '../hooks/use-play-track';
 import { TrackResponse } from '@/src/domains/tracks/types/track.types';
 
 export interface PlayAllButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,12 +13,14 @@ export interface PlayAllButtonProps extends React.ButtonHTMLAttributes<HTMLButto
 }
 
 export function PlayAllButton({ tracks, iconOnly = false, className, children, ...props }: PlayAllButtonProps) {
+  const { playTrack } = usePlayTrack();
+
   const handlePlayAll = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (tracks && tracks.length > 0) {
       const [firstTrack, ...restTracks] = tracks;
       usePlayerStore.getState().setQueue(restTracks as TrackResponse[]);
-      usePlayerStore.getState().play(firstTrack as TrackResponse);
+      playTrack(firstTrack as TrackResponse);
     }
   };
 

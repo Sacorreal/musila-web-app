@@ -20,7 +20,12 @@ import { PlaylistIcon } from '@/src/shared/components/Icons/icons';
 import { AddToPlaylistModal } from '@/src/domains/playlists/components/AddToPlaylistModal';
 import { RequestTrackModal } from '@/src/domains/requests/components/RequestTrackModal';
 import { TrackLyricsSidePanel } from './TrackLyricsSidePanel';
+import { registerTrackPlayAction } from '@/src/domains/tracks/services/track-plays.actions';
 import { cn } from '@/src/shared/libs/cn';
+
+// Umbral para contar una reproducción como efectiva: 30s o el 25% de la duración.
+const PLAY_REGISTER_SECONDS = 30;
+const PLAY_REGISTER_RATIO = 0.25;
 
 // Helper to format time (e.g., 65 -> 1:05)
 const formatTime = (time: number) => {
@@ -32,7 +37,9 @@ const formatTime = (time: number) => {
 
 export function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
-  
+  // Ids de tracks cuya reproducción ya se registró en esta sesión (evita duplicar).
+  const registeredPlaysRef = useRef<Set<string>>(new Set());
+
   const currentTrack = usePlayerStore(state => state.currentTrack);
   const isPlaying = usePlayerStore(state => state.isPlaying);
   const volume = usePlayerStore(state => state.volume);
@@ -71,9 +78,23 @@ export function MusicPlayer() {
 
   // Audio Event Listeners
   const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-    }
+    if (!audioRef.current) return;
+    const time = audioRef.current.currentTime;
+    setCurrentTime(time);
+    maybeRegisterPlay(time, audioRef.current.duration);
+  };
+
+  const maybeRegisterPlay = (time: number, trackDuration: number) => {
+    if (!currentTrack) return;
+    if (registeredPlaysRef.current.has(currentTrack.id)) return;
+
+    const reachedThreshold =
+      time >= PLAY_REGISTER_SECONDS ||
+      (trackDuration > 0 && time / trackDuration >= PLAY_REGISTER_RATIO);
+    if (!reachedThreshold) return;
+
+    registeredPlaysRef.current.add(currentTrack.id);
+    void registerTrackPlayAction(currentTrack.id);
   };
 
   const handleLoadedMetadata = () => {

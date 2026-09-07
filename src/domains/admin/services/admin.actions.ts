@@ -7,11 +7,15 @@ import type {
   AdminUserDto,
   AdminTrackDto,
   AdminGenreDto,
+  AdminMoodDto,
+  AdminThemeDto,
   AdminRequestDto,
   CreateAdminUserInput,
   PaginatedAdminUsers,
   PaginatedAdminTracks,
   PaginatedAdminGenres,
+  PaginatedAdminMoods,
+  PaginatedAdminThemes,
   PaginatedAdminRequests,
   UserFilters,
   TrackFilters,
@@ -32,7 +36,7 @@ export async function fetchAllUsers(
   const offset = (page - 1) * limit
   const params: Record<string, unknown> = { limit, offset }
   if (filters.search) params.search = filters.search
-  if (filters.role) params.role = filters.role
+  if (filters.planType) params.planType = filters.planType
   if (filters.isVerified !== undefined) params.isVerified = filters.isVerified
   const response = await client.get<PaginatedAdminUsers>(apiURLs.users.base, { params })
   return response.data
@@ -51,7 +55,7 @@ export async function fetchAllTracks(
   if (filters.isAvailable !== undefined) params.isAvailable = filters.isAvailable
   if (filters.isGospel !== undefined) params.isGospel = filters.isGospel
   if (filters.genreId) params.genreId = filters.genreId
-  if (filters.subGenre) params.subGenre = filters.subGenre
+  if (filters.ritmo) params.ritmo = filters.ritmo
   const response = await client.get<PaginatedAdminTracks>(apiURLs.tracks.base, { params })
   return response.data
 }
@@ -60,6 +64,24 @@ export async function fetchAllGenres(page = 1, limit = 10): Promise<PaginatedAdm
   const client = await getServerApiClient()
   const offset = (page - 1) * limit
   const response = await client.get<PaginatedAdminGenres>(apiURLs.genres.base, {
+    params: { limit, offset },
+  })
+  return response.data
+}
+
+export async function fetchAllMoods(page = 1, limit = 10): Promise<PaginatedAdminMoods> {
+  const client = await getServerApiClient()
+  const offset = (page - 1) * limit
+  const response = await client.get<PaginatedAdminMoods>(apiURLs.moods.base, {
+    params: { limit, offset },
+  })
+  return response.data
+}
+
+export async function fetchAllThemes(page = 1, limit = 10): Promise<PaginatedAdminThemes> {
+  const client = await getServerApiClient()
+  const offset = (page - 1) * limit
+  const response = await client.get<PaginatedAdminThemes>(apiURLs.themes.base, {
     params: { limit, offset },
   })
   return response.data

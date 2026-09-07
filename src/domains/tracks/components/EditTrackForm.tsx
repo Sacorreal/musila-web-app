@@ -11,6 +11,8 @@ import { useState } from "react";
 // Stores & Hooks
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
 import { trackHooks } from "@/src/domains/tracks/hooks/use-tracks.hooks";
+import { useSplitByTrack } from "@/src/domains/splits/hooks/splits.hooks";
+import { SplitStatus } from "@/src/domains/splits/types/splits.types";
 
 // Validations
 import {
@@ -32,7 +34,10 @@ import {
 
 // Domain Components
 import { GenreSelector } from "@domains/musical-genre/components/GenreSelector";
+import { MoodMultiSelect } from "@domains/moods/components/MoodMultiSelect";
+import { ThemeSelector } from "@domains/themes/components/ThemeSelector";
 import { LanguageSelector } from "../components/LanguageSelector";
+import { AlternativeTitlesField } from "../components/AlternativeTitlesField";
 
 interface EditTrackFormProps {
   trackId: string;
@@ -44,19 +49,28 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
 
   const { data: track, isLoading: isLoadingTrack } = trackHooks.useTrackById(trackId);
   const { mutateAsync: updateTrack, isPending } = trackHooks.useUpdateTrack();
+  const { data: split } = useSplitByTrack(trackId);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  // El track solo puede publicarse una vez que el split de coautoría quede firmado
+  // (1 o N autores). Si ya estaba público de antes (dato histórico), no lo bloqueamos.
+  const canGoPublic = track?.isAvailable === true || split?.status === SplitStatus.COMPLETED;
 
   const methods = useForm<UpdateTrackFormValues>({
     resolver: zodResolver(updateTrackSchema),
     defaultValues: {
       title: "",
+      alternativeTitles: [],
       genreId: "",
-      subGenre: "",
+      ritmo: "",
       language: "",
       lyric: "",
       iswc: "",
       isAvailable: true,
       isGospel: false,
+      moodsIds: [],
+      themeId: "",
+      isFeat: false,
     },
   });
 
@@ -67,13 +81,17 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
     if (track) {
       reset({
         title: track.title,
+        alternativeTitles: track.alternativeTitles ?? [],
         genreId: track.genre || "", // Puede requerir lógica adicional si genre es el string y necesitas el ID
-        subGenre: track.subGenre || "",
+        ritmo: track.ritmo || "",
         language: track.language || "",
         lyric: track.lyric || "",
         iswc: track.iswc || "",
         isAvailable: track.isAvailable,
         isGospel: track.isGospel,
+        moodsIds: track.moods?.map((m) => m.id) ?? [],
+        themeId: track.theme?.id ?? "",
+        isFeat: track.isFeat,
       });
     }
   }, [track, reset]);
@@ -88,13 +106,17 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
       // Excluimos campos que no se pueden actualizar directamente sin lógica extra como audio/IP
       const payload = {
         title: data.title,
+        alternativeTitles: data.alternativeTitles,
         genreId: data.genreId,
-        subGenre: data.subGenre,
+        ritmo: data.ritmo,
         language: data.language,
         lyric: data.lyric,
         iswc: data.iswc,
         isAvailable: data.isAvailable,
         isGospel: data.isGospel,
+        moodsIds: data.moodsIds,
+        themeId: data.themeId || undefined,
+        isFeat: data.isFeat,
       };
 
       await updateTrack({ id: trackId, data: payload });
@@ -181,6 +203,25 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                   />
 
                   <Controller
+                    name="alternativeTitles"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>Títulos alternativos (Opcional)</FieldLabel>
+                        <AlternativeTitlesField
+                          value={field.value ?? []}
+                          onChange={field.onChange}
+                          disabled={isPending}
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Otros nombres con los que se conoce la obra.
+                        </p>
+                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
                     name="iswc"
                     control={control}
                     render={({ field, fieldState }) => (
@@ -205,10 +246,34 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                         <FieldLabel>Clasificación musical</FieldLabel>
                         <GenreSelector
                           genreId={field.value}
-                          subGenre={watch("subGenre")}
+                          ritmo={watch("ritmo")}
                           onGenreChange={field.onChange}
-                          onSubGenreChange={(val) => setValue("subGenre", val, { shouldValidate: true })}
+                          onRitmoChange={(val) => setValue("ritmo", val, { shouldValidate: true })}
                         />
+                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    name="moodsIds"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>Moods (1 a 2)</FieldLabel>
+                        <MoodMultiSelect value={field.value ?? []} onChange={field.onChange} maxSelected={2} />
+                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    name="themeId"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel>Tema (opcional)</FieldLabel>
+                        <ThemeSelector themeId={field.value} onChange={field.onChange} />
                         {fieldState.error && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
@@ -255,9 +320,17 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                       <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                         <div className="space-y-0.5">
                           <p className="text-sm font-medium">Pública</p>
-                          <p className="text-xs text-muted-foreground">Visible para todos</p>
+                          <p className="text-xs text-muted-foreground">
+                            {canGoPublic
+                              ? "Visible para todos"
+                              : "Firma el split de coautoría para poder publicarla"}
+                          </p>
                         </div>
-                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                        <Switch
+                          checked={canGoPublic && field.value}
+                          disabled={!canGoPublic}
+                          onCheckedChange={field.onChange}
+                        />
                       </div>
                     )}
                   />
@@ -269,6 +342,19 @@ export function EditTrackForm({ trackId }: EditTrackFormProps) {
                       <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                         <div className="space-y-0.5">
                           <p className="text-sm font-medium">Música Gospel</p>
+                        </div>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </div>
+                    )}
+                  />
+
+                  <Controller
+                    name="isFeat"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
+                        <div className="space-y-0.5">
+                          <p className="text-sm font-medium">Grabación a dúo (Feat)</p>
                         </div>
                         <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </div>

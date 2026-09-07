@@ -10,8 +10,12 @@ import { AddToPlaylistModal } from '@/src/domains/playlists/components/AddToPlay
 import { Button } from '@/src/shared/components/UI/button';
 import { useAuthStore } from '@/src/domains/auth/store/use-auth-store';
 import { PlaylistIcon } from '@/src/shared/components/Icons/icons';
-import { usePlayerStore } from '@/src/domains/player/store/use-player-store';
-import { Play } from 'lucide-react';
+import { usePlayTrack } from '@/src/domains/player/hooks/use-play-track';
+import { ShareButton } from '@/src/domains/sharing/components/ShareButton';
+import { ShareResourceType } from '@/src/domains/sharing/types/sharing.types';
+import { Play, FolderPlus } from 'lucide-react';
+import { useRegistrationFileByTrack } from '@/src/domains/registration-file/hooks/use-registration-file.hooks';
+import { RegistrationFileBadge } from '@/src/domains/registration-file/components/RegistrationFileBadge';
 
 interface TrackDetailHeroProps {
   track: TrackResponse;
@@ -26,9 +30,13 @@ function resolveGenreName(genre?: MusicalGenreDto | string): string {
 export function TrackDetailHero({ track }: TrackDetailHeroProps) {
   const genreName = resolveGenreName(track.genre);
   const userId = useAuthStore((s) => s.user?.id);
+  const { playTrack } = usePlayTrack();
 
   // Ocultar "Solicitar Uso" si el usuario autenticado es uno de los autores del track
   const isAuthor = track.authors?.some((a) => a.id === userId) ?? false;
+
+  // Expediente de Registro — sección propia, independiente de "Propiedad Intelectual"
+  const { data: registrationFile } = useRegistrationFileByTrack(track.id, isAuthor);
 
   return (
     <section className="relative w-full">
@@ -56,17 +64,31 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
             {track.title}
           </h1>
 
-          {/* Género y Subgénero */}
+          {/* Género y Ritmo */}
           <div className="flex flex-wrap gap-2">
             {genreName && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/20 dark:border-blue-500/30 tracking-wide uppercase">
                 {genreName}
               </span>
             )}
-            {track.subGenre && (
+            {track.ritmo && (
               <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20 dark:border-emerald-500/30 tracking-wide uppercase">
-                {track.subGenre}
+                {track.ritmo}
               </span>
+            )}
+            {isAuthor && registrationFile && (
+              <Link href={`/music/tracks/${track.id}/expediente`}>
+                <RegistrationFileBadge status={registrationFile.status} caseNumber={registrationFile.caseNumber} />
+              </Link>
+            )}
+            {isAuthor && registrationFile === null && (
+              <Link
+                href={`/music/tracks/${track.id}/expediente`}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border border-dashed border-muted-foreground/40 text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors uppercase tracking-wide"
+              >
+                <FolderPlus className="w-3.5 h-3.5" />
+                Preparar expediente
+              </Link>
             )}
           </div>
 
@@ -95,7 +117,7 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
           <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-1">
             <Button
               size="lg"
-              onClick={() => usePlayerStore.getState().play(track)}
+              onClick={() => playTrack(track)}
               className="gap-2 rounded-full font-black uppercase tracking-tight px-5 sm:px-8 bg-foreground text-background shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 h-10 sm:h-12"
             >
               <Play className="w-5 h-5 fill-current" />
@@ -112,6 +134,10 @@ export function TrackDetailHero({ track }: TrackDetailHeroProps) {
                 Agregar a Playlist
               </Button>
             </AddToPlaylistModal>
+
+            {isAuthor && (
+              <ShareButton resourceType={ShareResourceType.TRACK} resourceId={track.id} resourceTitle={track.title} />
+            )}
 
             {/* Solo visible para no-autores */}
             {!isAuthor && (

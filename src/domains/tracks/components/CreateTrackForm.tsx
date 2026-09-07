@@ -32,8 +32,12 @@ import {
 
 // Domain Components
 import { GenreSelector } from "@domains/musical-genre/components/GenreSelector";
+import { MoodMultiSelect } from "@domains/moods/components/MoodMultiSelect";
+import { ThemeSelector } from "@domains/themes/components/ThemeSelector";
 import { LanguageSelector } from "../components/LanguageSelector";
+import { AlternativeTitlesField } from "../components/AlternativeTitlesField";
 import { AudioUploadField } from "../components/AudioUploadField";
+import { SheetMusicUploadField } from "../components/SheetMusicUploadField";
 import { IntellectualPropertySection } from "./IntellectualPropertySection";
 
 export function CreateTrackForm() {
@@ -43,18 +47,23 @@ export function CreateTrackForm() {
   // 1️⃣ Utilizamos el hook unificado. Él se encarga de todo el flujo y estado.
   const { mutateAsync, isPending, globalProgress } = useCreateTrack();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [createdTrackId, setCreatedTrackId] = useState<string | null>(null);
 
   const methods = useForm<CreateTrackFormValues>({
       resolver: zodResolver(createTrackSchema),
       defaultValues: {
         title: "",
+        alternativeTitles: [],
         genreId: "",
-        subGenre: "",
+        ritmo: "",
         language: "",
         lyric: "",
         authorsIds: user?.id ? [user.id] : [],
-        isAvailable: true,
+        isAvailable: false,
         isGospel: false,
+        moodsIds: [],
+        themeId: "",
+        isFeat: false,
         intellectualProperties: [],
       },
     });
@@ -77,13 +86,15 @@ export function CreateTrackForm() {
     };
 
     try {
-      await mutateAsync(payload);
+      const createdTrack = await mutateAsync(payload);
+      setCreatedTrackId(createdTrack.id);
       setIsSuccess(true);
-      
-      // Redirigir al home después de 3 segundos
+
+      // Redirigimos a la ficha del track para que firme el split de coautoría:
+      // la canción no queda visible hasta que el split quede completado.
       setTimeout(() => {
         reset();
-        router.push("/music");
+        router.push(`/music/tracks/${createdTrack.id}#split`);
       }, 3000);
     } catch (error) {
       toast.error("Error al publicar la canción", {
@@ -105,22 +116,22 @@ export function CreateTrackForm() {
         
         <div className="space-y-4 mb-10">
           <h1 className="text-4xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
-            ¡Canción Publicada!
+            ¡Canción creada!
           </h1>
           <p className="text-xl text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
-            Tu obra de arte ya está disponible para el mundo. Hemos notificado a tus seguidores.
+            Falta un paso: firma el split de coautoría para que tu canción quede disponible.
           </p>
         </div>
 
         <div className="flex flex-col gap-4 w-full max-w-xs mx-auto">
           <p className="text-sm font-bold text-primary animate-pulse uppercase tracking-widest">
-            Redirigiendo al home...
+            Redirigiendo al split...
           </p>
-          <Button 
+          <Button
             className="rounded-2xl h-14 bg-slate-900 dark:bg-white dark:text-slate-900 font-black text-lg shadow-xl"
-            onClick={() => router.push("/music")}
+            onClick={() => createdTrackId && router.push(`/music/tracks/${createdTrackId}#split`)}
           >
-            Ir al Inicio ahora
+            Firmar split ahora
           </Button>
         </div>
       </div>
@@ -153,8 +164,8 @@ export function CreateTrackForm() {
                 Publicar nueva canción
               </h1>
               <p className="text-muted-foreground mt-1 max-w-xl">
-                Completa la información, adjunta los archivos y configura la
-                disponibilidad.
+                Completa la información y adjunta los archivos. Podrás
+                publicarla luego de firmar el split de coautoría.
               </p>
             </div>
 
@@ -208,6 +219,27 @@ export function CreateTrackForm() {
                 />
 
                 <Controller
+                  name="alternativeTitles"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Títulos alternativos (Opcional)</FieldLabel>
+                      <AlternativeTitlesField
+                        value={field.value ?? []}
+                        onChange={field.onChange}
+                        disabled={isPending}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Otros nombres con los que se conoce la obra.
+                      </p>
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
                   name="iswc"
                   control={control}
                   render={({ field, fieldState }) => (
@@ -234,12 +266,40 @@ export function CreateTrackForm() {
                       <FieldLabel>Clasificación musical</FieldLabel>
                       <GenreSelector
                         genreId={field.value}
-                        subGenre={watch("subGenre")}
+                        ritmo={watch("ritmo")}
                         onGenreChange={field.onChange}
-                        onSubGenreChange={(val) =>
-                          setValue("subGenre", val, { shouldValidate: true })
+                        onRitmoChange={(val) =>
+                          setValue("ritmo", val, { shouldValidate: true })
                         }
                       />
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="moodsIds"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Moods (1 a 2)</FieldLabel>
+                      <MoodMultiSelect value={field.value ?? []} onChange={field.onChange} maxSelected={2} />
+                      {fieldState.error && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="themeId"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>Tema (opcional)</FieldLabel>
+                      <ThemeSelector themeId={field.value} onChange={field.onChange} />
                       {fieldState.error && (
                         <FieldError errors={[fieldState.error]} />
                       )}
@@ -332,6 +392,19 @@ export function CreateTrackForm() {
                     );
                   }}
                 />
+
+                {/* PARTITURA (PDF, opcional) */}
+                <Controller
+                  name="sheetMusic"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <SheetMusicUploadField
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={fieldState.error?.message}
+                    />
+                  )}
+                />
               </section>
 
               {/* LETRA */}
@@ -360,15 +433,25 @@ export function CreateTrackForm() {
               <div className="rounded-2xl border bg-card p-6 shadow-sm space-y-6">
                 <h2 className="text-lg font-semibold">Configuración</h2>
 
+                <div className="flex items-center justify-between rounded-xl border border-dashed p-4 opacity-70">
+                  <div className="space-y-0.5">
+                    <p className="text-sm font-medium">Pública</p>
+                    <p className="text-xs text-muted-foreground">
+                      Se habilita luego de firmar el split de coautoría
+                    </p>
+                  </div>
+                  <Switch checked={false} disabled />
+                </div>
+
                 <Controller
-                  name="isAvailable"
+                  name="isGospel"
                   control={control}
                   render={({ field }) => (
                     <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                       <div className="space-y-0.5">
-                        <p className="text-sm font-medium">Pública</p>
+                        <p className="text-sm font-medium">Música Gospel</p>
                         <p className="text-xs text-muted-foreground">
-                          Visible para todos
+                          ¿Es una canción góspel?
                         </p>
                       </div>
                       <Switch
@@ -380,14 +463,14 @@ export function CreateTrackForm() {
                 />
 
                 <Controller
-                  name="isGospel"
+                  name="isFeat"
                   control={control}
                   render={({ field }) => (
                     <div className="flex items-center justify-between rounded-xl border p-4 hover:bg-muted/30 transition-colors">
                       <div className="space-y-0.5">
-                        <p className="text-sm font-medium">Música Gospel</p>
+                        <p className="text-sm font-medium">Grabación a dúo (Feat)</p>
                         <p className="text-xs text-muted-foreground">
-                          ¿Es una canción góspel?
+                          ¿Está grabada con varias voces?
                         </p>
                       </div>
                       <Switch
@@ -412,13 +495,13 @@ export function CreateTrackForm() {
                       Procesando...
                     </>
                   ) : (
-                    "Publicar canción"
+                    "Guardar y continuar"
                   )}
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  Al publicar, aceptas los términos de publicación. Podrás
-                  editar la metadata más adelante.
+                  Al guardar, aceptas los términos de publicación. La canción
+                  quedará como borrador hasta que firmes el split de coautoría.
                 </p>
               </div>
             </aside>

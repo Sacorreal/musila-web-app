@@ -7,8 +7,13 @@ export interface UserDto {
     secondName: string
     lastName: string
     secondLastName: string
-    role: UserRoleRegister
+    planType: UserPlanTypeRegister
+    role: MusicRole
     email: string
+    /** Nombre de usuario único (sin @), 3 a 20 caracteres: letras, números y guion bajo. */
+    username: string
+    /** true cuando el username fue asignado automáticamente y aún no ha sido elegido por el usuario. */
+    usernameIsTemporary?: boolean
     password: string;
     countryCode: string;
     phone: string;
@@ -28,22 +33,58 @@ export interface UserDto {
 }
 
 
-export enum UserRole {
+export enum UserPlanType {
+  SUPERADMIN = "superadmin",
   ADMIN = "admin",
-  AUTOR = "autor",
-  INTERPRETE = "interprete",
-  CANTAUTOR = "cantautor",
+  PLAN_AUTOR = "plan_autor",
+  PLAN_360 = "plan_360",
+  PLAN_DESCUBRIDOR = "plan_descubridor",
   INVITADO = "invitado",
-  EDITOR = "editor",
+  PLAN_PUBLISHER = "plan_publisher",
+}
+
+/** Planes con privilegios administrativos: superadmin hereda todo lo que tiene admin. */
+export const ADMIN_PLAN_TYPES: UserPlanType[] = [
+  UserPlanType.SUPERADMIN,
+  UserPlanType.ADMIN,
+]
+
+export const isAdminPlanType = (planType?: UserPlanType | string | null): boolean =>
+  !!planType && (ADMIN_PLAN_TYPES as string[]).includes(planType)
+
+/**
+ * planes permitidos temporalmente para el registro de usuario, durante *MVP
+ */
+export enum UserPlanTypeRegister {
+  PLAN_AUTOR = "plan_autor",
+  PLAN_DESCUBRIDOR = "plan_descubridor",
+  PLAN_360 = "plan_360",
 }
 
 /**
- * roles para el registro de usuario permitidos temporalmente, durante *MVP
+ * Rol descriptivo (disciplina musical) del usuario. No tiene ningún efecto
+ * en permisos/acceso — solo es informativo.
  */
-export enum UserRoleRegister {
-  AUTOR = "autor",
+export enum MusicRole {
+  AGRUPACION = "agrupacion",
   INTERPRETE = "interprete",
+  COMPOSITOR = "compositor",
   CANTAUTOR = "cantautor",
+  PRODUCTOR = "productor",
+  INGENIERO = "ingeniero",
+  MANAGER = "manager",
+  A_R = "a_r",
+}
+
+export const MUSIC_ROLE_LABELS: Record<MusicRole, string> = {
+  [MusicRole.AGRUPACION]: "Agrupación",
+  [MusicRole.INTERPRETE]: "Intérprete",
+  [MusicRole.COMPOSITOR]: "Compositor",
+  [MusicRole.CANTAUTOR]: "Cantautor",
+  [MusicRole.PRODUCTOR]: "Productor",
+  [MusicRole.INGENIERO]: "Ingeniero",
+  [MusicRole.MANAGER]: "Manager",
+  [MusicRole.A_R]: "A&R",
 }
 
 
@@ -52,7 +93,9 @@ type BaseUser = Pick<
   | 'email'
   | 'name'
   | 'lastName'
+  | 'planType'
   | 'role'
+  | 'username'
   | 'password'
   | 'repeatPassword'
   | 'countryCode'
@@ -65,12 +108,17 @@ type OptionalUser = Partial<
   Pick<UserDto, 'secondName' | 'secondLastName'>
 >
 
-export type CreateUserInput = BaseUser & OptionalUser & { externalReference?: string }
+export type CreateUserInput = BaseUser & OptionalUser & {
+  externalReference?: string
+  /** Timestamp (epoch ms) de cuándo se mostró el formulario. Trampa de tiempo anti-bot. */
+  formStartedAt: number
+  /** Campo trampa anti-bot: debe llegar siempre vacío, nunca mostrar en la UI. */
+  companyWebsite?: string
+}
 
 
 
 export type UpdateUserInput = Partial<CreateUserInput>
 
 export type UserResponse = Omit<UserDto, ''>
-
 

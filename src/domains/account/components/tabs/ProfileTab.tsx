@@ -11,6 +11,7 @@ import { Input } from '@/src/shared/components/UI/input';
 import { Label } from '@/src/shared/components/UI/label';
 import { Textarea } from '@/src/shared/components/UI/textarea';
 import { Loader2 } from 'lucide-react';
+import { BankAccountForm } from '@/src/domains/wallet/components/BankAccountForm';
 
 const profileSchema = z.object({
   name: z.string().min(1, 'Requerido').max(100),
@@ -126,6 +127,11 @@ export function ProfileTab() {
           </div>
           <Button type="submit" disabled={isPending}>Actualizar</Button>
         </form>
+      </section>
+
+      {/* Datos bancarios para retiros del Wallet */}
+      <section className="rounded-xl border bg-card p-6">
+        <BankAccountForm />
       </section>
 
       {/* Cambiar contraseña */}

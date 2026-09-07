@@ -11,6 +11,7 @@ import { PlaylistIcon } from "@/src/shared/components/Icons/icons";
 import { AddToPlaylistModal } from "@/src/domains/playlists/components/AddToPlaylistModal";
 import { RequestTrackModal } from "@/src/domains/requests/components/RequestTrackModal";
 import { usePlayerStore } from "@/src/domains/player/store/use-player-store";
+import { usePlayTrack } from "@/src/domains/player/hooks/use-play-track";
 import { PlayAllButton } from "@/src/domains/player/components/PlayAllButton";
 import { TrackDuration } from "@/src/shared/components/UI/TrackDuration";
 import {
@@ -33,6 +34,7 @@ interface ArtistTracksListProps {
 }
 
 export function ArtistTracksList({ tracks, artistId, artistName, artistLastName }: ArtistTracksListProps) {
+  const { playTrack } = usePlayTrack();
   // Filter out plain string IDs and inject artist data
   const populatedTracks = (
     tracks as Array<TrackResponse | AuthorTrackDetailDto | string>
@@ -52,11 +54,11 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
   const {
     filteredTracks,
     genreOptions,
-    subGenreOptions,
+    ritmoOptions,
     selectedGenre,
-    selectedSubGenre,
+    selectedRitmo,
     handleGenreChange,
-    handleSubGenreChange,
+    handleRitmoChange,
   } = useArtistTracksFilter(populatedTracks);
 
   return (
@@ -85,16 +87,16 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
             </SelectContent>
           </Select>
 
-          {/* SubGenre select — populated from track.subGenre string, filtered by selected genre */}
-          <Select value={selectedSubGenre} onValueChange={handleSubGenreChange}>
+          {/* Ritmo select — populated from track.ritmo string, filtered by selected genre */}
+          <Select value={selectedRitmo} onValueChange={handleRitmoChange}>
             <SelectTrigger className="w-[170px] bg-slate-100 dark:bg-slate-800 border-none text-foreground dark:text-slate-300 rounded-full h-10 px-4 shadow-sm hover:bg-slate-200 dark:hover:!bg-slate-700 cursor-pointer ring-0 focus:ring-0">
               <SelectValue>
-                {selectedSubGenre === "all" ? "Subgénero" : selectedSubGenre}
+                {selectedRitmo === "all" ? "Ritmo" : selectedRitmo}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-background border-border text-foreground">
-              <SelectItem value="all">Todos los subgéneros</SelectItem>
-              {subGenreOptions.map((sub) => (
+              <SelectItem value="all">Todos los ritmos</SelectItem>
+              {ritmoOptions.map((sub) => (
                 <SelectItem key={sub} value={sub}>
                   {sub}
                 </SelectItem>
@@ -127,7 +129,7 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
               key={track.id}
               onClick={() => {
                 usePlayerStore.getState().setQueue(filteredTracks.slice(index + 1) as unknown as TrackResponse[]);
-                usePlayerStore.getState().play(track as unknown as TrackResponse);
+                playTrack(track as unknown as TrackResponse);
                 router.push(`/music/tracks/${track.id}`);
               }}
               className="group flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-800 rounded-2xl md:rounded-[2.5rem] border border-slate-200 dark:border-white/5 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl relative overflow-hidden"
@@ -162,7 +164,7 @@ export function ArtistTracksList({ tracks, artistId, artistName, artistLastName 
                   {resolveGenreName(track.genre) || "—"}
                 </span>
                 <span className="min-w-[9rem] hidden md:block truncate">
-                  {track.subGenre || "—"}
+                  {track.ritmo || "—"}
                 </span>
               </div>
 

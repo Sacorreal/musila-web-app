@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { AdminSidebar } from '@/src/domains/admin/components/AdminSidebar'
 import { AdminHeader } from '@/src/domains/admin/components/AdminHeader'
 import { MusicPlayer } from '@/src/domains/player/components/MusicPlayer'
+import { fetchMyCapabilities } from '@/src/domains/admin/authorization/authorization.actions'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
@@ -13,11 +14,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   let userName: string | undefined
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
-    if (payload.role !== 'admin') redirect('/music')
+    if (payload.planType !== 'admin' && payload.planType !== 'superadmin') redirect('/music')
     userName = payload.name
   } catch {
     redirect('/login')
   }
+
+  // Solo UX: filtra qué secciones ve el staff en el menú, según sus capabilities
+  // platform.* del motor unificado. La autorización real ocurre en el backend
+  // vía AuthorizationGuard en cada request.
+  const { capabilities: permissions } = await fetchMyCapabilities().catch(() => ({ capabilities: [] as string[] }))
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,7 +37,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         }}
       />
 
-      <AdminSidebar />
+      <AdminSidebar permissions={permissions} />
 
       <div className="flex min-h-screen flex-col md:ml-64">
         <AdminHeader userName={userName} />

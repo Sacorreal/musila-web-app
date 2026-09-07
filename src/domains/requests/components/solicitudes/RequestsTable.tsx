@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Music } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/src/shared/components/UI/button";
+import { isAdminPlanType } from "@/src/domains/users/types/user.types";
 import { TrackRequest, RequestStatus } from "../../types/request.types";
 import { RequestsTableRow } from "./RequestsTableRow";
 import { TrackRequestDetailsDialog } from "../TrackRequestDetailsDialog";
@@ -82,7 +83,7 @@ export function RequestsTable({
               ) : (
                 requests.map((req, index) => {
                   const authors = (req.track as any)?.authors as any[] | undefined;
-                  const canChangeStatus = userRole === "admin" || (Array.isArray(authors) && authors.some((a) => a.id === userId));
+                  const canChangeStatus = isAdminPlanType(userRole) || (Array.isArray(authors) && authors.some((a) => a.id === userId));
                   const canCancel = req.requester?.id === userId && req.status === RequestStatus.PENDIENTE;
 
                   return (
@@ -124,6 +125,10 @@ export function RequestsTable({
         onClose={() => setApproveTarget(null)}
         onSuccess={(id) => {
           onApproveSuccess(id);
+          setApproveTarget(null);
+        }}
+        onGenerateOnline={() => {
+          if (approveTarget) setSelectedRequest({ request: approveTarget, isOwner: true });
           setApproveTarget(null);
         }}
       />

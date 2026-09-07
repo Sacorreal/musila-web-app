@@ -1,59 +1,24 @@
-import { MusilaLogo } from "@/src/shared/components/Icons/icons";
-import { UserRegisterForm } from "@/src/domains/auth/components/UserRegisterForm";
-import Link from "next/link";
+import { AuthSplitLayout } from "@/src/domains/auth/components/AuthSplitLayout";
+import { RegisterTestimonialPanel } from "@/src/domains/auth/components/RegisterTestimonialPanel";
+import { RegisterPanel } from "@/src/domains/auth/components/RegisterPanel";
+
+/** Compatibilidad con enlaces de marketing antiguos que usan `?role=` con los nombres previos. */
+const LEGACY_ROLE_TO_PLAN_TYPE: Record<string, string> = {
+  autor: "plan_autor",
+  cantautor: "plan_360",
+  interprete: "plan_descubridor",
+};
 
 interface RegisterPageProps {
-  searchParams: Promise<{ role?: string }>;
+  searchParams: Promise<{ planType?: string; role?: string }>;
 }
 
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
-  const { role } = await searchParams;
+  const { planType, role } = await searchParams;
+  const defaultPlanType = planType ?? (role ? LEGACY_ROLE_TO_PLAN_TYPE[role] : undefined);
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 bg-card items-center justify-center p-12">
-        <div className="max-w-md">
-          <div className="aspect-square rounded-3xl overflow-hidden mb-8">
-            <img
-              src="/two-musicians-collaborating-shaking-hands.jpg"
-              alt="Músicos colaborando"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <blockquote className="text-lg text-muted-foreground italic">
-            {`"Gracias a Músila pude grabar canciones de compositores increíbles que nunca hubiera conocido."`}
-          </blockquote>
-          <p className="mt-4 font-semibold text-foreground">
-            María González, Intérprete
-          </p>
-        </div>
-      </div>
-
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <Link href="/" className="flex items-center gap-2 mb-8">
-            <MusilaLogo className="h-auto w-auto text-primary" />      
-          </Link>
-
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Crea tu cuenta
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Únete a la comunidad de compositores e intérpretes
-          </p>
-
-          <UserRegisterForm defaultRole={role} />
-
-          <p className="mt-8 text-center text-sm text-muted-foreground">
-            ¿Ya tienes una cuenta?{" "}
-            <Link
-              href="/login"
-              className="text-primary hover:underline font-medium"
-            >
-              Inicia sesión
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+    <AuthSplitLayout leftPanel={<RegisterTestimonialPanel />}>
+      <RegisterPanel defaultPlanType={defaultPlanType} />
+    </AuthSplitLayout>
   );
 }

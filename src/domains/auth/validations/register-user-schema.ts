@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { UserRoleRegister } from '@/src/domains/users/types/user.types';
+import { UserPlanTypeRegister, MusicRole } from '@/src/domains/users/types/user.types';
 
 /**
  * Schema de validación para el formulario de registro
@@ -30,6 +30,13 @@ export const registerSchema = z
             .min(1, "El email es obligatorio")
             .regex(/^[a-zA-Z0-9._%+-ñÑ]+@[a-zA-Z0-9.-ñÑ]+\.[a-zA-Z]{2,}$/, "Debe proporcionar un email válido"),
 
+        username: z
+            .string()
+            .trim()
+            .min(3, "El nombre de usuario debe tener al menos 3 caracteres")
+            .max(20, "El nombre de usuario no puede superar los 20 caracteres")
+            .regex(/^[A-Za-z0-9_]+$/, "Solo letras, números y guion bajo, sin espacios"),
+
         password: z
             .string()
             .min(6, "La contraseña debe tener al menos 6 caracteres"),
@@ -54,9 +61,16 @@ export const registerSchema = z
             .string()
             .min(1, "El número de documento es obligatorio"),
 
-        role: z.nativeEnum(UserRoleRegister, {
+        planType: z.nativeEnum(UserPlanTypeRegister, {
+            errorMap: () => ({ message: "El plan es obligatorio" }),
+        }),
+
+        role: z.nativeEnum(MusicRole, {
             errorMap: () => ({ message: "El rol es obligatorio" }),
         }),
+
+        // Campo trampa anti-bot: si un bot lo completa, la validación de humano falla en el submit.
+        companyWebsite: z.string().max(0).optional().or(z.literal("")),
     })
     .refine((data) => data.password === data.repeatPassword, {
         path: ["repeatPassword"],

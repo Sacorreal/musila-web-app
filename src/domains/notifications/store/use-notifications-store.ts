@@ -9,6 +9,7 @@ export interface Notification {
   link?: string;
   isRead: boolean;
   createdAt: string;
+  data?: Record<string, unknown>;
 }
 
 interface NotificationsState {

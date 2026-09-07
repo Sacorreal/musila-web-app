@@ -1,6 +1,7 @@
 "use client";
 
 import { apiClient } from "@/src/shared/libs/axios/axios-client";
+import { apiURLs } from "@/src/shared/constants/urls";
 import type { CreateUserInput, UpdateUserInput, UserDto } from "@/src/domains/users/types/user.types";
 
 type ServiceResult<T> = {
@@ -49,6 +50,12 @@ export const usersService = {
       const message = error.response?.data?.message ?? "Error al crear el usuario";
       return { error: message };
     }
+  },
+
+  /** Endpoint público: no requiere sesión (se usa también desde el formulario de registro). */
+  async checkUsernameAvailable(username: string): Promise<boolean> {
+    const { data } = await apiClient.get<{ available: boolean }>(apiURLs.users.usernameAvailable(username));
+    return data.available;
   },
 };
 

@@ -1,25 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useMyTracks } from "../hooks/use-tracks.hooks";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
-import { UserRole } from "@/src/domains/users/types/user.types";
+import { useNotificationsStore } from "@/src/domains/notifications/store/use-notifications-store";
+import { UserPlanType } from "@/src/domains/users/types/user.types";
 import { Search, Music2 } from "lucide-react";
 import { Input } from "@/src/shared/components/UI/input";
 import { Badge } from "@/src/shared/components/UI/badge";
 import { Switch } from "@/src/shared/components/UI/switch";
 import Link from "next/link";
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
 } from "@/src/shared/components/UI/alert-dialog";
 import { useUpdateTrack } from "../hooks/use-tracks.hooks";
+import { CertificateCell } from "./CertificateCell";
+import { RegistrationFileCell } from "./RegistrationFileCell";
+import { useRegistrationFileSummaries } from "@/src/domains/registration-file/hooks/use-registration-file.hooks";
+
+const CERTIFICATE_NOTIFICATION_TYPES = new Set(["certificate.issued", "certificate.generation.failed"]);
 
 export function MyTracksList() {
   const { user } = useAuthStore();
@@ -27,6 +34,18 @@ export function MyTracksList() {
   const [searchQuery, setSearchQuery] = useState("");
   const { mutate: updateTrack, isPending: isUpdating } = useUpdateTrack();
   const [trackToToggle, setTrackToToggle] = useState<{ id: string; title: string; currentStatus: boolean } | null>(null);
+  const queryClient = useQueryClient();
+  const latestNotification = useNotificationsStore((s) => s.notifications[0]);
+  const { data: registrationFileSummaries } = useRegistrationFileSummaries((tracks ?? []).map((t) => t.id));
+
+  // Refresca el estado del certificado sin polling: el socket de notificaciones
+  // ya está conectado globalmente (NotificationMenu); cuando llega el evento de
+  // certificado listo/fallido, invalidamos "mis canciones" para refrescar el badge.
+  useEffect(() => {
+    if (latestNotification && CERTIFICATE_NOTIFICATION_TYPES.has(latestNotification.type)) {
+      queryClient.invalidateQueries({ queryKey: ["tracks", "me"] });
+    }
+  }, [latestNotification, queryClient]);
 
   const handleToggleVisibility = () => {
     if (trackToToggle) {
@@ -38,8 +57,8 @@ export function MyTracksList() {
     }
   };
 
-  // Solo visible para autor o cantautor
-  if (user?.role !== UserRole.AUTOR && user?.role !== UserRole.CANTAUTOR) {
+  // Solo visible para Plan Autor o Plan 360
+  if (user?.planType !== UserPlanType.PLAN_AUTOR && user?.planType !== UserPlanType.PLAN_360) {
     return null;
   }
 
@@ -97,7 +116,7 @@ export function MyTracksList() {
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4">Estado</th>
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-center">Visible</th>
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 hidden md:table-cell">Género</th>
-                <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 hidden md:table-cell">Subgénero</th>
+                <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 hidden md:table-cell">Ritmo</th>
                 <th className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-center">Acciones</th>
               </tr>
             </thead>
@@ -163,15 +182,26 @@ export function MyTracksList() {
                     {typeof track.genre === 'string' ? track.genre : (track.genre as any)?.genre || "-"}
                   </td>
                   <td className="px-2 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm text-muted-foreground font-medium hidden md:table-cell">
-                    {track.subGenre || "-"}
+                    {track.ritmo || "-"}
                   </td>
                   <td className="px-2 sm:px-4 md:px-6 py-3 sm:py-4">
-                    <div className="flex justify-center" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex flex-col items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <Link href={`/music/tracks/editar/${track.id}`}>
                         <Badge variant="outline" className="cursor-pointer hover:bg-muted text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap">
                           Editar
                         </Badge>
                       </Link>
+                      <Link href={`/music/tracks/${track.id}/dashboard`}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-muted text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap">
+                          Estadísticas
+                        </Badge>
+                      </Link>
+                      <CertificateCell
+                        trackId={track.id}
+                        trackTitle={track.title}
+                        certificateStatus={track.certificateStatus}
+                      />
+                      <RegistrationFileCell trackId={track.id} summary={registrationFileSummaries?.[track.id]} />
                     </div>
                   </td>
                 </tr>

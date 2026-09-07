@@ -2,29 +2,30 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
-import { UserRole } from "@/src/domains/users/types/user.types";
+import { UserPlanType, isAdminPlanType } from "@/src/domains/users/types/user.types";
 import { apiClient } from "@/src/shared/libs/axios/axios-client";
 import { apiURLs } from "@/src/shared/constants/urls";
 import { RequestStatus, TrackRequest } from "@/src/domains/requests/types/request.types";
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 // Componentes refactorizados
 import { RequestsTabs, TabKey } from "@/src/domains/requests/components/solicitudes/RequestsTabs";
 import { RequestsFilters } from "@/src/domains/requests/components/solicitudes/RequestsFilters";
 import { RequestsTable } from "@/src/domains/requests/components/solicitudes/RequestsTable";
+import { PageHeader } from "@/src/shared/components/UI/PageHeader";
+import { LoadingState } from "@/src/shared/components/UI/LoadingState";
 
 // Helpers de permisos
-function getAvailableTabs(role: UserRole | undefined): TabKey[] {
-  if (role === UserRole.ADMIN) return ["enviadas", "recibidas"];
-  if (role === UserRole.CANTAUTOR) return ["enviadas", "recibidas"];
-  if (role === UserRole.AUTOR) return ["recibidas"];
+function getAvailableTabs(planType: UserPlanType | undefined): TabKey[] {
+  if (isAdminPlanType(planType)) return ["enviadas", "recibidas"];
+  if (planType === UserPlanType.PLAN_360) return ["enviadas", "recibidas"];
+  if (planType === UserPlanType.PLAN_AUTOR) return ["recibidas"];
   return ["enviadas"];
 }
 
 export default function RequestsPage() {
   const user = useAuthStore((s) => s.user);
-  const role = user?.role as UserRole | undefined;
+  const role = user?.planType as UserPlanType | undefined;
 
   const availableTabs = getAvailableTabs(role);
   const [activeTab, setActiveTab] = useState<TabKey>(availableTabs[0]);
@@ -71,9 +72,9 @@ export default function RequestsPage() {
 
   const received = useMemo(() => {
     // Si es admin, ve todas las que no envió él mismo
-    if (role === UserRole.ADMIN) return requests.filter((r) => r.requester?.id !== user?.id);
+    if (isAdminPlanType(role)) return requests.filter((r) => r.requester?.id !== user?.id);
 
-    // Si es Autor o Cantautor, ve las solicitudes de sus canciones
+    // Si es Plan Autor o Plan 360, ve las solicitudes de sus canciones
     return requests.filter((r) => {
       const authors = (r.track as any)?.authors as any[] | undefined;
       if (!Array.isArray(authors)) return false;
@@ -130,23 +131,24 @@ export default function RequestsPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
-        <p className="text-muted-foreground font-medium animate-pulse">Cargando solicitudes...</p>
-      </div>
+      <LoadingState
+        className="min-h-[60vh]"
+        iconClassName="w-10 h-10"
+        message="Cargando solicitudes..."
+      />
     );
   }
 
   return (
     <main className="container mx-auto p-6 md:p-10 space-y-8">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase">
-          Solicitudes
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Gestiona y haz seguimiento a las solicitudes de uso de canciones.
-        </p>
-      </header>
+      <PageHeader
+        title="Solicitudes"
+        titleClassName="text-4xl tracking-tighter uppercase"
+        description="Gestiona y haz seguimiento a las solicitudes de uso de canciones."
+        descriptionClassName="text-lg"
+        stack="always"
+        className="items-start gap-1"
+      />
 
       <RequestsTabs
         activeTab={activeTab}

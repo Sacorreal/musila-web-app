@@ -54,7 +54,7 @@ export function PricingCards({ currencyInfo, showCurrencyNote }: PricingCardsPro
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {PRO_PLANS.map((plan) => (
           <PlanCard
-            key={`${plan.role}-${plan.plan}`}
+            key={`${plan.planType}-${plan.plan}`}
             plan={plan}
             convertedPrice={
               plan.price !== null
@@ -84,7 +84,7 @@ export function PricingCards({ currencyInfo, showCurrencyNote }: PricingCardsPro
         </summary>
         <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {FREE_PLANS.map((plan) => (
-            <PlanCard key={`${plan.role}-${plan.plan}`} plan={plan} />
+            <PlanCard key={`${plan.planType}-${plan.plan}`} plan={plan} />
           ))}
         </div>
       </details>

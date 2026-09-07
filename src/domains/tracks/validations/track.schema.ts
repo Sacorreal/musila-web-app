@@ -9,10 +9,20 @@ const externalIdSchema = z.object({
 export const createTrackSchema = z.object({
   title: z.string().min(1, 'El título es obligatorio').trim(),
 
+  // Títulos alternativos de la obra (opcional): metadato con uno o varios nombres.
+  // Se normaliza descartando entradas vacías o duplicadas.
+  alternativeTitles: z
+    .array(z.string().trim())
+    .optional()
+    .default([])
+    .transform((titles) =>
+      Array.from(new Set(titles.map((t) => t.trim()).filter(Boolean))),
+    ),
+
   // Para la UI basta con que haya un género seleccionado (id string)
   genreId: z.string().min(1, 'Debes seleccionar un género musical'),
   
-  subGenre: z.string().optional(), 
+  ritmo: z.string().optional(),
   
   language: z.string().min(1, 'El idioma es obligatorio'),
   
@@ -25,19 +35,29 @@ export const createTrackSchema = z.object({
     .default([]),
   
   isAvailable: z.boolean().optional().default(true),
-  
+
   isGospel: z.boolean({ required_error: 'Debes indicar si es Gospel o no' }),
-  
+
+  moodsIds: z
+    .array(z.string())
+    .min(1, 'Selecciona al menos 1 mood')
+    .max(2, 'Máximo 2 moods por canción'),
+
+  themeId: z.string().optional(),
+
+  isFeat: z.boolean().optional().default(false),
+
   iswc: z.string().optional(),
   
   audio: z.instanceof(File, { message: "Audio requerido" }),
   coverImage: z.instanceof(File).optional(),
+  sheetMusic: z.instanceof(File).optional(),
 
   // Propiedad intelectual (opcional)
   intellectualProperties: z
     .array(
       z.object({
-        type: z.enum(["copyrightOffice", "cmo", "splitSheet"]),
+        type: z.enum(["copyrightOffice", "cmo"]),
         key: z.string().min(1, "Debes seleccionar una opción o ingresar un valor"),
         file: z.instanceof(File, {
           message: "El documento PDF es obligatorio",
@@ -54,7 +74,11 @@ export const updateTrackSchema = createTrackSchema.partial().extend({
   title: z.string().min(1, 'El título es obligatorio').trim(),
   genreId: z.string().min(1, 'Debes seleccionar un género musical'),
   language: z.string().min(1, 'El idioma es obligatorio'),
-  lyric: z.string().min(1, 'La letra es obligatoria').transform((val) => val.replace(/\s+/g, " ")), 
+  lyric: z.string().min(1, 'La letra es obligatoria').transform((val) => val.replace(/\s+/g, " ")),
+  moodsIds: z
+    .array(z.string())
+    .min(1, 'Selecciona al menos 1 mood')
+    .max(2, 'Máximo 2 moods por canción'),
 });
 
 export type UpdateTrackFormValues = z.infer<typeof updateTrackSchema>;

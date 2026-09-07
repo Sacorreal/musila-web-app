@@ -9,12 +9,12 @@ import { AlertTriangle, CalendarCheck, CalendarX, Crown, Infinity, RefreshCw } f
 import { cn } from '@/src/shared/libs/cn';
 
 const PLAN_LABELS: Record<string, string> = {
-  autor_pro: 'Autor Pro',
-  autor_free: 'Autor Free',
-  cantautor_pro: 'Cantautor Pro',
-  cantautor_free: 'Cantautor Free',
-  interprete_pro: 'Intérprete Pro',
-  interprete_free: 'Intérprete Free',
+  plan_autor_pro: 'Plan Autor Pro',
+  plan_autor_free: 'Plan Autor Free',
+  plan_360_pro: 'Plan 360 Pro',
+  plan_360_free: 'Plan 360 Free',
+  plan_descubridor_pro: 'Plan Descubridor Pro',
+  plan_descubridor_free: 'Plan Descubridor Free',
 };
 
 const BILLING_LABELS: Record<string, string> = {
@@ -57,7 +57,7 @@ export function PlanTab() {
     </div>
   );
 
-  const planKey = `${plan.role}_${plan.plan}`;
+  const planKey = `${plan.planType}_${plan.plan}`;
   const planLabel = PLAN_LABELS[planKey] ?? plan.plan;
   const isPro = plan.plan === 'pro';
   const isExpiring = plan.daysRemaining !== null && plan.daysRemaining <= 7;

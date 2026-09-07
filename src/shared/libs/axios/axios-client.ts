@@ -10,6 +10,9 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
+    // Usado por el backend para resolver el canal de envío de códigos OTP
+    // (web → email, mobile → push in-app).
+    "X-Client-Platform": "web",
   },
 });
 
@@ -23,6 +26,15 @@ apiClient.interceptors.request.use(
 
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Contexto de organización activa (workspace B2B): el backend NUNCA confía
+    // en este header — valida la membership ACTIVE en BD (AuthorizationGuard).
+    const { useOrganizationStore } = require("@/src/domains/organizations/store/use-organization-store");
+    const activeOrganizationId = useOrganizationStore.getState().activeOrganizationId;
+
+    if (activeOrganizationId && config.headers && !config.headers["x-organization-id"]) {
+      config.headers["x-organization-id"] = activeOrganizationId;
     }
 
     return config;
@@ -52,6 +64,14 @@ apiClient.interceptors.response.use(
             detail: { resource: data.resource, limit: data.limit },
           }),
         );
+      }
+    }
+
+    // HTTP 403 — identidad legal no verificada (firma de splits / reproducción de terceros)
+    if (error.response?.status === 403 && isInternalRequest) {
+      const data = error.response?.data ?? {};
+      if (data.code === 'LEGAL_IDENTITY_REQUIRED' && typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('legal-identity:required'));
       }
     }
 

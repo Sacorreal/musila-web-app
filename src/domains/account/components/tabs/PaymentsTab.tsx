@@ -6,7 +6,8 @@ import { getPaymentHistory } from '../../actions/account.actions';
 import { Button } from '@/src/shared/components/UI/button';
 import { Badge } from '@/src/shared/components/UI/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/shared/components/UI/dialog';
-import { Download, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { DownloadButton } from '@/src/shared/components/UI/DownloadButton';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/src/shared/libs/cn';
 
 const STATUS_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -30,7 +31,6 @@ export function PaymentsTab() {
   const [page, setPage]       = useState(1);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<any>(null);
-  const [downloading, setDownloading] = useState(false);
 
   const LIMIT = 8;
   const totalPages = Math.ceil(total / LIMIT);
@@ -50,31 +50,6 @@ export function PaymentsTab() {
 
   function openDetail(payment: any) {
     setSelected(payment);
-  }
-
-  async function downloadReceipt(id: string) {
-    if (downloading) return;
-    setDownloading(true);
-    try {
-      const res = await fetch(`/api/payments/${id}/receipt`);
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error((err as any).error ?? 'Error al obtener el comprobante');
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `comprobante-musila-${id.substring(0, 8)}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err: any) {
-      toast.error(err?.message ?? 'No se pudo descargar el comprobante');
-    } finally {
-      setDownloading(false);
-    }
   }
 
   if (loading && data.length === 0) return (
@@ -112,9 +87,14 @@ export function PaymentsTab() {
                       <div className="flex justify-end gap-2">
                         <Button size="sm" variant="ghost" onClick={() => openDetail(p)}>Ver</Button>
                         {p.status === 'approved' && (
-                          <Button size="sm" variant="ghost" onClick={() => downloadReceipt(p.id)} disabled={downloading}>
-                            <Download className="h-4 w-4" />
-                          </Button>
+                          <DownloadButton
+                            fetchUrl={`/api/payments/${p.id}/receipt`}
+                            filename={`comprobante-musila-${p.id.substring(0, 8)}.pdf`}
+                            label=""
+                            loadingLabel=""
+                            size="sm"
+                            variant="ghost"
+                          />
                         )}
                       </div>
                     </td>
@@ -161,15 +141,12 @@ export function PaymentsTab() {
                 </div>
               ))}
               {selected.status === 'approved' && (
-                <Button
+                <DownloadButton
+                  fetchUrl={`/api/payments/${selected.id}/receipt`}
+                  filename={`comprobante-musila-${selected.id.substring(0, 8)}.pdf`}
+                  label="Descargar comprobante PDF"
                   className="w-full mt-2"
-                  disabled={downloading}
-                  onClick={() => downloadReceipt(selected.id)}
-                >
-                  {downloading
-                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generando PDF...</>
-                    : <><Download className="mr-2 h-4 w-4" /> Descargar comprobante PDF</>}
-                </Button>
+                />
               )}
             </div>
           )}

@@ -1,0 +1,37 @@
+import type { AdminTrackDto } from '@/src/domains/admin/types/admin.types'
+import type { TrackResponse } from '@/src/domains/tracks/types/track.types'
+
+/**
+ * Adapta un `AdminTrackDto` (listado admin) a la forma `TrackResponse`
+ * requerida por el reproductor global (`usePlayerStore`).
+ */
+export function toTrackForPlayer(t: AdminTrackDto): TrackResponse {
+  return {
+    id: t.id,
+    title: t.title,
+    genre: t.genre,
+    ritmo: t.ritmo ?? '',
+    coverUrl: t.coverUrl ?? '',
+    audioUrl: t.audioUrl ?? null,
+    year: 0,
+    audioKey: '',
+    language: t.language,
+    lyric: '',
+    externalsIds: null,
+    isAvailable: t.isAvailable,
+    isGospel: t.isGospel,
+    moods: [],
+    theme: null,
+    isFeat: false,
+    coverKey: null,
+    sheetMusicKey: null,
+    sheetMusicUrl: null,
+    intellectualProperties: [],
+    playlists: [],
+    requestedTrack: [],
+    createdAt: t.createdAt,
+    updatedAt: t.createdAt,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    authors: t.authors.map((a) => ({ id: a.id, name: a.name, lastName: a.lastName, email: '', planType: '' as any })),
+  }
+}

@@ -33,7 +33,7 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = fa
   const annualTotal   = plan.annualTotalPrice!;
   const annualSaving  = monthlyPrice ? (monthlyPrice * 12) - annualTotal : 0;
 
-  const isLifetime = plan.role === 'interprete' && plan.plan === 'pro';
+  const isLifetime = plan.planType === 'plan_descubridor' && plan.plan === 'pro';
   const billingLabel = plan.billing ? (tp.billingLabels[plan.billing] ?? plan.billing) : '';
   const priceDisplay = plan.price === null ? tp.freeLabel : (convertedPrice ?? plan.priceLabel);
   const badgeLabel = plan.badge ? (tp.planBadges[plan.badge] ?? plan.badge) : undefined;
@@ -45,7 +45,7 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = fa
   function handleProCta() {
     const billingPeriod: 'monthly' | 'annual' = showAnnual ? 'annual' : 'monthly';
     setIsPending(true);
-    router.push(`/checkout?role=${plan.role}&billing=${billingPeriod}`);
+    router.push(`/checkout?planType=${plan.planType}&billing=${billingPeriod}`);
   }
 
   return (
@@ -139,7 +139,7 @@ export function PlanCard({ plan, convertedPrice, showCurrencyNote, isAnnual = fa
         </Button>
       ) : (
         <Button className="w-full" variant="ghost" asChild>
-          <Link href={`/register?role=${plan.role}&plan=free`} aria-label={`${ctaLabel} — ${plan.name}`}>
+          <Link href={`/register?planType=${plan.planType}&plan=free`} aria-label={`${ctaLabel} — ${plan.name}`}>
             {ctaLabel}
           </Link>
         </Button>

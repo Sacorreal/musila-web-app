@@ -5,23 +5,23 @@ export function getUniqueGenres(tracks: TrackResponse[]): string[] {
   return Array.from(new Set(genres));
 }
 
-export function getUniqueSubGenres(tracks: TrackResponse[], selectedGenre?: string): string[] {
-  const filtered = selectedGenre && selectedGenre !== 'all' 
+export function getUniqueRitmos(tracks: TrackResponse[], selectedGenre?: string): string[] {
+  const filtered = selectedGenre && selectedGenre !== 'all'
     ? tracks.filter(t => t.genre === selectedGenre)
     : tracks;
-    
-  const subGenres = filtered.map(t => t.subGenre).filter((s): s is string => typeof s === 'string');
-  return Array.from(new Set(subGenres));
+
+  const ritmos = filtered.map(t => t.ritmo).filter((s): s is string => typeof s === 'string');
+  return Array.from(new Set(ritmos));
 }
 
 export function filterTracks(
-  tracks: TrackResponse[], 
-  genre: string, 
-  subGenre: string
+  tracks: TrackResponse[],
+  genre: string,
+  ritmo: string
 ): TrackResponse[] {
   return tracks.filter(track => {
     const genreMatch = genre === 'all' || track.genre === genre;
-    const subGenreMatch = subGenre === 'all' || track.subGenre === subGenre;
-    return genreMatch && subGenreMatch;
+    const ritmoMatch = ritmo === 'all' || track.ritmo === ritmo;
+    return genreMatch && ritmoMatch;
   });
 }

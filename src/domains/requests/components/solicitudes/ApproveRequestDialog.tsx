@@ -14,8 +14,8 @@ import {
   CheckCircle2,
   CloudUpload,
   FileCheck,
+  FileSignature,
   FileText,
-  Loader2,
   Music,
   ShieldCheck,
   X,
@@ -26,16 +26,21 @@ import { UploadField } from "@/src/domains/storage/types/storage.types";
 import { updateRequestedTrack } from "../../services/requested-tracks.actions";
 import { RequestStatus } from "../../types/request.types";
 import { toast } from "sonner";
+import { OtpVerificationStep } from "@/src/shared/components/otp/OtpVerificationStep";
+import { OtpPurpose } from "@/src/domains/otp/types/otp.types";
+import { LicenseType } from "@/src/domains/tracks/types/track.types";
 
 interface Props {
   isOpen: boolean;
   request: TrackRequest | null;
   onClose: () => void;
   onSuccess: (id: string) => void;
+  /** Solo para licencias de primer uso: cierra este diálogo y abre el detalle de la solicitud para generar el contrato en línea. */
+  onGenerateOnline?: () => void;
 }
 
-export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess }: Props) {
-  const [step, setStep] = useState<"confirm" | "upload">("confirm");
+export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess, onGenerateOnline }: Props) {
+  const [step, setStep] = useState<"confirm" | "upload" | "otp">("confirm");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -105,6 +110,7 @@ export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess }: Pr
   };
 
   const uploadProgress = Math.round(progresses["document"] ?? 0);
+  const isPrimerUso = request?.licenseType === LicenseType.LICENCIA_DE_PRIMER_USO;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
@@ -200,31 +206,58 @@ export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess }: Pr
                     ))}
                   </ul>
 
-                  <div className="flex gap-3 pt-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => setStep("upload")}
-                      disabled={isSaving}
-                      className="flex-1 rounded-xl h-12 font-bold border-border hover:border-blue-400/50 hover:bg-blue-500/5 hover:text-blue-700 gap-2 transition-all"
-                    >
-                      <FileText size={16} />
-                      Adjuntar documento
-                    </Button>
-                    <Button
-                      onClick={handleApprove}
-                      disabled={isSaving}
-                      className="flex-1 rounded-xl h-12 bg-blue-600 hover:bg-blue-700 text-white font-black tracking-tight shadow-lg shadow-blue-500/25 transition-all active:scale-95 gap-2"
-                    >
-                      {isSaving ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
+                  {isPrimerUso ? (
+                    <div className="space-y-3 pt-2">
+                      <p className="text-xs text-muted-foreground text-center">
+                        Esta licencia requiere un documento firmado: genera el contrato en línea (recomendado) o
+                        carga uno que hayas elaborado por fuera de la plataforma.
+                      </p>
+                      <div className="flex gap-3">
+                        <Button
+                          variant="outline"
+                          onClick={() => setStep("upload")}
+                          disabled={isSaving}
+                          className="flex-1 rounded-xl h-12 font-bold border-border hover:border-blue-400/50 hover:bg-blue-500/5 hover:text-blue-700 gap-2 transition-all"
+                        >
+                          <FileText size={16} />
+                          Cargar licencia
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            onGenerateOnline?.();
+                            handleClose();
+                          }}
+                          disabled={isSaving}
+                          className="flex-1 rounded-xl h-12 bg-violet-600 hover:bg-violet-700 text-white font-black tracking-tight shadow-lg shadow-violet-500/25 transition-all active:scale-95 gap-2"
+                        >
+                          <FileSignature size={16} />
+                          Generar en línea
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex gap-3 pt-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setStep("upload")}
+                        disabled={isSaving}
+                        className="flex-1 rounded-xl h-12 font-bold border-border hover:border-blue-400/50 hover:bg-blue-500/5 hover:text-blue-700 gap-2 transition-all"
+                      >
+                        <FileText size={16} />
+                        Adjuntar documento
+                      </Button>
+                      <Button
+                        onClick={() => setStep("otp")}
+                        disabled={isSaving}
+                        className="flex-1 rounded-xl h-12 bg-blue-600 hover:bg-blue-700 text-white font-black tracking-tight shadow-lg shadow-blue-500/25 transition-all active:scale-95 gap-2"
+                      >
                         <CheckCircle2 size={16} />
-                      )}
-                      {isSaving ? "Aprobando..." : "Aprobar ahora"}
-                    </Button>
-                  </div>
+                        Aprobar ahora
+                      </Button>
+                    </div>
+                  )}
                 </motion.div>
-              ) : (
+              ) : step === "upload" ? (
                 <motion.div
                   key="upload"
                   initial={{ opacity: 0, y: 8 }}
@@ -312,21 +345,26 @@ export function ApproveRequestDialog({ isOpen, request, onClose, onSuccess }: Pr
                       Volver
                     </Button>
                     <Button
-                      onClick={handleApprove}
+                      onClick={() => setStep("otp")}
                       disabled={isSaving}
                       className="flex-1 rounded-xl h-12 bg-blue-600 hover:bg-blue-700 text-white font-black tracking-tight shadow-lg shadow-blue-500/25 transition-all active:scale-95 gap-2"
                     >
-                      {isSaving ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <CheckCircle2 size={16} />
-                      )}
-                      {isSaving
-                        ? file ? "Subiendo y aprobando..." : "Aprobando..."
-                        : file ? "Subir y aprobar" : "Aprobar sin documento"}
+                      <CheckCircle2 size={16} />
+                      {file ? "Subir y aprobar" : "Aprobar sin documento"}
                     </Button>
                   </div>
                 </motion.div>
+              ) : (
+                <OtpVerificationStep
+                  purpose={OtpPurpose.REQUESTED_TRACK_APPROVAL}
+                  entityId={request?.id ?? ""}
+                  active={step === "otp"}
+                  onVerified={handleApprove}
+                  onBack={() => setStep("confirm")}
+                  title="Verifica tu identidad"
+                  description="Por seguridad, confirma el código antes de aprobar esta solicitud."
+                  isProcessing={isSaving}
+                />
               )}
             </AnimatePresence>
           </div>

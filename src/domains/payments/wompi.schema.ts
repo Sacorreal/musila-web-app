@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-/** Roles que tienen plan Pro de pago. */
-export const paymentRoleSchema = z.enum(['autor', 'cantautor', 'interprete']);
+/** Planes que tienen tier Pro de pago. */
+export const paymentPlanTypeSchema = z.enum(['plan_autor', 'plan_360', 'plan_descubridor']);
 
 export const billingPeriodSchema = z.enum(['monthly', 'annual']);
 
 /** Entrada del checkout (compartida entre cliente y servidor). */
 export const checkoutInputSchema = z.object({
-  role: paymentRoleSchema,
+  planType: paymentPlanTypeSchema,
   plan: z.literal('pro'),
   billingPeriod: billingPeriodSchema.default('monthly'),
   customerEmail: z.string().email().optional(),
@@ -31,6 +31,23 @@ export const checkoutResponseSchema = z.object({
 export const licenseCheckoutResponseSchema = checkoutResponseSchema.extend({
   licensePrice: z.number(),
   commission: z.number(),
+  commissionRate: z.number().optional(),
+  total: z.number(),
+});
+
+/** Preview del desglose de comisión antes de pagar (§18). */
+export const licenseQuoteSchema = z.object({
+  licensePrice: z.number(),
+  commission: z.number(),
+  commissionRate: z.number(),
+  currency: z.string().min(1),
+  total: z.number(),
+  isB2B: z.boolean(),
+});
+
+export const licenseInstallmentCheckoutResponseSchema = checkoutResponseSchema.extend({
+  installmentAmount: z.number(),
+  commission: z.number(),
   total: z.number(),
 });
 
@@ -38,5 +55,7 @@ export type CheckoutInput = z.infer<typeof checkoutInputSchema>;
 export type WidgetParams = z.infer<typeof widgetParamsSchema>;
 export type CheckoutResponse = z.infer<typeof checkoutResponseSchema>;
 export type LicenseCheckoutResponse = z.infer<typeof licenseCheckoutResponseSchema>;
-export type WompiPaymentRole = z.infer<typeof paymentRoleSchema>;
+export type LicenseQuote = z.infer<typeof licenseQuoteSchema>;
+export type LicenseInstallmentCheckoutResponse = z.infer<typeof licenseInstallmentCheckoutResponseSchema>;
+export type WompiPlanType = z.infer<typeof paymentPlanTypeSchema>;
 export type WompiBillingPeriod = z.infer<typeof billingPeriodSchema>;

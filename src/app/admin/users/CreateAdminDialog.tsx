@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Loader2, ShieldPlus } from 'lucide-react'
@@ -9,6 +9,7 @@ import { adminHooks } from '@/src/domains/admin/hooks/admin.hooks'
 import { Button } from '@/src/shared/components/UI/button'
 import { Input } from '@/src/shared/components/UI/input'
 import { Field, FieldLabel, FieldError } from '@/src/shared/components/UI/field'
+import { UsernameField } from '@/src/domains/users/components/UsernameField'
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,12 @@ const schema = z
     name: z.string().min(1, 'El nombre es obligatorio'),
     lastName: z.string().min(1, 'El apellido es obligatorio'),
     email: z.string().email('Email inválido'),
+    username: z
+      .string()
+      .trim()
+      .min(3, 'El nombre de usuario debe tener al menos 3 caracteres')
+      .max(20, 'El nombre de usuario no puede superar los 20 caracteres')
+      .regex(/^[A-Za-z0-9_]+$/, 'Solo letras, números y guion bajo, sin espacios'),
     citizenID: z.string().optional(),
     password: z.string().min(8, 'Mínimo 8 caracteres'),
     confirmPassword: z.string().min(1, 'Confirma la contraseña'),
@@ -45,6 +52,7 @@ export function CreateAdminDialog({ isOpen, onClose }: Props) {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<FormValues>({ resolver: zodResolver(schema) })
 
@@ -87,6 +95,19 @@ export function CreateAdminDialog({ isOpen, onClose }: Props) {
             <Input type="email" placeholder="admin@musila.com" {...register('email')} />
             {errors.email && <FieldError errors={[errors.email]} />}
           </Field>
+
+          <Controller
+            name="username"
+            control={control}
+            render={({ field, fieldState }) => (
+              <UsernameField
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={fieldState.error?.message}
+              />
+            )}
+          />
 
           <Field>
             <FieldLabel>Documento de identidad (opcional)</FieldLabel>
