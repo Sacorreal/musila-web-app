@@ -78,6 +78,14 @@ export const apiURLs = {
       `/organizations/${orgId}/publisher-dashboard/rights-compliance` as const,
     financial: (orgId: string) => `/organizations/${orgId}/publisher-dashboard/financial` as const,
   },
+  // 📊 Dashboard de la organización compradora (roster que escucha y licencia)
+  buyerDashboard: {
+    overview: (orgId: string) => `/organizations/${orgId}/buyer-dashboard/overview` as const,
+    licenses: (orgId: string, month?: string) =>
+      month
+        ? (`/organizations/${orgId}/buyer-dashboard/licenses?month=${month}` as const)
+        : (`/organizations/${orgId}/buyer-dashboard/licenses` as const),
+  },
   // 📜 Relación Editora-Autor (historial unificado, Flow 3)
   editorialRelationships: {
     mine: '/users/me/editorial-relationships' as const,
