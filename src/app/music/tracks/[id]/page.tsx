@@ -9,6 +9,7 @@ import { TrackLyrics } from '@/src/domains/tracks/components/TrackLyrics';
 import { TrackRequestsTable } from '@/src/domains/requests/components/TrackRequestsTable';
 import { TrackIntellectualProperty } from '@/src/domains/tracks/components/TrackIntellectualProperty';
 import { TrackSplitsSection } from '@/src/domains/splits/components/TrackSplitsSection';
+import { TrackNotesSection } from '@/src/domains/track-notes/components/TrackNotesSection';
 import { Metadata } from 'next';
 
 export async function generateMetadata({
@@ -89,6 +90,9 @@ export default async function TrackDetailPage({
 
         {/* Tabla de solicitudes — visible solo para autores de la canción */}
         <TrackRequestsTable trackId={id} authors={track.authors || []} />
+
+        {/* Mis notas — siempre privadas, esta página no tiene contexto de playlist */}
+        <TrackNotesSection trackId={id} />
 
         {/* Spacer inferior */}
         <div className="pb-20" />

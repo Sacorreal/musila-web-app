@@ -38,7 +38,7 @@ export default async function PlaylistDetailPage({ params }: { params: Promise<{
           </div>
         </section>
 
-        <PlaylistTrackList tracks={playlist.tracks ?? []} />
+        <PlaylistTrackList tracks={playlist.tracks ?? []} playlistId={playlist.id} />
       </main>
     );
   } catch (error) {

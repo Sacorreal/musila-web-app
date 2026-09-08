@@ -144,10 +144,11 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <PlayAllButton 
-              tracks={playlist.tracks || []} 
-              iconOnly 
-              className="w-10 h-10 [&>svg]:w-4 [&>svg]:h-4" 
+            <PlayAllButton
+              tracks={playlist.tracks || []}
+              playlistId={playlist.id}
+              iconOnly
+              className="w-10 h-10 [&>svg]:w-4 [&>svg]:h-4"
             />
             <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full flex-shrink-0 hover:bg-muted">
               <XIcon className="w-5 h-5" />
@@ -186,7 +187,7 @@ export function PlaylistSidePanel({ playlist, isOpen, onClose }: PlaylistSidePan
                   onClick={() => {
                     if (playlist.tracks) {
                       usePlayerStore.getState().setQueue(playlist.tracks.slice(idx + 1) as any);
-                      playTrack(track as any);
+                      playTrack(track as any, playlist.id);
                     }
                   }}
                 >

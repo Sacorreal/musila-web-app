@@ -7,9 +7,10 @@ import { Button } from "@/src/shared/components/UI/button";
 
 interface PlaylistTrackListProps {
   tracks: TrackResponse[];
+  playlistId?: string;
 }
 
-export function PlaylistTrackList({ tracks }: PlaylistTrackListProps) {
+export function PlaylistTrackList({ tracks, playlistId }: PlaylistTrackListProps) {
   const { playTrack } = usePlayTrack();
 
   if (tracks.length === 0) {
@@ -45,7 +46,7 @@ export function PlaylistTrackList({ tracks }: PlaylistTrackListProps) {
             variant="ghost"
             size="icon"
             className="opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() => playTrack(track)}
+            onClick={() => playTrack(track, playlistId)}
             aria-label={`Reproducir ${track.title}`}
           >
             <Play className="w-4 h-4" />
