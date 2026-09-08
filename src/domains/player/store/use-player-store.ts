@@ -7,9 +7,15 @@ interface PlayerState {
   volume: number;
   queue: TrackResponse[];
   history: TrackResponse[];
-  
+  /** Tiempo de reproducción actual (segundos), sincronizado desde el <audio> real. */
+  currentTime: number;
+  /** Segundo al que se debe saltar; MusicPlayer lo consume y luego lo limpia. */
+  seekRequest: number | null;
+  /** Playlist desde la que se está reproduciendo el track actual (si aplica). */
+  currentPlaylistId: string | null;
+
   // Actions
-  play: (track: TrackResponse) => void;
+  play: (track: TrackResponse, playlistId?: string) => void;
   pause: () => void;
   resume: () => void;
   setVolume: (volume: number) => void;
@@ -18,6 +24,9 @@ interface PlayerState {
   addToQueue: (track: TrackResponse) => void;
   setQueue: (tracks: TrackResponse[]) => void;
   clearPlayer: () => void;
+  setCurrentTime: (time: number) => void;
+  requestSeek: (time: number) => void;
+  clearSeekRequest: () => void;
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -26,17 +35,21 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   volume: 1, // 0 to 1
   queue: [],
   history: [],
+  currentTime: 0,
+  seekRequest: null,
+  currentPlaylistId: null,
 
-  play: (track) => set((state) => {
+  play: (track, playlistId) => set((state) => {
     // Si ya hay un track sonando, lo guardamos en el historial
-    const newHistory = state.currentTrack && state.currentTrack.id !== track.id 
+    const newHistory = state.currentTrack && state.currentTrack.id !== track.id
       ? [state.currentTrack, ...state.history].slice(0, 50) // limit history
       : state.history;
-      
+
     return {
       currentTrack: track,
       isPlaying: true,
-      history: newHistory
+      history: newHistory,
+      currentPlaylistId: playlistId ?? null,
     };
   }),
 
@@ -93,6 +106,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     currentTrack: null,
     isPlaying: false,
     queue: [],
-    history: []
-  })
+    history: [],
+    currentPlaylistId: null,
+  }),
+
+  setCurrentTime: (time) => set({ currentTime: time }),
+
+  requestSeek: (time) => set({ seekRequest: time }),
+
+  clearSeekRequest: () => set({ seekRequest: null }),
 }));

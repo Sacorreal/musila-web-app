@@ -295,6 +295,11 @@ export const apiURLs = {
     roster: (orgId: string) => `/organizations/${orgId}/publisher-shares/roster` as const,
     mine: () => `/users/me/publisher-shares` as const,
   },
+  // 📝 Notas sobre tracks (privadas o compartidas por playlist)
+  trackNotes: {
+    base: '/track-notes' as const,
+    byId: (id: string) => `/track-notes/${id}` as const,
+  },
   blog: {
     articles: {
       base: '/blog/articles' as const, // GET (list, público)

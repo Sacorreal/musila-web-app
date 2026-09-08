@@ -1,3 +1,11 @@
+/** Formatea segundos como `mm:ss` (ej. 65 -> "1:05"). */
+export const formatSeconds = (totalSeconds: number): string => {
+  if (!Number.isFinite(totalSeconds) || totalSeconds < 0) return '0:00';
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
+
 export const calculateAudioDuration = (url: string): Promise<number> => {
   return new Promise((resolve) => {
     // Check if we are running in the browser

@@ -2,16 +2,17 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { 
-  Play, 
-  Pause, 
-  SkipBack, 
-  SkipForward, 
-  Volume2, 
-  VolumeX, 
-  Music2, 
+import {
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  VolumeX,
+  Music2,
   FileText,
-  Mic2
+  Mic2,
+  StickyNote
 } from 'lucide-react';
 import { usePlayerStore } from '../store/use-player-store';
 import { Slider } from '@/src/shared/components/UI/slider';
@@ -20,6 +21,7 @@ import { PlaylistIcon } from '@/src/shared/components/Icons/icons';
 import { AddToPlaylistModal } from '@/src/domains/playlists/components/AddToPlaylistModal';
 import { RequestTrackModal } from '@/src/domains/requests/components/RequestTrackModal';
 import { TrackLyricsSidePanel } from './TrackLyricsSidePanel';
+import { TrackNotesPanel } from '@/src/domains/track-notes/components/TrackNotesPanel';
 import { registerTrackPlayAction } from '@/src/domains/tracks/services/track-plays.actions';
 import { cn } from '@/src/shared/libs/cn';
 
@@ -48,12 +50,17 @@ export function MusicPlayer() {
   const pause = usePlayerStore(state => state.pause);
   const resume = usePlayerStore(state => state.resume);
   const setVolumeState = usePlayerStore(state => state.setVolume);
+  const setGlobalCurrentTime = usePlayerStore(state => state.setCurrentTime);
+  const seekRequest = usePlayerStore(state => state.seekRequest);
+  const clearSeekRequest = usePlayerStore(state => state.clearSeekRequest);
+  const currentPlaylistId = usePlayerStore(state => state.currentPlaylistId);
 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [previousVolume, setPreviousVolume] = useState(1);
   const [isLyricsOpen, setIsLyricsOpen] = useState(false);
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
 
   // Sync audio play/pause with global state
   useEffect(() => {
@@ -81,8 +88,19 @@ export function MusicPlayer() {
     if (!audioRef.current) return;
     const time = audioRef.current.currentTime;
     setCurrentTime(time);
+    setGlobalCurrentTime(time);
     maybeRegisterPlay(time, audioRef.current.duration);
   };
+
+  // Aplica un seek solicitado externamente (ej. desde una nota con timestamp)
+  useEffect(() => {
+    if (seekRequest === null) return;
+    if (audioRef.current) {
+      audioRef.current.currentTime = seekRequest;
+      setCurrentTime(seekRequest);
+    }
+    clearSeekRequest();
+  }, [seekRequest, clearSeekRequest]);
 
   const maybeRegisterPlay = (time: number, trackDuration: number) => {
     if (!currentTrack) return;
@@ -277,6 +295,16 @@ export function MusicPlayer() {
                 <Mic2 className="w-5 h-5" />
               </Button>
 
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-amber-500 transition-colors"
+                title="Notas de la canción"
+                onClick={() => setIsNotesOpen(!isNotesOpen)}
+              >
+                <StickyNote className="w-5 h-5" />
+              </Button>
+
               <div className="flex items-center gap-2 w-28 ml-2">
                 <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-8 w-8" onClick={toggleMute}>
                   {isMuted || volume === 0 ? (
@@ -316,6 +344,14 @@ export function MusicPlayer() {
         track={currentTrack as any}
         isOpen={isLyricsOpen}
         onClose={() => setIsLyricsOpen(false)}
+      />
+
+      {/* Track Notes Side Panel */}
+      <TrackNotesPanel
+        trackId={currentTrack.id}
+        playlistId={currentPlaylistId ?? undefined}
+        isOpen={isNotesOpen}
+        onClose={() => setIsNotesOpen(false)}
       />
     </>
   );

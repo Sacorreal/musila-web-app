@@ -15,7 +15,7 @@ import { LEGAL_IDENTITY_REQUIRED_EVENT } from "@/src/shared/libs/errors/legal-id
  * `TrackLegalIdentityGuard` en `POST /tracks/:id/play`.
  */
 export function usePlayTrack() {
-  const playTrack = useCallback((track: TrackResponse) => {
+  const playTrack = useCallback((track: TrackResponse, playlistId?: string) => {
     const user = useAuthStore.getState().user;
     // `track.authors` a veces llega como string[] (solo ids) en vistas más
     // antiguas (ej. tablas de género) en vez de AuthorTrackDto[] — se maneja
@@ -28,7 +28,7 @@ export function usePlayTrack() {
       return;
     }
 
-    usePlayerStore.getState().play(track);
+    usePlayerStore.getState().play(track, playlistId);
   }, []);
 
   return { playTrack };

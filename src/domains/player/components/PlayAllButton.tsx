@@ -10,9 +10,11 @@ import { TrackResponse } from '@/src/domains/tracks/types/track.types';
 export interface PlayAllButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   tracks: any[]; // Using any[] to accept TrackResponse or TracksResponseDto
   iconOnly?: boolean;
+  /** Playlist desde la que se reproduce (si aplica), para notas compartidas y contexto del player. */
+  playlistId?: string;
 }
 
-export function PlayAllButton({ tracks, iconOnly = false, className, children, ...props }: PlayAllButtonProps) {
+export function PlayAllButton({ tracks, iconOnly = false, playlistId, className, children, ...props }: PlayAllButtonProps) {
   const { playTrack } = usePlayTrack();
 
   const handlePlayAll = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -20,7 +22,7 @@ export function PlayAllButton({ tracks, iconOnly = false, className, children, .
     if (tracks && tracks.length > 0) {
       const [firstTrack, ...restTracks] = tracks;
       usePlayerStore.getState().setQueue(restTracks as TrackResponse[]);
-      playTrack(firstTrack as TrackResponse);
+      playTrack(firstTrack as TrackResponse, playlistId);
     }
   };
 
