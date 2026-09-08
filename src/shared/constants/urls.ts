@@ -483,6 +483,19 @@ export const apiURLs = {
     tracks: '/featured/tracks' as const, // GET
     composers: '/featured/composers' as const, // GET
   },
+  // 📬 Campañas para sellos (buzón de recepción de canciones)
+  campaigns: {
+    base: '/campaigns' as const, // GET (públicas), POST (crear, sello)
+    mine: '/campaigns/mine' as const, // GET (historial del sello)
+    byToken: (token: string) => `/campaigns/private/${token}` as const, // GET
+    byId: (id: string) => `/campaigns/${id}` as const, // GET, DELETE
+    matchingTracks: (id: string) => `/campaigns/${id}/matching-tracks` as const, // GET
+    submissions: (id: string) => `/campaigns/${id}/submissions` as const, // GET, POST
+    selectSubmission: (id: string, submissionId: string) =>
+      `/campaigns/${id}/submissions/${submissionId}/select` as const, // PATCH
+    discardSubmission: (id: string, submissionId: string) =>
+      `/campaigns/${id}/submissions/${submissionId}/discard` as const, // PATCH
+  },
   // 🎼 Catálogo maestro de Sociedades de Gestión Colectiva (CMO/PRO)
   referenceData: {
     collectiveManagementSocieties: {

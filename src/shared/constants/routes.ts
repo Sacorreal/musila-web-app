@@ -67,6 +67,12 @@ export const navItems: NavItems = [
         rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, ...ADMIN_PLAN_TYPES, UserPlanType.PLAN_DESCUBRIDOR]
     },
     {
+        href: "/music/mis-campanas",
+        icon: RequestIcon,
+        label: "Mis Campañas",
+        rolAccess: [UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR, UserPlanType.INVITADO]
+    },
+    {
         href: "/music/expedientes",
         icon: ExpedienteIcon,
         label: "Expedientes",
