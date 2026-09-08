@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Building2, ShieldCheck, Users, Settings2, Megaphone, Percent, Wallet, PenLine, LayoutDashboard, Stethoscope, Inbox } from 'lucide-react'
+import { Building2, ShieldCheck, Users, Settings2, Megaphone, Percent, Wallet, PenLine, LayoutDashboard, Stethoscope, Inbox, Lock } from 'lucide-react'
 import { organizationsHooks } from '@/src/domains/organizations/organizations.hooks'
 import { useOrganizationStore } from '@/src/domains/organizations/store/use-organization-store'
 import {
@@ -32,6 +32,7 @@ const NAV_ITEMS: { segment: string; icon: typeof ShieldCheck; label: string; cap
   { segment: 'settings/roles', icon: ShieldCheck, label: 'Roles', capability: 'organization.roles.view' },
   { segment: 'settings/members', icon: Users, label: 'Miembros', capability: 'organization.members.view' },
   { segment: 'settings/workspace', icon: Settings2, label: 'Workspace', capability: 'organization.settings.manage' },
+  { segment: 'settings/security', icon: Lock, label: 'Seguridad', capability: 'organization.settings.manage' },
 ]
 
 /** Shell del workspace B2B: switcher multi-organización + navegación filtrada por capabilities. */

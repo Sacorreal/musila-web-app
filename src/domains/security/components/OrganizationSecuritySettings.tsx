@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -25,6 +25,9 @@ import {
   useOrganizationPolicy,
   useUpdateOrganizationPolicy,
 } from '../hooks/security.hooks';
+import { StepUpAuthModal } from './StepUpAuthModal';
+
+const STEP_UP_SCOPE = 'organization.security_policy.update';
 
 interface ToggleRowProps {
   id: string;
@@ -79,13 +82,21 @@ export function OrganizationSecuritySettings({ organizationId }: { organizationI
     if (passkeyRequired) setValue('mfaRequired', true);
   }, [passkeyRequired, setValue]);
 
-  const onSubmit = async (values: OrganizationSecurityPolicyInput) => {
+  const [stepUpOpen, setStepUpOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState<OrganizationSecurityPolicyInput | null>(null);
+
+  const persistPolicy = async (values: OrganizationSecurityPolicyInput) => {
     try {
       await update.mutateAsync(values);
       toast.success('Política de seguridad actualizada');
     } catch (error) {
       toast.error((error as Error)?.message || 'No se pudo actualizar la política');
     }
+  };
+
+  const onSubmit = (values: OrganizationSecurityPolicyInput) => {
+    setPendingValues(values);
+    setStepUpOpen(true);
   };
 
   return (
@@ -169,6 +180,16 @@ export function OrganizationSecuritySettings({ organizationId }: { organizationI
           </form>
         )}
       </CardContent>
+
+      <StepUpAuthModal
+        open={stepUpOpen}
+        onOpenChange={setStepUpOpen}
+        scope={STEP_UP_SCOPE}
+        onVerified={() => {
+          setStepUpOpen(false);
+          if (pendingValues) void persistPolicy(pendingValues);
+        }}
+      />
     </Card>
   );
 }

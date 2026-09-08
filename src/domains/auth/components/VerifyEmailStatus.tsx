@@ -1,13 +1,17 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEmailVerification } from "@/src/domains/auth/hooks/use-email-verification";
+import { useAuthStore } from "@/src/domains/auth/store/use-auth-store";
+import { PasskeySetup } from "@domains/security/components/PasskeySetup";
 
 function VerifyEmailStatusContent() {
   const { status, message } = useEmailVerification();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const [passkeyPromptDone, setPasskeyPromptDone] = useState(false);
 
   return (
     <AnimatePresence mode="wait">
@@ -28,7 +32,21 @@ function VerifyEmailStatusContent() {
         </motion.div>
       )}
 
-      {status === "success" && (
+      {status === "success" && isAuthenticated && !passkeyPromptDone && (
+        <motion.div
+          key="success-passkey-prompt"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <PasskeySetup
+            onSkip={() => setPasskeyPromptDone(true)}
+            onCreated={() => setPasskeyPromptDone(true)}
+          />
+        </motion.div>
+      )}
+
+      {status === "success" && (!isAuthenticated || passkeyPromptDone) && (
         <motion.div
           key="success"
           initial={{ opacity: 0, scale: 0.95 }}

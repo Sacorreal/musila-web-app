@@ -13,6 +13,9 @@ import { getWithdrawalColumns } from './withdrawal-columns'
 import { WithdrawalFiltersToolbar } from './withdrawal-filters-toolbar'
 import type { AdminWalletFilters, AdminWalletWithdrawalDto } from '@/src/domains/admin/wallet/admin-wallet.types'
 import { WalletWithdrawalStatus } from '@/src/domains/wallet/types/wallet.types'
+import { StepUpAuthModal } from '@domains/security/components/StepUpAuthModal'
+
+const WITHDRAWAL_APPROVE_STEP_UP_SCOPE = 'wallet.withdrawal.approve'
 
 const currencyFormatter = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 })
 
@@ -40,6 +43,7 @@ export default function AdminWalletPage() {
   const [payTarget, setPayTarget] = useState<AdminWalletWithdrawalDto | null>(null)
   const [rejectTargetId, setRejectTargetId] = useState<string | null>(null)
   const [confirmBatchPay, setConfirmBatchPay] = useState(false)
+  const [stepUpAction, setStepUpAction] = useState<(() => void) | null>(null)
 
   const columns = getWithdrawalColumns({ onProcess: setProcessTarget, onPay: setPayTarget, onReject: setRejectTargetId })
 
@@ -118,7 +122,10 @@ export default function AdminWalletPage() {
         isOpen={!!payTarget}
         onClose={() => setPayTarget(null)}
         onConfirm={() => {
-          if (payTarget) payWithdrawal(payTarget.id, { onSuccess: () => setPayTarget(null) })
+          const target = payTarget
+          if (!target) return
+          setPayTarget(null)
+          setStepUpAction(() => () => payWithdrawal(target.id, { onSuccess: () => setPayTarget(null) }))
         }}
         isLoading={isPaying}
         title="¿Marcar retiro como pagado?"
@@ -132,17 +139,27 @@ export default function AdminWalletPage() {
         isOpen={confirmBatchPay}
         onClose={() => setConfirmBatchPay(false)}
         onConfirm={() => {
-          payWithdrawalsBatch([...selectedIds], {
-            onSuccess: () => {
-              setSelectedIds(new Set())
-              setConfirmBatchPay(false)
-            },
-          })
+          setConfirmBatchPay(false)
+          setStepUpAction(() => () =>
+            payWithdrawalsBatch([...selectedIds], {
+              onSuccess: () => setSelectedIds(new Set()),
+            }),
+          )
         }}
         isLoading={isPayingBatch}
         title={`¿Marcar ${selectedIds.size} retiro(s) como pagados?`}
         description={`Confirma que ya realizaste las transferencias de ${currencyFormatter.format(selectedTotal)} fuera de la plataforma.`}
         confirmLabel="Marcar como pagados"
+      />
+
+      <StepUpAuthModal
+        open={!!stepUpAction}
+        onOpenChange={(open) => !open && setStepUpAction(null)}
+        scope={WITHDRAWAL_APPROVE_STEP_UP_SCOPE}
+        onVerified={() => {
+          stepUpAction?.()
+          setStepUpAction(null)
+        }}
       />
     </div>
   )

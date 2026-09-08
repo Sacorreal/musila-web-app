@@ -12,6 +12,9 @@ import { Label } from '@/src/shared/components/UI/label';
 import { Textarea } from '@/src/shared/components/UI/textarea';
 import { Loader2 } from 'lucide-react';
 import { BankAccountForm } from '@/src/domains/wallet/components/BankAccountForm';
+import { StepUpAuthModal } from '@domains/security/components/StepUpAuthModal';
+
+const CHANGE_PASSWORD_STEP_UP_SCOPE = 'account.change_password';
 
 const profileSchema = z.object({
   name: z.string().min(1, 'Requerido').max(100),
@@ -71,12 +74,23 @@ export function ProfileTab() {
     });
   }
 
+  const [stepUpOpen, setStepUpOpen] = useState(false);
+  const [pendingPassword, setPendingPassword] = useState<PasswordForm | null>(null);
+
   function onChangePassword(data: PasswordForm) {
+    setPendingPassword(data);
+    setStepUpOpen(true);
+  }
+
+  function submitPendingPassword() {
+    if (!pendingPassword) return;
+    const { currentPassword, newPassword } = pendingPassword;
     startTransition(async () => {
       try {
-        await changePassword(data.currentPassword, data.newPassword);
+        await changePassword(currentPassword, newPassword);
         toast.success('Contraseña actualizada');
         passForm.reset();
+        setPendingPassword(null);
       } catch (e: any) { toast.error(e.message); }
     });
   }
@@ -153,6 +167,16 @@ export function ProfileTab() {
           </Button>
         </form>
       </section>
+
+      <StepUpAuthModal
+        open={stepUpOpen}
+        onOpenChange={setStepUpOpen}
+        scope={CHANGE_PASSWORD_STEP_UP_SCOPE}
+        onVerified={() => {
+          setStepUpOpen(false);
+          submitPendingPassword();
+        }}
+      />
     </div>
   );
 }

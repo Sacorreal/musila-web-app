@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Landmark } from "lucide-react";
@@ -9,10 +9,15 @@ import { Field, FieldError, FieldLabel } from "@/src/shared/components/UI/field"
 import { Input } from "@/src/shared/components/UI/input";
 import { bankAccountSchema, BankAccountFormValues } from "../wallet.schema";
 import { useBankAccount, useUpdateBankAccount } from "../hooks/wallet.hooks";
+import { StepUpAuthModal } from "@domains/security/components/StepUpAuthModal";
+
+const BANK_ACCOUNT_STEP_UP_SCOPE = "account.bank_account.update";
 
 export function BankAccountForm() {
   const { data: bankAccount, isLoading } = useBankAccount();
   const { mutate: updateBankAccount, isPending } = useUpdateBankAccount();
+  const [stepUpOpen, setStepUpOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState<BankAccountFormValues | null>(null);
 
   const {
     register,
@@ -36,7 +41,8 @@ export function BankAccountForm() {
   }, [bankAccount, reset]);
 
   const onSubmit = (values: BankAccountFormValues) => {
-    updateBankAccount(values, { onSuccess: () => reset(values) });
+    setPendingValues(values);
+    setStepUpOpen(true);
   };
 
   if (isLoading) {
@@ -95,6 +101,18 @@ export function BankAccountForm() {
         {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
         Guardar datos bancarios
       </Button>
+
+      <StepUpAuthModal
+        open={stepUpOpen}
+        onOpenChange={setStepUpOpen}
+        scope={BANK_ACCOUNT_STEP_UP_SCOPE}
+        onVerified={() => {
+          setStepUpOpen(false);
+          if (pendingValues) {
+            updateBankAccount(pendingValues, { onSuccess: () => reset(pendingValues) });
+          }
+        }}
+      />
     </form>
   );
 }
