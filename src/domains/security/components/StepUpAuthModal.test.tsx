@@ -46,4 +46,33 @@ describe('StepUpAuthModal', () => {
     );
     expect(screen.getByText(/no tienes métodos de verificación/i)).toBeInTheDocument();
   });
+
+  it('oculta el bloque TOTP cuando allowedMethods solo permite Passkey', () => {
+    mfaStatus = { passkeysCount: 1, totpEnabled: true };
+    render(
+      <StepUpAuthModal
+        open
+        onOpenChange={() => {}}
+        scope="platform.admin.create"
+        onVerified={jest.fn()}
+        allowedMethods={['PASSKEY']}
+      />,
+    );
+    expect(screen.getByRole('button', { name: /verificar con passkey/i })).toBeInTheDocument();
+    expect(screen.queryByLabelText(/código de tu app de autenticación/i)).not.toBeInTheDocument();
+  });
+
+  it('muestra el aviso de Passkey obligatoria cuando el usuario solo tiene TOTP en un scope critico', () => {
+    mfaStatus = { passkeysCount: 0, totpEnabled: true };
+    render(
+      <StepUpAuthModal
+        open
+        onOpenChange={() => {}}
+        scope="platform.admin.create"
+        onVerified={jest.fn()}
+        allowedMethods={['PASSKEY']}
+      />,
+    );
+    expect(screen.getByText(/requiere tu llave de seguridad/i)).toBeInTheDocument();
+  });
 });

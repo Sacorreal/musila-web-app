@@ -16,6 +16,7 @@ import {
 } from '@shared/components/UI/dialog';
 
 import { useMfaStatus, useStepUp } from '../hooks/security.hooks';
+import type { StepUpMethod } from '../types/security.types';
 
 interface StepUpAuthModalProps {
   open: boolean;
@@ -26,6 +27,13 @@ interface StepUpAuthModalProps {
   onVerified: () => void;
   title?: string;
   description?: string;
+  /**
+   * Métodos que la política del scope permite (§15). Por defecto no restringe
+   * (se ofrecen todos los que el usuario tenga enrolados). Los scopes CRITICAL
+   * de Admin Musila deben pasar `['PASSKEY']` para reflejar que el backend
+   * rechaza TOTP en esos scopes (`STEP_UP_METHOD_NOT_ALLOWED`).
+   */
+  allowedMethods?: StepUpMethod[];
 }
 
 /**
@@ -40,13 +48,17 @@ export function StepUpAuthModal({
   onVerified,
   title = 'Verificación adicional',
   description = 'Confirma tu identidad para continuar con esta operación sensible.',
+  allowedMethods,
 }: StepUpAuthModalProps) {
   const { data: status } = useMfaStatus();
   const stepUp = useStepUp();
   const [code, setCode] = useState('');
 
-  const canPasskey = (status?.passkeysCount ?? 0) > 0;
-  const canTotp = status?.totpEnabled ?? false;
+  const passkeyAllowed = allowedMethods?.includes('PASSKEY') ?? true;
+  const totpAllowed = allowedMethods?.includes('TOTP') ?? true;
+  const canPasskey = passkeyAllowed && (status?.passkeysCount ?? 0) > 0;
+  const canTotp = totpAllowed && (status?.totpEnabled ?? false);
+  const passkeyOnly = !totpAllowed;
 
   const handleVerified = () => {
     toast.success('Verificación completada');
@@ -125,7 +137,14 @@ export function StepUpAuthModal({
             </div>
           )}
 
-          {!canPasskey && !canTotp && (
+          {!canPasskey && !canTotp && passkeyOnly && (
+            <p className="text-sm text-muted-foreground">
+              Esta operación requiere tu llave de seguridad (Passkey). Configura una en
+              Configuración → Seguridad para poder continuar.
+            </p>
+          )}
+
+          {!canPasskey && !canTotp && !passkeyOnly && (
             <p className="text-sm text-muted-foreground">
               No tienes métodos de verificación configurados. Añade una Passkey o configura
               TOTP en Configuración → Seguridad.
