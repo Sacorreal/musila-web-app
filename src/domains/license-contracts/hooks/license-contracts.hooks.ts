@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
+  acknowledgeLicenseContractWarningAction,
   cancelLicenseContractAction,
   confirmLicenseRecordingAction,
   generateLicenseContractPreviewAction,
@@ -62,6 +63,13 @@ export function useGenerateLicenseContractPreview(requestedTrackId: string) {
     onError: (error: any) => {
       toast.error(error?.response?.data?.message ?? "No se pudo generar el documento");
     },
+  });
+}
+
+export function useAcknowledgeLicenseContractWarning() {
+  return useMutation({
+    mutationFn: ({ contractId, signatoryId }: { contractId: string; signatoryId: string }) =>
+      acknowledgeLicenseContractWarningAction(contractId, signatoryId),
   });
 }
 

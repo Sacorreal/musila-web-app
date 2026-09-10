@@ -12,7 +12,11 @@ import { Field, FieldError, FieldLabel } from "@/src/shared/components/UI/field"
 import { OtpVerificationStep } from "@/src/shared/components/otp/OtpVerificationStep";
 import { OtpPurpose } from "@/src/domains/otp/types/otp.types";
 import { rejectLicenseSignatorySchema, RejectLicenseSignatoryFormValues } from "../schema/license-contract.schema";
-import { useRejectLicenseContractSignatory, useSignLicenseContract } from "../hooks/license-contracts.hooks";
+import {
+  useAcknowledgeLicenseContractWarning,
+  useRejectLicenseContractSignatory,
+  useSignLicenseContract,
+} from "../hooks/license-contracts.hooks";
 import {
   DISTRIBUTION_FORMAT_LABELS,
   LicenseContractDto,
@@ -50,6 +54,7 @@ export function LicenseContractPreviewDialog({
 
   const { mutate: signContract, isPending: isSigning } = useSignLicenseContract(requestedTrackId);
   const { mutate: rejectContract, isPending: isRejecting } = useRejectLicenseContractSignatory(requestedTrackId);
+  const { mutate: acknowledgeWarning } = useAcknowledgeLicenseContractWarning();
 
   const {
     register,
@@ -85,7 +90,10 @@ export function LicenseContractPreviewDialog({
     const el = scrollRef.current;
     if (!el) return;
     const reachedBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 24;
-    if (reachedBottom) setHasScrolledToBottom(true);
+    if (reachedBottom && !hasScrolledToBottom) {
+      setHasScrolledToBottom(true);
+      acknowledgeWarning({ contractId: contract.id, signatoryId: signatory.id });
+    }
   };
 
   return (

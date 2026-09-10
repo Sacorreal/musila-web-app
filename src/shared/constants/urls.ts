@@ -250,6 +250,8 @@ export const apiURLs = {
     byId: (id: string) => `/license-contracts/${id}` as const, // GET, DELETE
     generatePreview: (id: string) => `/license-contracts/${id}/generate-preview` as const,
     installments: (id: string) => `/license-contracts/${id}/installments` as const,
+    acknowledgeWarning: (id: string, signatoryId: string) =>
+      `/license-contracts/${id}/signatories/${signatoryId}/acknowledge-warning` as const,
     sign: (id: string, signatoryId: string) =>
       `/license-contracts/${id}/signatories/${signatoryId}/sign` as const,
     reject: (id: string, signatoryId: string) =>

@@ -42,6 +42,14 @@ export async function generateLicenseContractPreviewAction(contractId: string): 
   return response.data;
 }
 
+export async function acknowledgeLicenseContractWarningAction(
+  contractId: string,
+  signatoryId: string,
+): Promise<void> {
+  const client = await getServerApiClient();
+  await client.post(apiURLs.licenseContracts.acknowledgeWarning(contractId, signatoryId));
+}
+
 export async function signLicenseContractAction(
   contractId: string,
   signatoryId: string,
