@@ -317,6 +317,7 @@ export function CreateTrackForm() {
                         <LanguageSelector
                           value={field.value}
                           onChange={field.onChange}
+                          allowedCodes={['es', 'en', 'pt', 'fr']}
                         />
                       </Field>
                     )}

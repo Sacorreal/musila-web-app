@@ -3,24 +3,27 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Landmark } from "lucide-react";
+import { Loader2, Landmark, ShieldAlert } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/src/shared/components/UI/button";
 import { Field, FieldError, FieldLabel } from "@/src/shared/components/UI/field";
 import { Input } from "@/src/shared/components/UI/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/shared/components/UI/select";
-import { bankAccountSchema, BankAccountFormValues } from "../wallet.schema";
+import { personalBankAccountSchema, PersonalBankAccountFormValues } from "../wallet.schema";
 import { useBankAccount, useUpdateBankAccount } from "../hooks/wallet.hooks";
 import { useTransferOptions } from "@/src/domains/bank-information/hooks/bank-information.hooks";
+import { useLegalIdentity } from "@/src/domains/legal-identity/hooks/legal-identity.hooks";
 import { StepUpAuthModal } from "@domains/security/components/StepUpAuthModal";
 
 const BANK_ACCOUNT_STEP_UP_SCOPE = "account.bank_account.update";
 
 export function BankAccountForm() {
+  const { data: legalIdentity, isLoading: isLoadingLegalIdentity } = useLegalIdentity();
   const { data: bankAccount, isLoading } = useBankAccount();
   const { data: options, isLoading: isLoadingOptions, isError, refetch } = useTransferOptions(true);
   const { mutate: updateBankAccount, isPending } = useUpdateBankAccount();
   const [stepUpOpen, setStepUpOpen] = useState(false);
-  const [pendingValues, setPendingValues] = useState<BankAccountFormValues | null>(null);
+  const [pendingValues, setPendingValues] = useState<PersonalBankAccountFormValues | null>(null);
 
   const {
     control,
@@ -29,30 +32,51 @@ export function BankAccountForm() {
     setValue,
     reset,
     formState: { errors, isDirty },
-  } = useForm<BankAccountFormValues>({
-    resolver: zodResolver(bankAccountSchema),
+  } = useForm<PersonalBankAccountFormValues>({
+    resolver: zodResolver(personalBankAccountSchema),
     defaultValues: {
       bankCode: "",
       bankName: "",
       accountType: "",
       accountNumber: "",
-      accountHolderName: "",
-      accountHolderIdType: "",
-      accountHolderIdNumber: "",
     },
   });
 
   useEffect(() => {
-    if (bankAccount) reset(bankAccount);
+    if (bankAccount) {
+      reset({
+        bankCode: bankAccount.bankCode,
+        bankName: bankAccount.bankName,
+        accountType: bankAccount.accountType,
+        accountNumber: bankAccount.accountNumber,
+      });
+    }
   }, [bankAccount, reset]);
 
-  const onSubmit = (values: BankAccountFormValues) => {
+  const onSubmit = (values: PersonalBankAccountFormValues) => {
     setPendingValues(values);
     setStepUpOpen(true);
   };
 
-  if (isLoading || isLoadingOptions) {
+  if (isLoading || isLoadingOptions || isLoadingLegalIdentity) {
     return <div className="h-64 animate-pulse rounded-xl bg-muted/40" />;
+  }
+
+  if (!legalIdentity) {
+    return (
+      <div className="flex gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-muted-foreground">
+        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" aria-hidden="true" />
+        <div className="space-y-2">
+          <p>
+            <strong className="text-foreground">Completa tu identidad legal</strong> antes de configurar tus datos
+            bancarios — el titular de la cuenta se toma de ahí, para no pedírtelo dos veces.
+          </p>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/music/mi-cuenta?tab=perfil">Completar identidad legal</Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   if (isError || !options) {
@@ -73,7 +97,9 @@ export function BankAccountForm() {
         <h3 className="text-sm font-semibold text-foreground">Datos bancarios para retiros</h3>
       </div>
       <p className="text-xs text-muted-foreground">
-        Esta información se usará para procesar tus solicitudes de retiro de saldo del Wallet.
+        Esta información se usará para procesar tus solicitudes de retiro de saldo del Wallet. El titular de la
+        cuenta ({legalIdentity.primerNombre} {legalIdentity.primerApellido} — {legalIdentity.tipoIdentificacion}{" "}
+        {legalIdentity.numeroIdentificacion}) se toma de tu identidad legal verificada.
       </p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -135,41 +161,6 @@ export function BankAccountForm() {
           <FieldLabel htmlFor="accountNumber">Número de cuenta</FieldLabel>
           <Input id="accountNumber" placeholder="00000000000" {...register("accountNumber")} />
           <FieldError errors={[errors.accountNumber]} />
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="accountHolderName">Titular de la cuenta</FieldLabel>
-          <Input id="accountHolderName" placeholder="Nombre completo" {...register("accountHolderName")} />
-          <FieldError errors={[errors.accountHolderName]} />
-        </Field>
-
-        <Controller
-          name="accountHolderIdType"
-          control={control}
-          render={({ field }) => (
-            <Field>
-              <FieldLabel>Tipo de documento</FieldLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Selecciona el tipo de documento" />
-                </SelectTrigger>
-                <SelectContent>
-                  {options.documentTypes.map((type) => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[errors.accountHolderIdType]} />
-            </Field>
-          )}
-        />
-
-        <Field>
-          <FieldLabel htmlFor="accountHolderIdNumber">Número de documento</FieldLabel>
-          <Input id="accountHolderIdNumber" placeholder="1234567890" {...register("accountHolderIdNumber")} />
-          <FieldError errors={[errors.accountHolderIdNumber]} />
         </Field>
       </div>
 

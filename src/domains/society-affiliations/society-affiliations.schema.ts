@@ -14,7 +14,7 @@ export const createSocietyAffiliationSchema = z
     membershipNumber: z.string().optional().or(z.literal('')),
     ipiNameNumber: z
       .string()
-      .regex(/^\d{11}$/, 'El IPI Name Number debe tener 11 dígitos numéricos'),
+      .regex(/^\d{11}$/, 'El Número IPI debe tener 11 dígitos numéricos'),
   })
   .refine(
     (data) => data.territoryMode === SocietyAffiliationTerritoryMode.WORLDWIDE || data.territoryCountries.length > 0,

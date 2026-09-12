@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { BackButton } from '@/src/shared/components/UI/BackButton';
 import { fetchTrackById } from '@/src/domains/tracks/services/tracks.actions';
+import { fetchPlaylistByIdAction } from '@/src/domains/playlists/services/playlist.actions';
 import { TrackDetailHero } from '@/src/domains/tracks/components/TrackDetailHero';
 import { TrackLyrics } from '@/src/domains/tracks/components/TrackLyrics';
 import { TrackRequestsTable } from '@/src/domains/requests/components/TrackRequestsTable';
@@ -57,6 +58,23 @@ export async function generateMetadata({
   }
 }
 
+/**
+ * "Mis notas" solo debe verse cuando el track está agregado a una playlist a
+ * la que el usuario actual tiene acceso (dueño, colaborador invitado, o vía
+ * enlace compartido) — `GET /playlists/:id` ya exige permiso READ, así que
+ * probamos cada playlist del track y nos quedamos con la primera accesible.
+ * `track.playlists` (viene de `GET /tracks/:id`) no filtra por acceso, por
+ * eso no basta con usarlo directamente.
+ */
+async function resolveAccessiblePlaylistId(playlists: { id: string }[]): Promise<string | undefined> {
+  if (playlists.length === 0) return undefined;
+
+  const results = await Promise.allSettled(playlists.map((playlist) => fetchPlaylistByIdAction(playlist.id)));
+  const accessibleIndex = results.findIndex((result) => result.status === 'fulfilled');
+
+  return accessibleIndex >= 0 ? playlists[accessibleIndex].id : undefined;
+}
+
 export default async function TrackDetailPage({
   params,
 }: {
@@ -70,6 +88,8 @@ export default async function TrackDetailPage({
     if (!track) {
       notFound();
     }
+
+    const notesPlaylistId = await resolveAccessiblePlaylistId(track.playlists);
 
     return (
       <main className="container mx-auto p-4 md:p-8 max-w-4xl">
@@ -91,8 +111,8 @@ export default async function TrackDetailPage({
         {/* Tabla de solicitudes — visible solo para autores de la canción */}
         <TrackRequestsTable trackId={id} authors={track.authors || []} />
 
-        {/* Mis notas — siempre privadas, esta página no tiene contexto de playlist */}
-        <TrackNotesSection trackId={id} />
+        {/* Mis notas — solo visible si el track está en una playlist accesible para el usuario actual */}
+        {notesPlaylistId && <TrackNotesSection trackId={id} playlistId={notesPlaylistId} />}
 
         {/* Spacer inferior */}
         <div className="pb-20" />

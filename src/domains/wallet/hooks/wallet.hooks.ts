@@ -9,7 +9,7 @@ import {
   getWalletWithdrawalsAction,
 } from "../services/wallet.actions";
 import { updateBankAccountAction } from "../services/wallet.client";
-import { BankAccountDto, WalletEarningRole, WalletWithdrawalStatus } from "../types/wallet.types";
+import { PersonalBankAccountInput, WalletEarningRole, WalletWithdrawalStatus } from "../types/wallet.types";
 
 export const WALLET_BALANCE_QUERY_KEY = "wallet-balance";
 export const WALLET_EARNINGS_QUERY_KEY = "wallet-earnings";
@@ -48,7 +48,7 @@ export function useUpdateBankAccount() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: BankAccountDto) => updateBankAccountAction(data),
+    mutationFn: (data: PersonalBankAccountInput) => updateBankAccountAction(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [WALLET_BANK_ACCOUNT_QUERY_KEY] });
       toast.success("Datos bancarios actualizados");

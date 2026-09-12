@@ -163,7 +163,7 @@ export function SocietyAffiliationFormFields({ onSuccess, onCancel, cancelLabel 
       </Field>
 
       <Field data-invalid={!!errors.ipiNameNumber}>
-        <FieldLabel>IPI Name Number</FieldLabel>
+        <FieldLabel>Número IPI</FieldLabel>
         <Input placeholder="12345678901" maxLength={11} {...register('ipiNameNumber')} />
         {errors.ipiNameNumber && <FieldError errors={[errors.ipiNameNumber]} />}
       </Field>

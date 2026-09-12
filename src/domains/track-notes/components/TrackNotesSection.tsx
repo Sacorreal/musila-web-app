@@ -9,6 +9,8 @@ import { TrackNoteItem } from './TrackNoteItem';
 
 interface TrackNotesSectionProps {
   trackId: string;
+  /** Playlist a la que el track pertenece y el usuario actual tiene acceso — las notas se comparten con todos sus colaboradores invitados. */
+  playlistId: string;
 }
 
 /**
@@ -26,10 +28,14 @@ function sortNotes(notes: TrackNote[]): TrackNote[] {
 
 /**
  * Variante inline (no-modal) de `TrackNotesPanel`, para la página de detalle
- * de canción, donde no hay contexto de playlist — siempre privada.
+ * de canción — solo se monta cuando el track pertenece a una playlist
+ * accesible para el usuario actual (ver `TrackDetailPage`), así que las
+ * notas siempre son compartidas con esa playlist, visibles para su dueño y
+ * todos sus colaboradores invitados (el backend ya aplica esa cascada de
+ * acceso en `TrackNotesService.assertCanAccessNotes`).
  */
-export function TrackNotesSection({ trackId }: TrackNotesSectionProps) {
-  const { data: notes, isLoading, isError, refetch } = useTrackNotes(trackId);
+export function TrackNotesSection({ trackId, playlistId }: TrackNotesSectionProps) {
+  const { data: notes, isLoading, isError, refetch } = useTrackNotes(trackId, playlistId);
   const sortedNotes = notes ? sortNotes(notes) : [];
 
   return (
@@ -39,13 +45,13 @@ export function TrackNotesSection({ trackId }: TrackNotesSectionProps) {
           <StickyNote className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h2 className="text-lg font-black text-foreground tracking-tight">Mis notas</h2>
-          <p className="text-xs text-muted-foreground">Privadas — solo tú las ves</p>
+          <h2 className="text-lg font-black text-foreground tracking-tight">Notas</h2>
+          <p className="text-xs text-muted-foreground">Compartidas con los colaboradores de esta playlist</p>
         </div>
       </div>
 
       <div className="rounded-2xl border border-border/60 bg-muted/10 p-5 space-y-5">
-        <AddTrackNoteForm trackId={trackId} />
+        <AddTrackNoteForm trackId={trackId} playlistId={playlistId} />
 
         {isLoading ? (
           <div className="flex flex-col gap-3" aria-hidden="true">
@@ -66,12 +72,12 @@ export function TrackNotesSection({ trackId }: TrackNotesSectionProps) {
         ) : sortedNotes.length === 0 ? (
           <div className="flex flex-col items-center text-center gap-2 py-6 opacity-70">
             <StickyNote className="w-8 h-8 text-muted-foreground opacity-50" aria-hidden="true" />
-            <p className="text-sm text-muted-foreground">Aún no tienes notas privadas para esta canción.</p>
+            <p className="text-sm text-muted-foreground">Aún no hay notas para esta canción en esta playlist.</p>
           </div>
         ) : (
           <ul className="flex flex-col gap-3">
             {sortedNotes.map((note) => (
-              <TrackNoteItem key={note.id} note={note} trackId={trackId} showAuthor={false} />
+              <TrackNoteItem key={note.id} note={note} trackId={trackId} showAuthor={true} />
             ))}
           </ul>
         )}

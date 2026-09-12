@@ -27,6 +27,7 @@ export interface UploadableFileDto {
     BLOG_AUTHOR_AVATAR = 'blog/authors/avatars',
     REGISTRATION_FILE_DOCUMENTS = 'registration-file/documents',
     PUBLISHING_CONTRACT_DOCS = 'publishing-contracts/documents',
+    CAMPAIGN_COVER = 'campaigns/covers',
   }
 
 export interface UploadedFileDto {

@@ -8,10 +8,13 @@ interface LanguageSelectorProps {
   value?: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  /** Si se pasa, solo se muestran los idiomas cuyo `code` esté en esta lista (ej. ['es','en','pt','fr']). */
+  allowedCodes?: string[];
 }
 
-export function LanguageSelector({ value, onChange, disabled }: LanguageSelectorProps) {
-  const { data: languages = [], isLoading, isError } = useLanguages();
+export function LanguageSelector({ value, onChange, disabled, allowedCodes }: LanguageSelectorProps) {
+  const { data: allLanguages = [], isLoading, isError } = useLanguages();
+  const languages = allowedCodes ? allLanguages.filter((lang) => allowedCodes.includes(lang.code)) : allLanguages;
 
   if (isLoading) {
     return (

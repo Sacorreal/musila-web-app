@@ -58,3 +58,6 @@ export interface BankAccountDto {
   accountHolderIdType: string;
   accountHolderIdNumber: string;
 }
+
+/** Payload de escritura para la cuenta bancaria PERSONAL — el titular/documento los deriva el backend desde la identidad legal del usuario. */
+export type PersonalBankAccountInput = Pick<BankAccountDto, 'bankCode' | 'bankName' | 'accountType' | 'accountNumber'>;
