@@ -43,7 +43,7 @@ export function AppHeader() {
           <NotificationMenu />
           <ThemeToggle />
           <Link
-            href="/music/perfil"
+            href="/music/mi-cuenta"
             className="transition-transform hover:scale-105 active:scale-95 relative"
           >
             <Avatar className="h-9 w-9 sm:h-11 sm:w-11 border-2 border-border shadow-md ring-2 ring-background">

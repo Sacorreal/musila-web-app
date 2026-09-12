@@ -1,5 +1,5 @@
-import { ProfileForm } from "@/src/domains/users/components/ProfileForm";
+import { redirect } from "next/navigation";
 
 export default function PerfilPage() {
-  return <ProfileForm />;
+  redirect("/music/mi-cuenta");
 }

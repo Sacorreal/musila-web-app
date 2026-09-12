@@ -19,24 +19,6 @@ async function authFetch(url: string, options: RequestInit = {}) {
 
 // ── Perfil ────────────────────────────────────────────────────────────────────
 
-export async function getUserProfile() {
-  const res = await authFetch(apiURLs.me.profile);
-  if (!res.ok) throw new Error('No se pudo obtener el perfil');
-  return res.json();
-}
-
-export async function updateUserProfile(data: Record<string, unknown>) {
-  const res = await authFetch(apiURLs.me.profile, {
-    method: 'PATCH',
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.message ?? 'No se pudo actualizar el perfil');
-  }
-  return res.json();
-}
-
 export async function changeEmail(newEmail: string) {
   const res = await authFetch(apiURLs.me.email, {
     method: 'PATCH',

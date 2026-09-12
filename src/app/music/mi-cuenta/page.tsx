@@ -11,10 +11,10 @@ export const metadata = { title: 'Mi Cuenta — Musila' };
 
 export default async function MiCuentaPage({ searchParams }: PageProps) {
   const { tab } = await searchParams;
-  const activeTab = (['perfil', 'plan', 'pagos', 'facturacion', 'seguridad', 'sociedades'] as const).includes(
-    tab as any,
-  )
-    ? (tab as 'perfil' | 'plan' | 'pagos' | 'facturacion' | 'seguridad' | 'sociedades')
+  const activeTab = (
+    ['perfil', 'plan', 'pagos', 'facturacion', 'banco', 'seguridad', 'sociedades'] as const
+  ).includes(tab as any)
+    ? (tab as 'perfil' | 'plan' | 'pagos' | 'facturacion' | 'banco' | 'seguridad' | 'sociedades')
     : 'perfil';
 
   return (

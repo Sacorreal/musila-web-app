@@ -37,7 +37,7 @@ export function LegalIdentityRequiredModal({ open, onClose }: LegalIdentityRequi
 
         <DialogFooter className="flex-col gap-2 sm:flex-col">
           <Button asChild className="w-full" onClick={onClose}>
-            <Link href={`/music/perfil?redirect=${encodeURIComponent(pathname ?? '/music/perfil')}`}>
+            <Link href={`/music/mi-cuenta?redirect=${encodeURIComponent(pathname ?? '/music/mi-cuenta')}`}>
               Completar identidad legal
             </Link>
           </Button>

@@ -16,7 +16,6 @@ import { ProfileHeader } from "@/src/domains/users/components/ProfileHeader";
 import { ProfileAvatarCard } from "@/src/domains/users/components/ProfileAvatarCard";
 import { ProfilePersonalInfoSection } from "@/src/domains/users/components/ProfilePersonalInfoSection";
 import { ProfileContactSection } from "@/src/domains/users/components/ProfileContactSection";
-import { ProfileSecuritySection } from "@/src/domains/users/components/ProfileSecuritySection";
 import { LegalIdentityStatusCard } from "@/src/domains/legal-identity/components/LegalIdentityStatusCard";
 
 export function ProfileForm() {
@@ -29,7 +28,6 @@ export function ProfileForm() {
   const {
     register,
     handleSubmit,
-    setValue,
     reset,
     control,
     formState: { errors, isDirty },
@@ -46,8 +44,6 @@ export function ProfileForm() {
       countryCode: "",
       typeCitizenID: "",
       citizenID: "",
-      password: "",
-      confirmPassword: "",
     },
   });
 
@@ -106,13 +102,9 @@ export function ProfileForm() {
         }
       }
 
-      // 2. Preparar el resto de los datos
-      const { confirmPassword, ...updateData } = values;
-      if (!updateData.password) delete updateData.password;
-
-      // 3. Enviar todo al backend en una sola petición
+      // 2. Enviar todo al backend en una sola petición
       const { data, error } = await usersService.updateMe({
-        ...updateData,
+        ...values,
         ...avatarData,
       } as any);
 
@@ -122,8 +114,6 @@ export function ProfileForm() {
         setUser(data as unknown as UserJWTResponse);
         setAvatarFile(null); // Limpiar archivo pendiente
         toast.success("Perfil actualizado correctamente");
-        setValue("password", "");
-        setValue("confirmPassword", "");
       }
     } catch (error: any) {
       toast.error(error.message || "Ocurrió un error inesperado");
@@ -164,7 +154,6 @@ export function ProfileForm() {
               currentUsername={user?.username}
             />
             <ProfileContactSection register={register} control={control} />
-            <ProfileSecuritySection register={register} errors={errors} />
           </div>
         </form>
 

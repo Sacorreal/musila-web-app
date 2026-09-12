@@ -50,6 +50,7 @@ export type PaginatedWalletEarnings = PaginatedResponse<WalletEarningDto>;
 export type PaginatedWalletWithdrawals = PaginatedResponse<WalletWithdrawalDto>;
 
 export interface BankAccountDto {
+  bankCode: string;
   bankName: string;
   accountType: string;
   accountNumber: string;

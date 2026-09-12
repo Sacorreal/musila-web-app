@@ -1,6 +1,7 @@
 import * as z from "zod";
 
 export const bankAccountSchema = z.object({
+  bankCode: z.string().min(1, "Selecciona un banco"),
   bankName: z.string().min(1, "El nombre del banco es obligatorio"),
   accountType: z.string().min(1, "El tipo de cuenta es obligatorio"),
   accountNumber: z.string().min(1, "El número de cuenta es obligatorio"),

@@ -470,7 +470,7 @@ export function CreateTrackForm() {
                       <div className="space-y-0.5">
                         <p className="text-sm font-medium">Grabación a dúo (Feat)</p>
                         <p className="text-xs text-muted-foreground">
-                          ¿Está grabada con varias voces?
+                          ¿Es para grabar con varias voces?
                         </p>
                       </div>
                       <Switch

@@ -1,15 +1,15 @@
 import { ADMIN_PLAN_TYPES, UserPlanType } from "@/src/domains/users/types/user.types"
 import {
+    ActivityIcon,
     ChatIcon,
     DashboardIcon,
-    ExpedienteIcon,
     GuestUserIcon,
     HomeIcon,
+    MegaphoneIcon,
     PlaylistIcon,
     RequestIcon,
     ShieldIcon,
     UploadIcon,
-    UserIcon,
     WalletIcon,
 } from "@/src/shared/components/Icons/icons"
 import type { NavItems } from "@shared/types/shared.types"
@@ -48,7 +48,7 @@ export const navItems: NavItems = [
 
     {
         href: "/music/editorial-command-center",
-        icon: ExpedienteIcon,
+        icon: ActivityIcon,
         label: "Health Score",
         rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360],
     },
@@ -68,16 +68,16 @@ export const navItems: NavItems = [
     },
     {
         href: "/music/mis-campanas",
-        icon: RequestIcon,
+        icon: MegaphoneIcon,
         label: "Mis Campañas",
         rolAccess: [UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR, UserPlanType.INVITADO]
     },
-    {
-        href: "/music/expedientes",
-        icon: ExpedienteIcon,
-        label: "Expedientes",
-        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, ...ADMIN_PLAN_TYPES]
-    },
+    // {
+    //     href: "/music/expedientes",
+    //     icon: ExpedienteIcon,
+    //     label: "Expedientes",
+    //     rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, ...ADMIN_PLAN_TYPES]
+    // },
     {
         href: "/music/invitar-usuario",
         icon: GuestUserIcon,
@@ -88,12 +88,6 @@ export const navItems: NavItems = [
         href: "/music/wallet",
         icon: WalletIcon,
         label: "Wallet",
-        rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR],
-    },
-    {
-        href: "/music/mi-cuenta",
-        icon: UserIcon,
-        label: "Mi Cuenta",
         rolAccess: [UserPlanType.PLAN_AUTOR, UserPlanType.PLAN_360, UserPlanType.PLAN_DESCUBRIDOR],
     },
     {
