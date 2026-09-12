@@ -15,7 +15,6 @@ import { MUSIC_ROLE_LABELS } from "@/src/domains/users/types/user.types";
 import { ProfileHeader } from "@/src/domains/users/components/ProfileHeader";
 import { ProfileAvatarCard } from "@/src/domains/users/components/ProfileAvatarCard";
 import { ProfilePersonalInfoSection } from "@/src/domains/users/components/ProfilePersonalInfoSection";
-import { ProfileContactSection } from "@/src/domains/users/components/ProfileContactSection";
 import { LegalIdentityStatusCard } from "@/src/domains/legal-identity/components/LegalIdentityStatusCard";
 
 export function ProfileForm() {
@@ -40,10 +39,6 @@ export function ProfileForm() {
       secondLastName: "",
       username: "",
       biography: "",
-      phone: "",
-      countryCode: "",
-      typeCitizenID: "",
-      citizenID: "",
     },
   });
 
@@ -56,10 +51,6 @@ export function ProfileForm() {
         secondLastName: user.secondLastName || "",
         username: user.username || "",
         biography: user.biography || "",
-        phone: user.phone || "",
-        countryCode: user.countryCode || "",
-        typeCitizenID: user.typeCitizenID || "",
-        citizenID: user.citizenID || "",
         role: user.role,
       });
       if (user.avatarUrl) setAvatarPreview(user.avatarUrl);
@@ -153,7 +144,6 @@ export function ProfileForm() {
               email={user?.email}
               currentUsername={user?.username}
             />
-            <ProfileContactSection register={register} control={control} />
           </div>
         </form>
 

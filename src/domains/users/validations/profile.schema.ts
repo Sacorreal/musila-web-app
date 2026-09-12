@@ -13,10 +13,6 @@ export const profileSchema = z.object({
     .regex(/^[A-Za-z0-9_]+$/, "Solo letras, números y guion bajo, sin espacios"),
   secondLastName: z.string().optional(),
   biography: z.string().max(500, "La biografía no puede superar los 500 caracteres").optional(),
-  phone: z.string().optional(),
-  countryCode: z.string().optional(),
-  typeCitizenID: z.string().optional(),
-  citizenID: z.string().optional(),
   role: z.nativeEnum(MusicRole, {
     errorMap: () => ({ message: "El rol es obligatorio" }),
   }),

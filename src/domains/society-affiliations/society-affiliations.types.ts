@@ -4,6 +4,12 @@ export enum SocietyAffiliationRightsType {
   SR = 'SR',
 }
 
+export enum SocietyAffiliationTerritoryMode {
+  SPECIFIC_COUNTRIES = 'SPECIFIC_COUNTRIES',
+  WORLDWIDE = 'WORLDWIDE',
+  WORLDWIDE_EXCEPT = 'WORLDWIDE_EXCEPT',
+}
+
 export enum SocietyAffiliationStatus {
   PENDING = 'PENDING',
   ACTIVE = 'ACTIVE',
@@ -37,7 +43,8 @@ export interface SocietyAffiliationDto {
   collectiveManagementSocietyId: string
   collectiveManagementSociety: CollectiveManagementSocietyDto
   rightsType: SocietyAffiliationRightsType
-  territory: string
+  territoryMode: SocietyAffiliationTerritoryMode
+  territoryCountries: string[]
   membershipNumber: string | null
   ipiNameNumber: string | null
   ipiBaseNumber: string | null
@@ -53,9 +60,10 @@ export interface SocietyAffiliationDto {
 export interface CreateSocietyAffiliationInput {
   collectiveManagementSocietyId: string
   rightsType: SocietyAffiliationRightsType
-  territory: string
+  territoryMode: SocietyAffiliationTerritoryMode
+  territoryCountries?: string[]
   membershipNumber?: string
-  ipiNameNumber?: string
+  ipiNameNumber: string
   ipiBaseNumber?: string
   validFrom?: string
 }

@@ -5,14 +5,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/src/shared/components/UI/button'
 import { Input } from '@/src/shared/components/UI/input'
+import { Checkbox } from '@/src/shared/components/UI/checkbox'
 import { Field, FieldError, FieldLabel } from '@/src/shared/components/UI/field'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/shared/components/UI/select'
 import { DialogFooter } from '@/src/shared/components/UI/dialog'
 import { CollectiveManagementSocietyCombobox } from './CollectiveManagementSocietyCombobox'
+import { SocietyTerritorySelector } from './SocietyTerritorySelector'
 import { createSocietyAffiliationSchema, type CreateSocietyAffiliationFormValues } from '../society-affiliations.schema'
 import { useCreateSocietyAffiliation } from '../society-affiliations.hooks'
 import { RIGHTS_TYPE_LABELS } from '../society-affiliations.labels'
-import { SocietyAffiliationRightsType } from '../society-affiliations.types'
+import { SocietyAffiliationRightsType, SocietyAffiliationTerritoryMode } from '../society-affiliations.types'
 
 interface Props {
   onSuccess: () => void
@@ -20,6 +21,8 @@ interface Props {
   cancelLabel?: string
   submitLabel?: string
 }
+
+const ALL_RIGHTS_TYPES = Object.values(SocietyAffiliationRightsType)
 
 /**
  * Campos del formulario de afiliación, sin el `Dialog` que lo envuelve —
@@ -37,19 +40,34 @@ export function SocietyAffiliationFormFields({ onSuccess, onCancel, cancelLabel 
     formState: { errors },
   } = useForm<CreateSocietyAffiliationFormValues>({
     resolver: zodResolver(createSocietyAffiliationSchema),
-    defaultValues: { collectiveManagementSocietyId: '', territory: '', membershipNumber: '', ipiNameNumber: '', validFrom: '' },
+    defaultValues: {
+      collectiveManagementSocietyId: '',
+      rightsTypes: [],
+      territoryMode: SocietyAffiliationTerritoryMode.SPECIFIC_COUNTRIES,
+      territoryCountries: [],
+      membershipNumber: '',
+      ipiNameNumber: '',
+    },
   })
 
   const onSubmit = async (values: CreateSocietyAffiliationFormValues) => {
-    await createAffiliation({
-      collectiveManagementSocietyId: values.collectiveManagementSocietyId,
-      rightsType: values.rightsType,
-      territory: values.territory,
-      membershipNumber: values.membershipNumber || undefined,
-      ipiNameNumber: values.ipiNameNumber || undefined,
-      validFrom: values.validFrom || undefined,
-    })
-    onSuccess()
+    try {
+      // Cada tipo de derecho es una afiliación independiente en el backend
+      // (una fila por autor+sociedad+derecho+territorio) — "todos" crea una por cada uno.
+      for (const rightsType of values.rightsTypes) {
+        await createAffiliation({
+          collectiveManagementSocietyId: values.collectiveManagementSocietyId,
+          rightsType,
+          territoryMode: values.territoryMode,
+          territoryCountries: values.territoryCountries,
+          membershipNumber: values.membershipNumber || undefined,
+          ipiNameNumber: values.ipiNameNumber,
+        })
+      }
+      onSuccess()
+    } catch {
+      // el hook ya notifica el error; dejamos el diálogo abierto para reintentar
+    }
   }
 
   return (
@@ -71,33 +89,73 @@ export function SocietyAffiliationFormFields({ onSuccess, onCancel, cancelLabel 
       />
 
       <Controller
-        name="rightsType"
+        name="rightsTypes"
         control={control}
-        render={({ field }) => (
-          <Field data-invalid={!!errors.rightsType}>
-            <FieldLabel>Tipo de derecho</FieldLabel>
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger aria-invalid={!!errors.rightsType} className="w-full">
-                <SelectValue placeholder="Selecciona un tipo de derecho" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(SocietyAffiliationRightsType).map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {RIGHTS_TYPE_LABELS[type]}
-                  </SelectItem>
+        render={({ field }) => {
+          const selected = field.value ?? []
+          const allSelected = selected.length === ALL_RIGHTS_TYPES.length
+
+          const toggleAll = () => field.onChange(allSelected ? [] : ALL_RIGHTS_TYPES)
+          const toggleOne = (type: SocietyAffiliationRightsType) =>
+            field.onChange(selected.includes(type) ? selected.filter((t) => t !== type) : [...selected, type])
+
+          return (
+            <Field data-invalid={!!errors.rightsTypes}>
+              <FieldLabel>Tipo de derecho</FieldLabel>
+              <div className="space-y-2 rounded-md border border-input p-3">
+                <Field orientation="horizontal">
+                  <Checkbox id="rightsType-all" checked={allSelected} onCheckedChange={toggleAll} />
+                  <FieldLabel htmlFor="rightsType-all" className="font-medium">
+                    Seleccionar todos
+                  </FieldLabel>
+                </Field>
+                <div className="h-px bg-border" />
+                {ALL_RIGHTS_TYPES.map((type) => (
+                  <Field orientation="horizontal" key={type}>
+                    <Checkbox
+                      id={`rightsType-${type}`}
+                      checked={selected.includes(type)}
+                      onCheckedChange={() => toggleOne(type)}
+                    />
+                    <FieldLabel htmlFor={`rightsType-${type}`} className="font-normal">
+                      {RIGHTS_TYPE_LABELS[type]}
+                    </FieldLabel>
+                  </Field>
                 ))}
-              </SelectContent>
-            </Select>
-            {errors.rightsType && <FieldError errors={[errors.rightsType]} />}
-          </Field>
-        )}
+              </div>
+              {errors.rightsTypes && <FieldError errors={[errors.rightsTypes]} />}
+            </Field>
+          )
+        }}
       />
 
-      <Field data-invalid={!!errors.territory}>
-        <FieldLabel>Territorio (ISO 3166-1 alpha-2)</FieldLabel>
-        <Input placeholder="CO" maxLength={2} {...register('territory')} />
-        {errors.territory && <FieldError errors={[errors.territory]} />}
-      </Field>
+      <Controller
+        name="territoryMode"
+        control={control}
+        render={({ field: modeField }) => (
+          <Controller
+            name="territoryCountries"
+            control={control}
+            render={({ field: countriesField }) => (
+              <Field data-invalid={!!errors.territoryMode || !!errors.territoryCountries}>
+                <FieldLabel>Territorio</FieldLabel>
+                <SocietyTerritorySelector
+                  mode={modeField.value}
+                  countries={countriesField.value}
+                  onModeChange={(mode) => {
+                    modeField.onChange(mode)
+                    // Cambiar de modo invalida la selección de países del modo anterior.
+                    countriesField.onChange([])
+                  }}
+                  onCountriesChange={countriesField.onChange}
+                />
+                {errors.territoryMode && <FieldError errors={[errors.territoryMode]} />}
+                {errors.territoryCountries && <FieldError errors={[errors.territoryCountries]} />}
+              </Field>
+            )}
+          />
+        )}
+      />
 
       <Field data-invalid={!!errors.membershipNumber}>
         <FieldLabel>Número de afiliación (opcional)</FieldLabel>
@@ -105,14 +163,9 @@ export function SocietyAffiliationFormFields({ onSuccess, onCancel, cancelLabel 
       </Field>
 
       <Field data-invalid={!!errors.ipiNameNumber}>
-        <FieldLabel>IPI Name Number (opcional)</FieldLabel>
+        <FieldLabel>IPI Name Number</FieldLabel>
         <Input placeholder="12345678901" maxLength={11} {...register('ipiNameNumber')} />
         {errors.ipiNameNumber && <FieldError errors={[errors.ipiNameNumber]} />}
-      </Field>
-
-      <Field>
-        <FieldLabel>Vigente desde (opcional)</FieldLabel>
-        <Input type="date" {...register('validFrom')} />
       </Field>
 
       <DialogFooter className="pt-2">

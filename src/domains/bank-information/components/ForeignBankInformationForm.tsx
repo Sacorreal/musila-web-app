@@ -8,6 +8,7 @@ import { Button } from "@/src/shared/components/UI/button";
 import { Checkbox } from "@/src/shared/components/UI/checkbox";
 import { Field, FieldError, FieldLabel } from "@/src/shared/components/UI/field";
 import { Input } from "@/src/shared/components/UI/input";
+import { CountryCodeSelect } from "@/src/domains/auth/components/CountryCodeSelect";
 import { foreignBankInformationSchema, ForeignBankInformationFormValues } from "../bank-information.schema";
 import { useSaveForeignBankInformation } from "../hooks/bank-information.hooks";
 
@@ -49,11 +50,17 @@ export function ForeignBankInformationForm({ requestId, onSuccess }: Props) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Field className="sm:col-span-1">
-          <FieldLabel htmlFor="countryCallingCode">Indicativo</FieldLabel>
-          <Input id="countryCallingCode" placeholder="+57" {...register("countryCallingCode")} />
-          <FieldError errors={[errors.countryCallingCode]} />
-        </Field>
+        <Controller
+          name="countryCallingCode"
+          control={control}
+          render={({ field }) => (
+            <Field className="sm:col-span-1">
+              <FieldLabel htmlFor="countryCallingCode">Indicativo</FieldLabel>
+              <CountryCodeSelect value={field.value} onValueChange={field.onChange} />
+              <FieldError errors={[errors.countryCallingCode]} />
+            </Field>
+          )}
+        />
 
         <Field className="sm:col-span-2">
           <FieldLabel htmlFor="phoneNumber">Número de teléfono</FieldLabel>

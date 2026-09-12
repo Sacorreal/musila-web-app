@@ -18,6 +18,10 @@ interface ComboboxProps {
   options: ComboboxOption[]
   value: string | null
   onChange: (value: string) => void
+  /** Si se pasa, el texto tecleado se reporta aquí (ej. para disparar una búsqueda server-side debounced) además del filtro local por defecto. */
+  onSearchChange?: (search: string) => void
+  /** Muestra un indicador mientras `onSearchChange` está resolviendo una búsqueda en curso. */
+  loading?: boolean
   placeholder?: string
   searchPlaceholder?: string
   emptyText?: string
@@ -35,6 +39,8 @@ export function Combobox({
   options,
   value,
   onChange,
+  onSearchChange,
+  loading = false,
   placeholder = 'Selecciona una opción...',
   searchPlaceholder = 'Buscar...',
   emptyText = 'Sin resultados.',
@@ -63,9 +69,9 @@ export function Combobox({
       </PopoverTrigger>
       <PopoverContent className="w-(--radix-popover-trigger-width) p-0" align="start">
         <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput placeholder={searchPlaceholder} onValueChange={onSearchChange} />
           <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
+            <CommandEmpty>{loading ? 'Buscando...' : emptyText}</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
                 <CommandItem

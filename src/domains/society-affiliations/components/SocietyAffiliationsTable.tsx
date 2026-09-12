@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
+import { getSpanishCountryName } from '@/src/domains/auth/utils/get-countries'
 import { Badge } from '@/src/shared/components/UI/badge'
 import { Button } from '@/src/shared/components/UI/button'
 import {
@@ -23,7 +24,21 @@ import {
   VERIFICATION_STATUS_BADGE_VARIANT,
   VERIFICATION_STATUS_LABELS,
 } from '../society-affiliations.labels'
-import { SocietyAffiliationStatus, type SocietyAffiliationDto } from '../society-affiliations.types'
+import { SocietyAffiliationStatus, SocietyAffiliationTerritoryMode, type SocietyAffiliationDto } from '../society-affiliations.types'
+
+function describeTerritory(affiliation: SocietyAffiliationDto): string {
+  const countryNames = (isoCodes: string[]) => isoCodes.map((code) => getSpanishCountryName(code, code)).join(', ')
+
+  switch (affiliation.territoryMode) {
+    case SocietyAffiliationTerritoryMode.WORLDWIDE:
+      return 'Todo el mundo'
+    case SocietyAffiliationTerritoryMode.WORLDWIDE_EXCEPT:
+      return `Todo el mundo excepto ${countryNames(affiliation.territoryCountries)}`
+    case SocietyAffiliationTerritoryMode.SPECIFIC_COUNTRIES:
+    default:
+      return countryNames(affiliation.territoryCountries)
+  }
+}
 
 interface Props {
   affiliations: SocietyAffiliationDto[]
@@ -56,7 +71,7 @@ export function SocietyAffiliationsTable({ affiliations }: Props) {
                 <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                   <span>{RIGHTS_TYPE_LABELS[affiliation.rightsType]}</span>
                   <span aria-hidden="true">·</span>
-                  <span>{affiliation.territory}</span>
+                  <span>{describeTerritory(affiliation)}</span>
                   {affiliation.membershipNumber && (
                     <>
                       <span aria-hidden="true">·</span>

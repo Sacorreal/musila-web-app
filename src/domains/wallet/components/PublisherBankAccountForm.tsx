@@ -1,30 +1,36 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Landmark } from 'lucide-react';
 import { Button } from '@/src/shared/components/UI/button';
 import { Field, FieldError, FieldLabel } from '@/src/shared/components/UI/field';
 import { Input } from '@/src/shared/components/UI/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/shared/components/UI/select';
 import { bankAccountSchema, BankAccountFormValues } from '../wallet.schema';
 import {
   usePublisherBankAccount,
   useUpdatePublisherBankAccount,
 } from '../hooks/publisher-wallet.hooks';
+import { useTransferOptions } from '@/src/domains/bank-information/hooks/bank-information.hooks';
 
 export function PublisherBankAccountForm({ organizationId }: { organizationId: string }) {
   const { data: bankAccount, isLoading } = usePublisherBankAccount(organizationId);
+  const { data: options, isLoading: isLoadingOptions, isError, refetch } = useTransferOptions(true);
   const { mutate: updateBankAccount, isPending } = useUpdatePublisherBankAccount(organizationId);
 
   const {
+    control,
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors, isDirty },
   } = useForm<BankAccountFormValues>({
     resolver: zodResolver(bankAccountSchema),
     defaultValues: {
+      bankCode: '',
       bankName: '',
       accountType: '',
       accountNumber: '',
@@ -42,8 +48,19 @@ export function PublisherBankAccountForm({ organizationId }: { organizationId: s
     updateBankAccount(values, { onSuccess: () => reset(values) });
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingOptions) {
     return <div className="h-64 animate-pulse rounded-xl bg-muted/40" />;
+  }
+
+  if (isError || !options) {
+    return (
+      <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+        <p>No pudimos obtener la lista de bancos de Wompi. Intenta nuevamente.</p>
+        <Button type="button" variant="outline" size="sm" onClick={() => refetch()}>
+          Reintentar
+        </Button>
+      </div>
+    );
   }
 
   return (
@@ -57,17 +74,59 @@ export function PublisherBankAccountForm({ organizationId }: { organizationId: s
       </p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field>
-          <FieldLabel htmlFor="bankName">Banco</FieldLabel>
-          <Input id="bankName" placeholder="Bancolombia" {...register('bankName')} />
-          <FieldError errors={[errors.bankName]} />
-        </Field>
+        <Controller
+          name="bankCode"
+          control={control}
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Banco</FieldLabel>
+              <Select
+                value={field.value}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  const bank = options.banks.find((b) => b.id === value);
+                  setValue('bankName', bank?.name ?? '', { shouldDirty: true });
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecciona el banco" />
+                </SelectTrigger>
+                <SelectContent>
+                  {options.banks.map((bank) => (
+                    <SelectItem key={bank.id} value={bank.id}>
+                      {bank.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldError errors={[errors.bankCode]} />
+            </Field>
+          )}
+        />
+        <input type="hidden" {...register('bankName')} />
 
-        <Field>
-          <FieldLabel htmlFor="accountType">Tipo de cuenta</FieldLabel>
-          <Input id="accountType" placeholder="Ahorros" {...register('accountType')} />
-          <FieldError errors={[errors.accountType]} />
-        </Field>
+        <Controller
+          name="accountType"
+          control={control}
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Tipo de cuenta</FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecciona el tipo de cuenta" />
+                </SelectTrigger>
+                <SelectContent>
+                  {options.accountTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldError errors={[errors.accountType]} />
+            </Field>
+          )}
+        />
 
         <Field>
           <FieldLabel htmlFor="accountNumber">Número de cuenta</FieldLabel>
@@ -81,11 +140,28 @@ export function PublisherBankAccountForm({ organizationId }: { organizationId: s
           <FieldError errors={[errors.accountHolderName]} />
         </Field>
 
-        <Field>
-          <FieldLabel htmlFor="accountHolderIdType">Tipo de documento</FieldLabel>
-          <Input id="accountHolderIdType" placeholder="NIT" {...register('accountHolderIdType')} />
-          <FieldError errors={[errors.accountHolderIdType]} />
-        </Field>
+        <Controller
+          name="accountHolderIdType"
+          control={control}
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Tipo de documento</FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Selecciona el tipo de documento" />
+                </SelectTrigger>
+                <SelectContent>
+                  {options.documentTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldError errors={[errors.accountHolderIdType]} />
+            </Field>
+          )}
+        />
 
         <Field>
           <FieldLabel htmlFor="accountHolderIdNumber">Número de documento</FieldLabel>
